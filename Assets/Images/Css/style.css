@@ -530,3 +530,72 @@ dialog::backdrop {
   .profile-header__actions { justify-content: center; }
   .footer__inner { grid-template-columns: 1fr; height: auto; padding: 14px 0; text-align: center; }
 }
+/*
+ * New styles for forms (login/signup)
+ */
+
+.form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 2rem;
+    background: var(--surface-2);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: background 0.3s ease;
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 0;
+    color: var(--text-color);
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text-color);
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.form-container p {
+    text-align: center;
+    margin-top: 0.5rem;
+    color: var(--text-color);
+}
+
+.form-container a {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.form-container a:hover {
+    color: var(--brand-600);
+    text-decoration: underline;
+}
+
+.page.login-page, .page.signup-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
