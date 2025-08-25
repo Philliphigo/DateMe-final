@@ -23,7 +23,7 @@
 	  age: 30,
 	  location: "Lilongwe",
 	  interests: ["Tech", "Football"],
-	  bio: "Frontend dev, part-time chef. I’ll cook, you pick the playlist.",
+	  bio: "Frontend dev, part-time chef. I'll cook, you pick the playlist.",
 	  avatar: "https://placehold.co/600x400?text=John",
 	  photos: ["https://placehold.co/240x240?text=John+1", "https://placehold.co/240x240?text=John+2"]
 	},
@@ -76,7 +76,7 @@
 	  const messages = {
 		'anna': [
 		  { who: "them", text: "Hi! How are you?", time: formatTime(new Date(Date.now() - 1000 * 60 * 20)) },
-		  { who: "me", text: "I’m good, thanks! How about you?", time: formatTime(new Date(Date.now() - 1000 * 60 * 18)) }
+		  { who: "me", text: "I'm good, thanks! How about you?", time: formatTime(new Date(Date.now() - 1000 * 60 * 18)) }
 		],
 		'john': [
 		  { who: "them", text: "Hey! What's up?", time: formatTime(new Date(Date.now() - 1000 * 60 * 30)) },
@@ -207,33 +207,39 @@
 	 Initialize core things
 	 ========================= */
   function init() {
-	try {
-	  setInitialTheme();
-	  bindThemeSwitch();
-	  bindRouting();
-	  bindNavLinks();
-	  // REVISED: Call a new function to fetch and load the initial profile
-	  loadNextProfile();
-	  bindCardActions();
-	  bindConversations();
-	  bindChatComposer();
-	  bindAvatarMenu();
-	  bindProfileEditModal();
-	  bindTabs();
-	  updateBadges();
-	  setFooterYear();
-	  handlePopState();
-	  renderProfilePage();
-	  // NEW: Bind new modal and button actions
-	  bindModals();
-	  bindDiscoverySettings();
+    // NEW: Check for authentication. If not logged in, redirect to login page.
+    if (localStorage.getItem("dateme-is-logged-in") !== "true") {
+      window.location.href = 'login.html';
+      return; // Stop further execution of init()
+    }
 
-	  const initialRoute = location.hash ? location.hash.slice(1) : "home";
-	  routeTo(initialRoute, false);
-	  if (typingIndicator) typingIndicator.style.display = "none";
-	} catch (err) {
-	  console.error("Init error:", err);
-	}
+    try {
+      setInitialTheme();
+      bindThemeSwitch();
+      bindRouting();
+      bindNavLinks();
+      // REVISED: Call a new function to fetch and load the initial profile
+      loadNextProfile();
+      bindCardActions();
+      bindConversations();
+      bindChatComposer();
+      bindAvatarMenu();
+      bindProfileEditModal();
+      bindTabs();
+      updateBadges();
+      setFooterYear();
+      handlePopState();
+      renderProfilePage();
+      // NEW: Bind new modal and button actions
+      bindModals();
+      bindDiscoverySettings();
+
+      const initialRoute = location.hash ? location.hash.slice(1) : "home";
+      routeTo(initialRoute, false);
+      if (typingIndicator) typingIndicator.style.display = "none";
+    } catch (err) {
+      console.error("Init error:", err);
+    }
   }
 
   /* =========================
@@ -633,9 +639,9 @@
 	  const logoutBtn = ev.target.closest("[data-action='logout']");
 	  if (logoutBtn) {
 		ev.preventDefault();
-		alert("Logged out! (This is a demo)");
-		userMenu.setAttribute("hidden", "");
-		avatarBtn.setAttribute("aria-expanded", "false");
+		// UPDATED: Clear the login flag and redirect
+		localStorage.removeItem("dateme-is-logged-in");
+		window.location.href = 'login.html';
 	  }
 	});
 	document.addEventListener("click", (ev) => {
