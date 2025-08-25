@@ -186,7 +186,7 @@
 	currentUser: {
 	  name: "Phillip",
 	  age: 20,
-	  location: "Blantyre",
+	  location: "Lilongwe",
 	  bio: "Friendly and focused. Building a modern dating site with clean design and smooth UX.",
 	  avatar: "https://placehold.co/120x120?text=Phillip",
 	  interests: ["Design", "Tech", "Entrepreneurship", "Music"],
@@ -227,6 +227,8 @@
 	  // NEW: Bind new modal and button actions
 	  bindModals();
 	  bindDiscoverySettings();
+      // NEW: Bind messages specific actions
+      bindMessagesActions();
 
 	  const initialRoute = location.hash ? location.hash.slice(1) : "home";
 	  routeTo(initialRoute, false);
@@ -343,6 +345,12 @@
 		if (chatComposer) chatComposer.hidden = true;
 	  }
 	  loadChatForConvo(convoId);
+	  // On messages page load, ensure the correct view is shown for desktop
+      if (window.innerWidth >= 768) {
+        showChatView();
+      } else {
+        showConvoList();
+      }
 	}
 	if (routeName === "notifications") {
 	  state.unreadNotifs = 0;
@@ -522,6 +530,35 @@
   /* =========================
 	 MESSAGES / CONVERSATIONS
 	 ========================= */
+  function showChatView() {
+    if (messagesPage) {
+        const convoList = messagesPage.querySelector(".convos");
+        const chatSection = messagesPage.querySelector(".chat");
+        if (convoList) convoList.hidden = true;
+        if (chatSection) chatSection.style.display = "grid";
+    }
+  }
+
+  function showConvoList() {
+    if (messagesPage) {
+        const convoList = messagesPage.querySelector(".convos");
+        const chatSection = messagesPage.querySelector(".chat");
+        if (convoList) convoList.hidden = false;
+        if (chatSection) chatSection.style.display = "none";
+    }
+  }
+
+  function bindMessagesActions() {
+    if (messagesPage) {
+        const chatBackBtn = messagesPage.querySelector("[data-action='chat-back']");
+        if (chatBackBtn) {
+            chatBackBtn.addEventListener('click', () => {
+                showConvoList();
+            });
+        }
+    }
+  }
+
   function bindConversations() {
 	if (!convoList) return;
 	convoList.addEventListener("click", (ev) => {
@@ -534,6 +571,11 @@
 	  const convoId = li.dataset.convo;
 	  state.currentConvo = convoId;
 	  loadChatForConvo(convoId);
+
+      // New: On mobile, clicking a conversation shows the chat view
+      if (window.innerWidth < 768) {
+        showChatView();
+      }
 	});
 
 	document.addEventListener("click", (ev) => {
