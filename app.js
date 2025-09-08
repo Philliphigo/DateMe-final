@@ -4,120 +4,72 @@
   "use strict";
 
   /* =========================
+	 Demo profile dataset
+	 ========================= */
+  const profiles = [
+	{
+	  id: "anna",
+	  name: "Anna",
+	  age: 18,
+	  location: "Blantyre",
+	  interests: ["Music", "Hiking"],
+	  bio: "Curious, coffee lover, and weekend hiker. Looking for someone to laugh with.",
+	  avatar: "https://placehold.co/600x400?text=Anna",
+	  photos: ["https://placehold.co/240x240?text=Anna+1", "https://placehold.co/240x240?text=Anna+2", "https://placehold.co/240x240?text=Anna+3"]
+	},
+	{
+	  id: "Maria",
+	  name: "Maria",
+	  age: 20,
+	  location: "Lilongwe",
+	  interests: ["Tech", "Football"],
+	  bio: "Frontend dev, part-time chef. I’ll cook, you pick the playlist.",
+	  avatar: "https://placehold.co/600x400?text=John",
+	  photos: ["https://placehold.co/240x240?text=John+1", "https://placehold.co/240x240?text=John+2"]
+	},
+	{
+	  id: "mike",
+	  name: "Mike",
+	  age: 27,
+	  location: "Mzuzu",
+	  interests: ["Fitness", "Gaming"],
+	  bio: "Gym rat, gamer, and pizza enthusiast.",
+	  avatar: "https://placehold.co/600x400?text=Mike",
+	  photos: ["https://placehold.co/240x240?text=Mike+1"]
+	},
+	{
+	  id: "sophia",
+	  name: "Sophia",
+	  age: 29,
+	  location: "Lilongwe",
+	  interests: ["Art", "Coffee"],
+	  bio: "Artist with a love for cappuccinos and deep talks.",
+	  avatar: "https://placehold.co/600x400?text=Sophia",
+	  photos: ["https://placehold.co/240x240?text=Sophia+1", "https://placehold.co/240x240?text=Sophia+2"]
+	}
+  ];
+
+  const profileMap = profiles.reduce((map, p) => {
+	map[p.id] = p;
+	return map;
+  }, {});
+
+  /* =========================
 	 Mock API (simulates back-end data fetching)
 	 ========================= */
   const mockApi = {
 	getProfiles: async () => {
 	  await sleep(400); // Simulate network delay
 	  // Return profiles in a random order to simulate new discoveries
-	  const profiles = [
-		{
-		  id: "anna",
-		  name: "Anna",
-		  age: 18,
-		  location: "Blantyre",
-		  interests: ["Music", "Hiking"],
-		  bio: "Curious, coffee lover, and weekend hiker. Looking for someone to laugh with.",
-		  avatar: "https://placehold.co/600x400?text=Anna",
-		  photos: ["https://placehold.co/240x240?text=Anna+1", "https://placehold.co/240x240?text=Anna+2", "https://placehold.co/240x240?text=Anna+3"]
-		},
-		{
-		  id: "Maria",
-		  name: "Maria",
-		  age: 20,
-		  location: "Lilongwe",
-		  interests: ["Tech", "Football"],
-		  bio: "Frontend dev, part-time chef. I’ll cook, you pick the playlist.",
-		  avatar: "https://placehold.co/600x400?text=Maria",
-		  photos: ["https://placehold.co/240x240?text=Maria+1", "https://placehold.co/240x240?text=Maria+2"]
-		},
-		{
-		  id: "mike",
-		  name: "Mike",
-		  age: 27,
-		  location: "Mzuzu",
-		  interests: ["Fitness", "Gaming"],
-		  bio: "Gym rat, gamer, and pizza enthusiast.",
-		  avatar: "https://placehold.co/600x400?text=Mike",
-		  photos: ["https://placehold.co/240x240?text=Mike+1"]
-		},
-		{
-		  id: "sophia",
-		  name: "Sophia",
-		  age: 29,
-		  location: "Lilongwe",
-		  interests: ["Art", "Coffee"],
-		  bio: "Artist with a love for cappuccinos and deep talks.",
-		  avatar: "https://placehold.co/600x400?text=Sophia",
-		  photos: ["https://placehold.co/240x240?text=Sophia+1", "https://placehold.co/240x240?text=Sophia+2"]
-		}
-	  ];
 	  return profiles.sort(() => Math.random() - 0.5);
 	},
 	getProfile: async (id) => {
 	  await sleep(200);
-	  const profileMap = {
-		"anna": {
-		  id: "anna",
-		  name: "Anna",
-		  age: 18,
-		  location: "Blantyre",
-		  interests: ["Music", "Hiking"],
-		  bio: "Curious, coffee lover, and weekend hiker. Looking for someone to laugh with.",
-		  avatar: "https://placehold.co/600x400?text=Anna",
-		  photos: ["https://placehold.co/240x240?text=Anna+1", "https://placehold.co/240x240?text=Anna+2", "https://placehold.co/240x240?text=Anna+3"]
-		},
-		"Maria": {
-		  id: "Maria",
-		  name: "Maria",
-		  age: 20,
-		  location: "Lilongwe",
-		  interests: ["Tech", "Football"],
-		  bio: "Frontend dev, part-time chef. I’ll cook, you pick the playlist.",
-		  avatar: "https://placehold.co/600x400?text=Maria",
-		  photos: ["https://placehold.co/240x240?text=Maria+1", "https://placehold.co/240x240?text=Maria+2"]
-		},
-		"mike": {
-		  id: "mike",
-		  name: "Mike",
-		  age: 27,
-		  location: "Mzuzu",
-		  interests: ["Fitness", "Gaming"],
-		  bio: "Gym rat, gamer, and pizza enthusiast.",
-		  avatar: "https://placehold.co/600x400?text=Mike",
-		  photos: ["https://placehold.co/240x240?text=Mike+1"]
-		},
-		"sophia": {
-		  id: "sophia",
-		  name: "Sophia",
-		  age: 29,
-		  location: "Lilongwe",
-		  interests: ["Art", "Coffee"],
-		  bio: "Artist with a love for cappuccinos and deep talks.",
-		  avatar: "https://placehold.co/600x400?text=Sophia",
-		  photos: ["https://placehold.co/240x240?text=Sophia+1", "https://placehold.co/240x240?text=Sophia+2"]
-		}
-	  };
 	  return profileMap[id] || null;
 	},
 	getMatches: async () => {
 	  await sleep(300);
-	  return [
-		{
-		  id: "anna",
-		  name: "Anna",
-		  age: 18,
-		  location: "Blantyre",
-		  avatar: "https://placehold.co/600x400?text=Anna",
-		},
-		{
-		  id: "Maria",
-		  name: "Maria",
-		  age: 20,
-		  location: "Lilongwe",
-		  avatar: "https://placehold.co/600x400?text=Maria",
-		},
-	  ];
+	  return [profileMap.anna, profileMap.john];
 	},
 	getMessages: async (convoId) => {
 	  await sleep(200);
@@ -126,7 +78,7 @@
 		  { who: "them", text: "Hi! How are you?", time: formatTime(new Date(Date.now() - 1000 * 60 * 20)) },
 		  { who: "me", text: "I’m good, thanks! How about you?", time: formatTime(new Date(Date.now() - 1000 * 60 * 18)) }
 		],
-		'Maria': [
+		'john': [
 		  { who: "them", text: "Hey! What's up?", time: formatTime(new Date(Date.now() - 1000 * 60 * 30)) },
 		  { who: "me", text: "Not much, just coding. You?", time: formatTime(new Date(Date.now() - 1000 * 60 * 25)) }
 		]
@@ -147,58 +99,18 @@
 	  console.log("Mock API: Saving profile data:", profileData);
 	  return { success: true, message: "Profile updated successfully!" };
 	},
+	// NEW: Mock API for subscribing
 	subscribe: async () => {
 	  await sleep(800);
 	  return { success: true, message: "Subscription successful!" };
 	},
+	// NEW: Mock API for sending gifts
 	sendGift: async (recipientId) => {
 	  await sleep(600);
 	  console.log(`Mock API: Sending gift to ${recipientId}`);
 	  return { success: true, message: "Gift sent successfully!" };
 	}
   };
-
-  // NEW: Mock Authentication Module
-  const mockAuth = {
-	currentUser: null,
-	users: new Map(),
-
-	async createUserWithEmailAndPassword(email, password) {
-	  await sleep(400);
-	  if (this.users.has(email)) {
-		throw { code: "auth/email-already-in-use", message: "Email already in use." };
-	  }
-	  const user = { email, uid: `mock-uid-${Date.now()}` };
-	  this.users.set(email, user);
-	  this.currentUser = user;
-	  return { user };
-	},
-
-	async signInWithEmailAndPassword(email, password) {
-	  await sleep(400);
-	  if (!this.users.has(email)) {
-		throw { code: "auth/user-not-found", message: "User not found." };
-	  }
-	  // In a real app, you would check the password here.
-	  const user = this.users.get(email);
-	  this.currentUser = user;
-	  return { user };
-	},
-
-	async signOut() {
-	  await sleep(200);
-	  this.currentUser = null;
-	},
-
-	onAuthStateChanged(callback) {
-	  // Simulate immediate callback on page load
-	  setTimeout(() => {
-		callback(this.currentUser);
-	  }, 100);
-	  // In a real app, this would be a listener.
-	}
-  };
-
 
   /* =========================
 	 Helper utilities
@@ -272,20 +184,6 @@
   const sendBtn = document.getElementById('send-message-btn');
   const micBtn = document.getElementById('send-voice-btn');
   const attachFileBtn = document.getElementById('attach-file-btn');
-  // NEW: Auth-related DOM elements
-  const authContainer = safeQuery('.auth-container');
-  const appContainer = safeQuery('.app');
-  const loginForm = safeQuery('#login-form');
-  const signupForm = safeQuery('#signup-form');
-  const showSignupLink = safeQuery('#show-signup');
-  const showLoginLink = safeQuery('#show-login');
-  const logoutBtn = safeQuery("[data-action='logout']");
-  const loginErrorMsg = safeQuery('#login-error-msg');
-  const signupErrorMsg = safeQuery('#signup-error-msg');
-  // NEW: Discovery settings elements
-  const genderButtons = $$(".toggle-switch button");
-  const ageSlider = safeQuery("#age-range-slider");
-  const ageValueSpan = safeQuery("#age-range-value");
 
 
   /* =========================
@@ -300,7 +198,7 @@
 	  avatar: "https://placehold.co/120x120?text=Phillip",
 	  interests: ["Design", "Tech", "Entrepreneurship", "Music"],
 	  photos: ["https://placehold.co/240x240?text=Phil+1", "https://placehold.co/240x240?text=Phil+2", "https://placehold.co/240x240?text=Phil+3"],
-	  isSubscriber: false
+	  isSubscriber: false // NEW: User subscription status
 	},
 	likes: new Set(),
 	viewedProfiles: new Set(),
@@ -309,8 +207,7 @@
 	unreadNotifs: 1,
 	currentConvo: "anna",
 	theme: localStorage.getItem("dateme-theme") || (body.dataset.theme || "light"),
-	profileQueue: [],
-	isLoggedIn: false // NEW: User's login status
+	profileQueue: [] // NEW: Queue of profiles to show
   };
 
   /* =========================
@@ -322,6 +219,8 @@
 	  bindThemeSwitch();
 	  bindRouting();
 	  bindNavLinks();
+	  // REVISED: Call a new function to fetch and load the initial profile
+	  loadNextProfile();
 	  bindCardActions();
 	  bindConversations();
 	  bindChatComposer();
@@ -332,41 +231,19 @@
 	  setFooterYear();
 	  handlePopState();
 	  renderProfilePage();
+	  // NEW: Bind new modal and button actions
 	  bindModals();
 	  bindDiscoverySettings();
+	  // NEW: Bind messages specific actions
 	  bindMessagesActions();
+	  // NEW: Bind the new chat UI interactions
 	  bindChatUI();
-	  bindAuthActions(); // NEW: Bind login/signup logic
-	  
-	  // NEW: Listen for auth state changes to show/hide the UI
-	  mockAuth.onAuthStateChanged(user => {
-		if (user) {
-		  state.isLoggedIn = true;
-		  updateUI();
-		  // Now that the user is "logged in", we can load the initial profile.
-		  loadNextProfile();
-		} else {
-		  state.isLoggedIn = false;
-		  updateUI();
-		}
-	  });
-	  
+
 	  const initialRoute = location.hash ? location.hash.slice(1) : "home";
 	  routeTo(initialRoute, false);
 	  if (typingIndicator) typingIndicator.style.display = "none";
 	} catch (err) {
 	  console.error("Init error:", err);
-	}
-  }
-
-  // NEW: Function to manage UI based on login state
-  function updateUI() {
-	if (state.isLoggedIn) {
-	  if (authContainer) authContainer.classList.add('is-hidden');
-	  if (appContainer) appContainer.classList.remove('is-hidden');
-	} else {
-	  if (authContainer) authContainer.classList.remove('is-hidden');
-	  if (appContainer) appContainer.classList.add('is-hidden');
 	}
   }
 
@@ -468,6 +345,7 @@
 	  updateBadges();
 	  const activeConvoEl = convoList.querySelector('.convo.is-active');
 	  const convoId = activeConvoEl ? activeConvoEl.dataset.convo : 'anna';
+	  // NEW: Check subscription status to show or hide the composer/prompt
 	  if (state.currentUser.isSubscriber) {
 		if (messagesSubscribePrompt) messagesSubscribePrompt.hidden = true;
 		if (chatComposer) chatComposer.hidden = false;
@@ -476,6 +354,7 @@
 		if (chatComposer) chatComposer.hidden = true;
 	  }
 	  loadChatForConvo(convoId);
+	  // On messages page load, ensure the correct view is shown for desktop
 	  if (window.innerWidth >= 768) {
 		showChatView();
 	  } else {
@@ -501,18 +380,24 @@
   async function loadNextProfile() {
 	if (!cardsContainer || !cardTemplate) return;
 
+	// Check if the queue is empty. If so, fetch more profiles.
 	if (state.profileQueue.length === 0) {
+	  // Show a loading state on the cards container
 	  cardsContainer.innerHTML = `<div class="loading">Loading profiles...</div>`;
 	  const newProfiles = await mockApi.getProfiles();
 	  state.profileQueue = newProfiles;
+	  // If no profiles are found, show a message
 	  if (state.profileQueue.length === 0) {
 		cardsContainer.innerHTML = `<div class="no-profiles">No new profiles nearby. Try changing your settings.</div>`;
 		return;
 	  }
 	}
 
+	// Remove any existing card
 	cardsContainer.innerHTML = '';
+	// Get the next profile from the queue
 	const profile = state.profileQueue.shift();
+	// Render a single card
 	renderSingleProfile(profile);
   }
 
@@ -548,12 +433,13 @@
 	  if (action === "like") {
 		await animateCardSwipe(card, "right");
 		await handleLike(profileId);
-		loadNextProfile();
+		loadNextProfile(); // Load next profile after swipe
 	  } else if (action === "skip") {
 		await animateCardSwipe(card, "left");
 		await handleSkip(profileId);
-		loadNextProfile();
+		loadNextProfile(); // Load next profile after swipe
 	  } else if (action === "gift") {
+		// NEW: Show gift modal
 		if (modalGift) {
 		  modalGift.setAttribute("data-recipient-id", profileId);
 		  if (typeof modalGift.showModal === "function") modalGift.showModal();
@@ -578,7 +464,7 @@
   async function handleLike(profileId) {
 	state.likes.add(profileId);
 	state.viewedProfiles.add(profileId);
-	const likedBack = (profileId === "anna" || profileId === "Maria");
+	const likedBack = (profileId === "anna" || profileId === "john");
 	if (likedBack) {
 	  const profile = await mockApi.getProfile(profileId);
 	  state.matchHistory.add(profileId);
@@ -593,35 +479,26 @@
 	state.viewedProfiles.add(profileId);
   }
 
-  async function addToMatchesList(profile) {
+  function addToMatchesList(profile) {
 	const matchesPage = pageMap["matches"];
 	if (!matchesPage) return;
 	const list = matchesPage.querySelector(".match-list");
 	if (!list) return;
 	if (list.querySelector(`[data-user="${profile.id}"]`)) return;
-
-	// New: Get the initial list of conversations from the mock API
-	const matches = await mockApi.getMatches();
-
-	// Clear the list first
-	list.innerHTML = '';
-	
-	matches.forEach(match => {
-		const li = document.createElement("li");
-		li.className = "match";
-		li.innerHTML = `
-			<img src="${match.avatar}" alt="${match.name}" class="match__avatar" />
-			<div class="match__body">
-				<strong>${match.name}, ${match.age}</strong>
-				<span class="match__meta">Matched just now</span>
-			</div>
-			<div class="match__actions">
-				<button class="btn btn--ghost" data-action="view-profile" data-user="${match.id}">View</button>
-				<button class="btn btn--primary" data-route-link="messages" data-start-chat="${match.id}">Message</button>
-			</div>
-		`;
-		list.prepend(li);
-	});
+	const li = document.createElement("li");
+	li.className = "match";
+	li.innerHTML = `
+	  <img src="${profile.avatar}" alt="${profile.name}" class="match__avatar" />
+	  <div class="match__body">
+		<strong>${profile.name}, ${profile.age}</strong>
+		<span class="match__meta">Matched just now</span>
+	  </div>
+	  <div class="match__actions">
+		<button class="btn btn--ghost" data-action="view-profile" data-user="${profile.id}">View</button>
+		<button class="btn btn--primary" data-route-link="messages" data-start-chat="${profile.id}">Message</button>
+	  </div>
+	`;
+	list.prepend(li);
   }
 
   /* =========================
@@ -736,6 +613,7 @@
 
 	// Toggle between mic and send button
 	if (messageInput && sendBtn && micBtn) {
+	  // Initially show mic button
 	  sendBtn.style.display = 'none';
 	  micBtn.style.display = 'inline-flex';
 
@@ -777,6 +655,7 @@
 	  state.currentConvo = convoId;
 	  loadChatForConvo(convoId);
 
+	  // New: On mobile, clicking a conversation shows the chat view
 	  if (window.innerWidth < 768) {
 		showChatView();
 	  }
@@ -846,6 +725,7 @@
 		}
 		scrollChatToBottom();
 		input.value = "";
+		// Toggle back to mic button
 		if (sendBtn) sendBtn.style.display = 'none';
 		if (micBtn) micBtn.style.display = 'inline-flex';
 
@@ -879,17 +759,10 @@
 	  userMenu.toggleAttribute("hidden");
 	});
 	userMenu.addEventListener("click", (ev) => {
-	  const target = ev.target.closest("[data-action]");
-	  if (!target) return;
-	  const action = target.getAttribute("data-action");
-
-	  if (action === "logout") {
+	  const logoutBtn = ev.target.closest("[data-action='logout']");
+	  if (logoutBtn) {
 		ev.preventDefault();
-		mockAuth.signOut().then(() => {
-			console.log("Logged out successfully.");
-		}).catch(error => {
-			console.error("Logout failed:", error);
-		});
+		alert("Logged out! (This is a demo)");
 		userMenu.setAttribute("hidden", "");
 		avatarBtn.setAttribute("aria-expanded", "false");
 	  }
@@ -1018,31 +891,14 @@
 	 NEW: Discovery Settings & Modals
 	 ========================= */
   function bindDiscoverySettings() {
-	if (discoverSettingsBtn) {
-	  discoverSettingsBtn.addEventListener('click', () => {
-		routeTo('discover-settings', true);
-	  });
-	}
-
-	// Gender buttons
-	if (genderButtons.length > 0) {
-	  genderButtons.forEach(btn => {
-		btn.addEventListener('click', () => {
-		  genderButtons.forEach(b => b.classList.remove('active'));
-		  btn.classList.add('active');
-		});
-	  });
-	}
-
-	// Age slider
-	if (ageSlider && ageValueSpan) {
-	  ageSlider.addEventListener('input', (e) => {
-		ageValueSpan.textContent = `${e.target.value}+`;
-	  });
-	}
+	if (!discoverSettingsBtn) return;
+	discoverSettingsBtn.addEventListener('click', () => {
+	  routeTo('discover-settings', true);
+	});
   }
 
   function bindModals() {
+	// Subscription Modal
 	if (modalSubscribe && subscribeBtn) {
 	  subscribeBtn.addEventListener('click', async () => {
 		const button = subscribeBtn;
@@ -1055,6 +911,7 @@
 			state.currentUser.isSubscriber = true;
 			alert("Success! You can now send messages.");
 			modalSubscribe.close();
+			// Reroute to messages page to apply change
 			routeTo('messages', false);
 		  }
 		} catch (e) {
@@ -1066,6 +923,7 @@
 	  });
 	}
 
+	// Gift Modal
 	if (modalGift) {
 	  const sendBtn = modalGift.querySelector("[data-action='send-gift']");
 	  if (sendBtn) {
@@ -1091,83 +949,6 @@
 		  }
 		});
 	  }
-	}
-  }
-
-  /* =========================
-	 NEW: Authentication
-	 ========================= */
-  function bindAuthActions() {
-	// Show sign-up form
-	if (showSignupLink) {
-	  showSignupLink.addEventListener('click', (e) => {
-		e.preventDefault();
-		loginForm.classList.remove('is-visible');
-		signupForm.classList.add('is-visible');
-		if (loginErrorMsg) loginErrorMsg.textContent = '';
-	  });
-	}
-
-	// Show log-in form
-	if (showLoginLink) {
-	  showLoginLink.addEventListener('click', (e) => {
-		e.preventDefault();
-		signupForm.classList.remove('is-visible');
-		loginForm.classList.add('is-visible');
-		if (signupErrorMsg) signupErrorMsg.textContent = '';
-	  });
-	}
-
-	// Handle log-in form submission
-	if (loginForm) {
-	  loginForm.addEventListener('submit', async (e) => {
-		e.preventDefault();
-		const email = loginForm.email.value;
-		const password = loginForm.password.value;
-		const submitBtn = loginForm.querySelector('button[type="submit"]');
-
-		submitBtn.textContent = 'Logging In...';
-		submitBtn.disabled = true;
-		if (loginErrorMsg) loginErrorMsg.textContent = '';
-
-		try {
-		  await mockAuth.signInWithEmailAndPassword(email, password);
-		  // mockAuth.onAuthStateChanged will handle UI update
-		} catch (error) {
-		  if (loginErrorMsg) {
-			loginErrorMsg.textContent = error.message || 'Login failed. Please try again.';
-		  }
-		} finally {
-		  submitBtn.textContent = 'Log In';
-		  submitBtn.disabled = false;
-		}
-	  });
-	}
-
-	// Handle sign-up form submission
-	if (signupForm) {
-	  signupForm.addEventListener('submit', async (e) => {
-		e.preventDefault();
-		const email = signupForm.email.value;
-		const password = signupForm.password.value;
-		const submitBtn = signupForm.querySelector('button[type="submit"]');
-
-		submitBtn.textContent = 'Signing Up...';
-		submitBtn.disabled = true;
-		if (signupErrorMsg) signupErrorMsg.textContent = '';
-
-		try {
-		  await mockAuth.createUserWithEmailAndPassword(email, password);
-		  // mockAuth.onAuthStateChanged will handle UI update
-		} catch (error) {
-		  if (signupErrorMsg) {
-			signupErrorMsg.textContent = error.message || 'Signup failed. Please try again.';
-		  }
-		} finally {
-		  submitBtn.textContent = 'Sign Up';
-		  submitBtn.disabled = false;
-		}
-	  });
 	}
   }
 
