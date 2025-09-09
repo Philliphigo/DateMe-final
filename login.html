@@ -3,32 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DateMe — Log In</title>
+    <title>DateMe</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
-<body data-theme="light">
-    <main class="page login-page is-visible">
-        <div class="form-container">
-            <h2>Welcome Back!</h2>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
+<body>
+
+    <div class="main-container">
+        <div class="form-card">
+            <h2 id="form-heading">Welcome to<br><span class="logo">DateMe</span></h2>
+
+            <div id="signupForm">
+                <p class="tagline">find your match here for free</p>
+                <form id="signup-form">
+                    <input type="text" id="signup-full-name" placeholder="Full Name">
+                    <input type="email" id="signup-email" placeholder="Email Address">
+                    <input type="password" id="signup-password" placeholder="Password">
+                    <input type="number" id="signup-age" placeholder="Age">
+                    <input type="text" id="signup-city" placeholder="City or Location">
+                    <select id="signup-i-am">
+                        <option value="">I am a...</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                    <select id="signup-looking-for">
+                        <option value="">Looking for...</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="both">Both</option>
+                    </select>
+                    <button type="submit" class="neumorphic-btn">Sign Up</button>
+                </form>
+                <div class="form-link">
+                    Already have an account? <span class="link" id="loginLink">Login</span>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+            </div>
+
+            <div id="loginForm" class="hidden">
+                <form id="login-form">
+                    <input type="email" id="login-email" placeholder="Email Address">
+                    <input type="password" id="login-password" placeholder="Password">
+                    <button type="submit" class="neumorphic-btn">Login</button>
+                </form>
+                <div class="form-link">
+                    New here? <span class="link" id="signupLink">Sign Up</span>
                 </div>
-                <button type="submit" class="btn btn--primary">Log In</button>
-                <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
-            </form>
+            </div>
         </div>
-    </main>
+    </div>
 
-    <script src="auth.js"></script>
-
+    <script type="module" src="app.js"></script>
+    
 </body>
 </html>
