@@ -9,149 +9,325 @@
 	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 	/>
 	<link rel="stylesheet" href="style.css" />
+
+	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
   </head>
   <body data-theme="light">
 	<a href="#main" class="skip-link">Skip to main content</a>
 	<div class="app">
 	  <header class="header" role="banner">
 		<div class="container header__inner">
-		  <a href="#" class="brand" data-route-link="home">
-			<svg
-			  class="brand__mark"
-			  viewBox="0 0 24 24"
-			  xmlns="http://www.w3.org/2000/svg"
-			>
-			  <path
-				d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-			  ></path>
-			</svg>
-			<span class="brand__name">DateMe</span>
-		  </a>
-		  <nav class="nav" role="navigation" aria-label="Main">
-			<ul class="nav__list">
-			  <li>
-				<a href="#" class="nav__link is-active" data-route-link="home" aria-current="page">
-				  <i class="fa-solid fa-fire-flame-curved"></i>
-				  Discover
-				</a>
-			  </li>
-			  <li>
-				<a href="#" class="nav__link" data-route-link="matches">
-				  <i class="fa-solid fa-star"></i>
-				  Matches
-				</a>
-			  </li>
-			  <li>
-				<a href="#" class="nav__link" data-route-link="messages">
-				  <i class="fa-solid fa-comment-dots"></i>
-				  Messages
-				  <span class="badge" id="badge-messages"></span>
-				</a>
-			  </li>
-			</ul>
-		  </nav>
-		  <div class="header__actions">
-			<div class="theme-toggle">
-			  <input
-				type="checkbox"
-				id="theme-switch"
-				class="theme-toggle__input visually-hidden"
-			  />
-			  <label for="theme-switch" class="theme-toggle__label" aria-label="Toggle dark mode">
-				<i class="fa-solid fa-sun theme-toggle__sun"></i>
-				<i class="fa-solid fa-moon theme-toggle__moon"></i>
-			  </label>
-			</div>
-			<button
-			  class="btn btn--icon"
-			  data-route-link="discover-settings"
-			  id="discover-settings-btn"
-			  aria-label="Discovery settings"
-			>
-			  <i class="fa-solid fa-sliders"></i>
-			</button>
-			<div class="user-menu-wrapper">
-			  <button
-				class="avatar-btn"
-				data-action="toggle-menu"
-				aria-haspopup="true"
-				aria-expanded="false"
-				aria-controls="menu-user"
-				aria-label="Open user menu"
+		  <div class="header-nav-content" data-header-content="main-nav">
+			<a href="#" class="brand" data-route-link="home">
+			  <svg
+				class="brand__mark"
+				viewBox="0 0 24 24"
+				xmlns="http://www.w3.org/2000/svg"
 			  >
-				<img
-				  src="https://placehold.co/120x120?text=Phil"
-				  alt="User avatar"
-				  class="avatar"
-				/>
-			  </button>
-			  <ul class="menu" id="menu-user" role="menu" hidden>
+				<path
+				  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+				></path>
+			  </svg>
+			  <span class="brand__name">DateMe</span>
+			</a>
+			<nav class="nav" role="navigation" aria-label="Main">
+			  <ul class="nav__list">
 				<li>
-				  <a href="#" data-route-link="profile" role="menuitem">
-					<i class="fa-solid fa-user"></i> My Profile
+				  <a
+					href="#"
+					class="nav__link is-active"
+					data-route-link="home"
+					aria-current="page"
+				  >
+					<i class="fa-solid fa-fire-flame-curved"></i>
+					Discover
 				  </a>
 				</li>
 				<li>
-				  <a href="#" data-route-link="discover-settings" role="menuitem">
-					<i class="fa-solid fa-sliders"></i> Settings
+				  <a href="#" class="nav__link" data-route-link="matches">
+					<i class="fa-solid fa-star"></i>
+					Matches
 				  </a>
 				</li>
 				<li>
-				  <a href="#" data-action="logout" role="menuitem">
-					<i class="fa-solid fa-sign-out"></i> Logout
+				  <a href="#" class="nav__link" data-route-link="messages">
+					<i class="fa-solid fa-comment-dots"></i>
+					Messages
+					<span class="badge" id="badge-messages"></span>
 				  </a>
 				</li>
 			  </ul>
+			</nav>
+			<div class="header__actions">
+			  <div class="theme-toggle">
+				<input
+				  type="checkbox"
+				  id="theme-switch"
+				  class="theme-toggle__input"
+				/>
+				<label for="theme-switch" class="theme-toggle__label">
+				  <i class="fas fa-sun theme-toggle__icon theme-toggle__sun"></i>
+				  <i class="fas fa-moon theme-toggle__icon theme-toggle__moon"></i>
+				</label>
+			  </div>
+			  <button
+				class="btn btn--icon"
+				data-route-link="discover-settings"
+				id="discover-settings-btn"
+				aria-label="Discovery settings"
+			  >
+				<i class="fa-solid fa-sliders"></i>
+			  </button>
+			  <div class="user-menu-wrapper">
+				<button
+				  class="avatar-btn"
+				  data-action="toggle-menu"
+				  aria-haspopup="true"
+				  aria-expanded="false"
+				  aria-controls="menu-user"
+				  aria-label="Open user menu"
+				>
+				  <img
+					src="https://placehold.co/120x120?text=Phil"
+					alt="User avatar"
+					class="avatar"
+				  />
+				</button>
+				<ul class="menu" id="menu-user" role="menu" hidden>
+				  <li>
+					<a href="#" data-route-link="profile" role="menuitem">
+					  <i class="fa-solid fa-user"></i> My Profile
+					</a>
+				  </li>
+				  <li>
+					<a
+					  href="#"
+					  data-route-link="discover-settings"
+					  role="menuitem"
+					>
+					  <i class="fa-solid fa-sliders"></i> Settings
+					</a>
+				  </li>
+				  <li>
+					<a href="#" data-action="logout" role="menuitem">
+					  <i class="fa-solid fa-sign-out"></i> Logout
+					</a>
+				  </li>
+				</ul>
+			  </div>
+			</div>
+		  </div>
+		  <div
+			class="page-header-content"
+			data-header-content="page-title"
+			hidden
+		  >
+			<div class="page-header__left">
+			  <button
+				class="btn--icon btn--ghost"
+				data-action="go-back"
+				aria-label="Go back"
+			  >
+				<i class="fa-solid fa-arrow-left"></i>
+			  </button>
+			</div>
+			<div class="page-header__center">
+			  <h1 class="page-title"></h1>
+			</div>
+			<div class="page-header__right">
+			  <button
+				class="btn--icon btn--ghost"
+				data-action="share"
+				aria-label="Share"
+			  >
+				<i class="fa-solid fa-share-nodes"></i>
+			  </button>
+			  <button
+				class="btn--icon btn--ghost"
+				data-action="more-options"
+				aria-label="More options"
+			  >
+				<i class="fa-solid fa-ellipsis-vertical"></i>
+			  </button>
 			</div>
 		  </div>
 		</div>
 	  </header>
 
 	  <main id="main" role="main">
-		<section id="page-home" class="page is-visible" data-route="home">
-		  <div class="page-header container">
-			  
+		<section id="page-signup" class="page auth-form" data-route="signup">
+		  <div class="container auth-form__container">
+			<h2 class="page__title auth-form__title">
+			  Welcome to <span class="website-name">DateMe</span>
+			  <br />
+			  find your match here for free
+			</h2>
+			<form id="signup-form" class="auth-form__form">
+			  <div class="form-group">
+				<label for="signup-name" class="visually-hidden"
+				  >Full Name</label
+				>
+				<input
+				  type="text"
+				  id="signup-name"
+				  placeholder="Full Name"
+				  required
+				/>
+			  </div>
+			  <div class="form-group">
+				<label for="signup-email" class="visually-hidden">Email</label>
+				<input
+				  type="email"
+				  id="signup-email"
+				  placeholder="Email Address"
+				  required
+				/>
+			  </div>
+			  <div class="form-group">
+				<label for="signup-password" class="visually-hidden"
+				  >Password</label
+				>
+				<input
+				  type="password"
+				  id="signup-password"
+				  placeholder="Password"
+				  required
+				/>
+			  </div>
+			  <div class="form-group">
+				<label for="signup-age" class="visually-hidden">Age</label>
+				<input
+				  type="number"
+				  id="signup-age"
+				  placeholder="Age"
+				  min="18"
+				  max="99"
+				  required
+				/>
+			  </div>
+			  <div class="form-group">
+				<label for="signup-location" class="visually-hidden"
+				  >Location</label
+				>
+				<input
+				  type="text"
+				  id="signup-location"
+				  placeholder="City or Location"
+				  required
+				/>
+			  </div>
+			  <div class="form-group">
+				<label for="signup-gender" class="visually-hidden"
+				  >I am a...</label
+				>
+				<select id="signup-gender" required>
+				  <option value="" disabled selected>I am a...</option>
+				  <option value="male">Male</option>
+				  <option value="female">Female</option>
+				  <option value="other">Other</option>
+				</select>
+			  </div>
+			  <div class="form-group">
+				<label for="signup-looking-for" class="visually-hidden"
+				  >Looking for...</label
+				>
+				<select id="signup-looking-for" required>
+				  <option value="" disabled selected>Looking for...</option>
+				  <option value="men">Men</option>
+				  <option value="women">Women</option>
+				  <option value="both">Both</option>
+				</select>
+			  </div>
+			  <button type="submit" class="btn btn--primary auth-form__btn">
+				Sign Up
+			  </button>
+			</form>
+			<p class="auth-form__link-text">
+			  Already have an account? <a href="#" data-route-link="login"
+				>Login</a
+			  >
+			</p>
 		  </div>
+		</section>
+
+		<section id="page-login" class="page auth-form" data-route="login" hidden>
+		  <div class="container auth-form__container">
+			<h2 class="page__title auth-form__title">Welcome Back</h2>
+			<form id="login-form" class="auth-form__form">
+			  <div class="form-group">
+				<label for="login-email" class="visually-hidden">Email</label>
+				<input
+				  type="email"
+				  id="login-email"
+				  placeholder="Email Address"
+				  required
+				/>
+			  </div>
+			  <div class="form-group">
+				<label for="login-password" class="visually-hidden"
+				  >Password</label
+				>
+				<input
+				  type="password"
+				  id="login-password"
+				  placeholder="Password"
+				  required
+				/>
+			  </div>
+			  <button type="submit" class="btn btn--primary auth-form__btn">
+				Login
+			  </button>
+			</form>
+			<p class="auth-form__link-text">
+			  New here? <a href="#" data-route-link="signup">Sign Up</a>
+			</p>
+		  </div>
+		</section>
+
+		<section id="page-home" class="page" data-route="home" hidden>
 		  <div class="cards">
-			<div class="loading">Loading profiles...</div>
+			<article class="card profile-card" tabindex="0">
+			  <div class="profile-card__media">
+				<div class="card-image-placeholder">
+				  <p>Jane</p>
+				</div>
+			  </div>
+			  <div class="profile-card__body">
+				<header class="profile-card__header">
+				  <h2 class="profile-card__title">Jane, 22</h2>
+				  <p class="profile-card__meta">Blantyre</p>
+				</header>
+				<p class="profile-card__bio">Loves to read and hike.</p>
+				<p class="profile-card__distance">12 km away</p>
+				<p class="profile-card__status">Status: Offline</p>
+				<div
+				  class="profile-card__actions"
+				  role="group"
+				  aria-label="Profile actions"
+				>
+				  <button class="btn btn--icon btn--skip" aria-label="Skip">
+					<i class="fa-solid fa-xmark"></i>
+				  </button>
+				  <button class="btn btn--icon btn--like" aria-label="Like">
+					<i class="fa-solid fa-heart"></i>
+				  </button>
+				  <button class="btn btn--icon btn--gift" aria-label="Send gift">
+					<i class="fa-solid fa-gift"></i>
+				  </button>
+				</div>
+			  </div>
+			</article>
+			<div class="loading">Simulating fetching profiles...</div>
 		  </div>
 		</section>
 
 		<section id="page-matches" class="page" data-route="matches" hidden>
 		  <div class="container">
 			<h2 class="page__title">Matches</h2>
-			<ul class="match-list">
-			  <li class="match" data-user="anna" tabindex="0">
-				<img
-				  src="https://placehold.co/64x64?text=Anna"
-				  alt="Anna"
-				  class="match__avatar"
-				/>
-				<div class="match__body">
-				  <strong>Anna, 18</strong>
-				  <span class="match__meta">Matched today</span>
-				</div>
-				<div class="match__actions">
-				  <button class="btn btn--ghost" data-action="view-profile" data-user="anna">View</button>
-				  <button class="btn btn--primary" data-route-link="messages" data-start-chat="anna">Message</button>
-				</div>
-			  </li>
-			  <li class="match" data-user="john" tabindex="0">
-				<img
-				  src="https://placehold.co/64x64?text=John"
-				  alt="John"
-				  class="match__avatar"
-				/>
-				<div class="match__body">
-				  <strong>Maria, 20</strong>
-				  <span class="match__meta">Matched yesterday</span>
-				</div>
-				<div class="match__actions">
-				  <button class="btn btn--ghost" data-action="view-profile" data-user="john">View</button>
-				  <button class="btn btn--primary" data-route-link="messages" data-start-chat="john">Message</button>
-				</div>
-			  </li>
-			</ul>
+			<ul class="match-list" id="match-list"></ul>
 		  </div>
 		</section>
 
@@ -161,44 +337,28 @@
 			  <div class="page-header">
 				<h2 class="page__title">Messages</h2>
 			  </div>
-			  <ul class="convo-list">
-				<li class="convo is-active" data-convo="anna" tabindex="0">
-				  <img
-					src="https://placehold.co/40x40?text=Anna"
-					alt="Anna"
-					class="convo__avatar"
-				  />
-				  <div class="convo__details">
-					<strong>Anna</strong>
-					<p class="convo__last">Hi! How are you?</p>
-				  </div>
-				  <span class="badge badge--dot"></span>
-				</li>
-				<li class="convo" data-convo="john" tabindex="0">
-				  <img
-					src="https://placehold.co/40x40?text=John"
-					alt="Maria"
-					class="convo__avatar"
-				  />
-				  <div class="convo__details">
-					<strong>Maria</strong>
-					<p class="convo__last">Not much, just coding.</p>
-				  </div>
-				  <span class="badge badge--dot"></span>
-				</li>
-			  </ul>
+			  <ul class="convo-list" id="convo-list"></ul>
 			</div>
-			<div class="chat" data-chat-id="anna" hidden>
+			<div class="chat" id="chat-container">
 			  <div class="chat__header">
 				<div class="page-header">
-				  <button class="btn btn--icon" data-action="chat-back" aria-label="Back to conversations">
+				  <button
+					class="btn btn--icon"
+					data-action="chat-back"
+					aria-label="Back to conversations"
+				  >
 					<i class="fa-solid fa-arrow-left"></i>
 				  </button>
 				  <div class="chat__peer">
-					<img src="https://placehold.co/40x40?text=Anna" alt="" class="convo__avatar" />
+					<img
+					  src="https://placehold.co/40x40?text=User"
+					  alt=""
+					  class="convo__avatar"
+					  id="chat-peer-avatar"
+					/>
 					<div class="chat__info">
-					  <strong class="chat__name">Anna</strong>
-					  <div class="chat__status">Online</div>
+					  <strong class="chat__name" id="chat-peer-name"></strong>
+					  <div class="chat__status" id="chat-peer-status"></div>
 					</div>
 				  </div>
 				</div>
@@ -215,48 +375,41 @@
 				  </button>
 				  <ul class="menu chat-menu" id="chat-more-menu" role="menu" hidden>
 					<li>
-					  <a href="#" data-action="view-profile" role="menuitem">View Profile</a>
+					  <a href="#" data-action="view-profile" role="menuitem"
+						>View Profile</a
+					  >
 					</li>
 					<li>
-					  <a href="#" data-action="block" role="menuitem">Block User</a>
+					  <a href="#" data-action="block" role="menuitem"
+						>Block User</a
+					  >
 					</li>
 					<li>
-					  <a href="#" data-action="mute" role="menuitem">Mute Conversation</a>
+					  <a href="#" data-action="mute" role="menuitem"
+						>Mute Conversation</a
+					  >
 					</li>
 				  </ul>
 				</div>
 			  </div>
 			  <div class="chat__body">
-				<div class="bubble bubble--them">
-				  <p>Hi! How are you?</p>
-				  <time>10:40 AM</time>
-				</div>
-				<div class="bubble bubble--me">
-				  <p>I’m good, thanks! How about you?</p>
-				  <time>10:42 AM</time>
-				</div>
-				<div class="typing" data-typing>
-				  <span class="dot"></span>
-				  <span class="dot"></span>
-				  <span class="dot"></span>
-				</div>
+				<div class="messages" id="messages-container"></div>
 			  </div>
-			  <form class="chat__composer">
-				<button class="btn btn--icon btn--ghost" aria-label="Attach file" id="attach-file-btn">
-				  <i class="fa-solid fa-paperclip"></i>
-				</button>
+			  <form class="chat__composer" id="message-form">
 				<input
 				  type="text"
 				  name="message"
-				  id="msg"
+				  id="message-input"
 				  placeholder="Type a message..."
 				  autocomplete="off"
+				  required
 				/>
-				<button type="submit" class="btn btn--icon btn--primary" aria-label="Send message" id="send-message-btn">
+				<button
+				  type="submit"
+				  class="btn btn--icon btn--primary"
+				  aria-label="Send message"
+				>
 				  <i class="fa-solid fa-paper-plane"></i>
-				</button>
-				<button type="button" class="btn btn--icon btn--primary" aria-label="Send voice message" id="send-voice-btn">
-				  <i class="fa-solid fa-microphone"></i>
 				</button>
 			  </form>
 			</div>
@@ -274,41 +427,93 @@
 				/>
 			  </div>
 			  <div class="profile-header__info">
-				<h2 class="page__title" id="profile-title">
-				  Phillip, 20
-				</h2>
+				<h2 class="page__title" id="profile-title">Phillip, 20</h2>
 				<p>Lilongwe • Friendly and focused...</p>
 			  </div>
 			  <div class="profile-header__actions">
-				<button class="btn btn--icon btn--ghost" data-action="edit-profile" aria-label="Edit profile">
+				<button
+				  class="btn btn--icon btn--ghost"
+				  data-action="edit-profile"
+				  aria-label="Edit profile"
+				>
 				  <i class="fa-solid fa-pen"></i>
 				</button>
 			  </div>
 			</header>
 			<nav class="tabs" role="tablist">
-			  <button class="tab is-active" role="tab" aria-selected="true" aria-controls="tab-about">About</button>
-			  <button class="tab" role="tab" aria-selected="false" aria-controls="tab-interests">Interests</button>
-			  <button class="tab" role="tab" aria-selected="false" aria-controls="tab-photos">Photos</button>
+			  <button
+				class="tab is-active"
+				role="tab"
+				aria-selected="true"
+				aria-controls="tab-about"
+				id="tab-about-btn"
+			  >
+				About
+			  </button>
+			  <button
+				class="tab"
+				role="tab"
+				aria-selected="false"
+				aria-controls="tab-interests"
+				id="tab-interests-btn"
+			  >
+				Interests
+			  </button>
+			  <button
+				class="tab"
+				role="tab"
+				aria-selected="false"
+				aria-controls="tab-photos"
+				id="tab-photos-btn"
+			  >
+				Photos
+			  </button>
 			</nav>
 			<div class="tab-panels">
-			  <div class="tab-panel is-visible" id="tab-about" role="tabpanel" aria-labelledby="tab-about">
+			  <div
+				class="tab-panel is-visible"
+				id="tab-about"
+				role="tabpanel"
+				aria-labelledby="tab-about-btn"
+			  >
 				<p>
 				  Friendly and focused. Building a modern dating site with clean
 				  design and smooth UX.
 				</p>
 			  </div>
-			  <div class="tab-panel" id="tab-interests" role="tabpanel" aria-labelledby="tab-interests" hidden>
+			  <div
+				class="tab-panel"
+				id="tab-interests"
+				role="tabpanel"
+				aria-labelledby="tab-interests-btn"
+				hidden
+			  >
 				<ul class="chips">
 				  <li class="chip">Tech</li>
 				  <li class="chip">Design</li>
 				  <li class="chip">Entrepreneurship</li>
 				</ul>
 			  </div>
-			  <div class="tab-panel" id="tab-photos" role="tabpanel" aria-labelledby="tab-photos" hidden>
+			  <div
+				class="tab-panel"
+				id="tab-photos"
+				role="tabpanel"
+				aria-labelledby="tab-photos-btn"
+				hidden
+			  >
 				<div class="photo-grid">
-				  <img src="https://placehold.co/240x240?text=Phil+1" alt="My photo" />
-				  <img src="https://placehold.co/240x240?text=Phil+2" alt="My photo" />
-				  <img src="https://placehold.co/240x240?text=Phil+3" alt="My photo" />
+				  <img
+					src="https://placehold.co/240x240?text=Phil+1"
+					alt="My photo"
+				  />
+				  <img
+					src="https://placehold.co/240x240?text=Phil+2"
+					alt="My photo"
+				  />
+				  <img
+					src="https://placehold.co/240x240?text=Phil+3"
+					alt="My photo"
+				  />
 				  <button class="btn btn--ghost" data-action="add-photo">
 					+ Add Photo
 				  </button>
@@ -321,9 +526,24 @@
 				<h3>Show Me</h3>
 				<div class="settings-item">
 				  <span>Gender</span>
-				  <div class="toggle-switch">
-					<button class="active">Men</button>
-					<button>Women</button>
+				  <div
+					class="toggle-switch switch-container"
+					id="gender-toggle"
+				  >
+					<input
+					  type="checkbox"
+					  id="gender-switch"
+					  class="toggle-checkbox"
+					/>
+					<label
+					  for="gender-switch"
+					  class="switch"
+					  aria-label="Toggle gender preference"
+					>
+					  <span class="toggle"></span>
+					  <span class="gender-label">Men</span>
+					  <span class="gender-label">Women</span>
+					</label>
 				  </div>
 				</div>
 			  </div>
@@ -332,7 +552,13 @@
 				<div class="settings-item">
 				  <span>Max Distance</span>
 				  <div class="age-range">
-					<input type="range" min="1" max="100" value="50" />
+					<input
+					  type="range"
+					  id="distance"
+					  min="1"
+					  max="100"
+					  value="50"
+					/>
 					<span class="age-range-value">50 km</span>
 				  </div>
 				</div>
@@ -342,7 +568,13 @@
 				<div class="settings-item">
 				  <span>Age Range</span>
 				  <div class="age-range">
-					<input type="range" min="18" max="60" value="25" />
+					<input
+					  type="range"
+					  id="age-range"
+					  min="18"
+					  max="60"
+					  value="25"
+					/>
 					<span class="age-range-value">18 - 30</span>
 				  </div>
 				</div>
@@ -351,49 +583,88 @@
 		  </div>
 		</section>
 
-		<section id="page-discover-settings" class="page" data-route="discover-settings" hidden>
+		<section
+		  id="page-discover-settings"
+		  class="page"
+		  data-route="discover-settings"
+		  hidden
+		>
 		  <div class="container">
 			<h2 class="page__title">Discovery Settings</h2>
-			<div class="settings-group">
-			  <h3>Show Me</h3>
-			  <div class="settings-item">
-				<span>Gender</span>
-				<div class="toggle-switch">
-				  <button class="active">Men</button>
-				  <button>Women</button>
+			<form id="settings-form">
+			  <div class="settings-group">
+				<h3>Show Me</h3>
+				<div class="settings-item">
+				  <span>Gender</span>
+				  <div
+					class="toggle-switch switch-container"
+					id="gender-toggle"
+				  >
+					<input
+					  type="checkbox"
+					  id="gender-switch"
+					  class="toggle-checkbox"
+					/>
+					<label
+					  for="gender-switch"
+					  class="switch"
+					  aria-label="Toggle gender preference"
+					>
+					  <span class="toggle"></span>
+					  <span class="gender-label">Men</span>
+					  <span class="gender-label">Women</span>
+					</label>
+				  </div>
 				</div>
 			  </div>
-			</div>
-			<div class="settings-group">
-			  <h3>Distance</h3>
-			  <div class="settings-item">
-				<span>Max Distance</span>
-				<div class="age-range">
-				  <input type="range" min="1" max="100" value="50" />
-				  <span class="age-range-value">50 km</span>
+			  <div class="settings-group">
+				<h3>Distance</h3>
+				<div class="settings-item">
+				  <span>Max Distance</span>
+				  <div class="age-range">
+					<input
+					  type="range"
+					  id="distance"
+					  min="1"
+					  max="100"
+					  value="50"
+					/>
+					<span class="age-range-value">50 km</span>
+				  </div>
 				</div>
 			  </div>
-			</div>
-			<div class="settings-group">
-			  <h3>Age</h3>
-			  <div class="settings-item">
-				<span>Age Range</span>
-				<div class="age-range">
-				  <input type="range" min="18" max="60" value="25" />
-				  <span class="age-range-value">18 - 30</span>
+			  <div class="settings-group">
+				<h3>Age</h3>
+				<div class="settings-item">
+				  <span>Age Range</span>
+				  <div class="age-range">
+					<input
+					  type="range"
+					  id="age-range"
+					  min="18"
+					  max="60"
+					  value="25"
+					/>
+					<span class="age-range-value">18 - 30</span>
+				  </div>
 				</div>
 			  </div>
-			</div>
-			<div class="settings-group">
-			  <h3>Account</h3>
-			  <div class="settings-item">
-				<span>Hide My Account</span>
-				<div class="switch">
-				  <input type="checkbox" />
-				  <label class="switch__label">Hide me from discovery</label>
+			  <div class="settings-group">
+				<h3>Account</h3>
+				<div class="settings-item">
+				  <span>Hide My Account</span>
+				  <div class="switch">
+					<input type="checkbox" id="hide-account" />
+					<label class="switch__label" for="hide-account"
+					  >Hide me from discovery</label
+					>
+				  </div>
 				</div>
 			  </div>
-			</div>
+			  <button type="submit" class="btn btn--primary">
+				Save Settings
+			  </button>
+			</form>
 		  </div>
 		</section>
 
@@ -401,17 +672,55 @@
 		  <div class="container">
 			<h2 class="page__title">Terms and Conditions</h2>
 			<div class="legal-text">
-			  <p>Welcome to DateMe. By accessing or using our website, you agree to be bound by these Terms and Conditions ("Terms"). If you disagree with any part of the terms, you may not access the service. These terms apply to all visitors, users, and others who access or use the Service.</p>
+			  <p>
+				Welcome to DateMe. By accessing or using our website, you agree
+				to be bound by these Terms and Conditions ("Terms"). If you
+				disagree with any part of the terms, you may not access the
+				service. These terms apply to all visitors, users, and others
+				who access or use the Service.
+			  </p>
 			  <h4>1. Accounts</h4>
-			  <p>When you create an account with us, you must provide us with information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service. You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password.</p>
+			  <p>
+				When you create an account with us, you must provide us with
+				information that is accurate, complete, and current at all
+				times. Failure to do so constitutes a breach of the Terms, which
+				may result in immediate termination of your account on our
+				Service. You are responsible for safeguarding the password that
+				you use to access the Service and for any activities or actions
+				under your password.
+			  </p>
 			  <h4>2. Intellectual Property</h4>
-			  <p>The Service and its original content, features, and functionality are and will remain the exclusive property of DateMe and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of DateMe.</p>
+			  <p>
+				The Service and its original content, features, and
+				functionality are and will remain the exclusive property of
+				DateMe and its licensors. Our trademarks and trade dress may not
+				be used in connection with any product or service without the
+				prior written consent of DateMe.
+			  </p>
 			  <h4>3. Links To Other Websites</h4>
-			  <p>Our Service may contain links to third-party web sites or services that are not owned or controlled by DateMe. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party web sites or services. You further acknowledge and agree that DateMe shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services.</p>
+			  <p>
+				Our Service may contain links to third-party web sites or
+				services that are not owned or controlled by DateMe. We have no
+				control over, and assume no responsibility for, the content,
+				privacy policies, or practices of any third-party web sites or
+				services. You further acknowledge and agree that DateMe shall
+				not be responsible or liable, directly or indirectly, for any
+				damage or loss caused or alleged to be caused by or in
+				connection with use of or reliance on any such content, goods or
+				services available on or through any such web sites or services.
+			  </p>
 			  <h4>4. Termination</h4>
-			  <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+			  <p>
+				We may terminate or suspend your account immediately, without
+				prior notice or liability, for any reason whatsoever, including
+				without limitation if you breach the Terms.
+			  </p>
 			  <h4>5. Governing Law</h4>
-			  <p>These Terms shall be governed and construed in accordance with the laws of Malawi, without regard to its conflict of law provisions.</p>
+			  <p>
+				These Terms shall be governed and construed in accordance with
+				the laws of Malawi, without regard to its conflict of law
+				provisions.
+			  </p>
 			</div>
 		  </div>
 		</section>
@@ -420,24 +729,57 @@
 		  <div class="container">
 			<h2 class="page__title">Privacy Policy</h2>
 			<div class="legal-text">
-			  <p>This Privacy Policy describes how we collect, use, and disclose your personal information when you use our Service and the choices you have associated with that data.</p>
+			  <p>
+				This Privacy Policy describes how we collect, use, and disclose
+				your personal information when you use our Service and the
+				choices you have associated with that data.
+			  </p>
 			  <h4>1. Information Collection And Use</h4>
-			  <p>We collect several different types of information for various purposes to provide and improve our Service to you. This may include personal data such as your name, email address, age, and location, as well as usage data (e.g., how you use the site).</p>
+			  <p>
+				We collect several different types of information for various
+				purposes to provide and improve our Service to you. This may
+				include personal data such as your name, email address, age, and
+				location, as well as usage data (e.g., how you use the site).
+			  </p>
 			  <h4>2. Use of Data</h4>
 			  <p>DateMe uses the collected data for various purposes:</p>
 			  <ul>
 				<li>To provide and maintain the Service.</li>
 				<li>To notify you about changes to our Service.</li>
-				<li>To allow you to participate in interactive features of our Service when you choose to do so.</li>
+				<li>
+				  To allow you to participate in interactive features of our
+				  Service when you choose to do so.
+				</li>
 				<li>To provide customer care and support.</li>
-				<li>To provide analysis or valuable information so that we can improve the Service.</li>
+				<li>
+				  To provide analysis or valuable information so that we can
+				  improve the Service.
+				</li>
 			  </ul>
 			  <h4>3. Transfer Of Data</h4>
-			  <p>Your information, including Personal Data, may be transferred to — and maintained on — computers located outside of your state, province, country or other governmental jurisdiction where the data protection laws may differ from those of your jurisdiction.</p>
+			  <p>
+				Your information, including Personal Data, may be transferred to
+				— and maintained on — computers located outside of your state,
+				province, country or other governmental jurisdiction where the
+				data protection laws may differ from those of your jurisdiction.
+			  </p>
 			  <h4>4. Disclosure Of Data</h4>
-			  <p>We may disclose your Personal Data in the good faith belief that such action is necessary to: comply with a legal obligation, protect and defend the rights or property of DateMe, prevent or investigate possible wrongdoing in connection with the Service, protect the personal safety of users of the Service or the public, or protect against legal liability.</p>
+			  <p>
+				We may disclose your Personal Data in the good faith belief that
+				such action is necessary to: comply with a legal obligation,
+				protect and defend the rights or property of DateMe, prevent or
+				investigate possible wrongdoing in connection with the Service,
+				protect the personal safety of users of the Service or the
+				public, or protect against legal liability.
+			  </p>
 			  <h4>5. Security Of Data</h4>
-			  <p>The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.</p>
+			  <p>
+				The security of your data is important to us, but remember that
+				no method of transmission over the Internet, or method of
+				electronic storage is 100% secure. While we strive to use
+				commercially acceptable means to protect your Personal Data, we
+				cannot guarantee its absolute security.
+			  </p>
 			</div>
 		  </div>
 		</section>
@@ -445,17 +787,31 @@
 		<section id="page-contact" class="page" data-route="contact" hidden>
 		  <div class="container">
 			<h2 class="page__title">Contact Us</h2>
-			<p>For inquiries, click the button below to see our social media channels.</p>
-			<button class="btn btn--primary" id="reveal-social-btn">Show Social Links</button>
-			<div id="social-links-container" class="social-links" style="display: none;">
-			  <a href="https://twitter.com/your-username" target="_blank" class="btn btn--icon">
-				  <i class="fa-brands fa-twitter"></i>
+			<p>
+			  For inquiries, click the button below to see our social media
+			  channels.
+			</p>
+			<div id="social-links-container" class="social-links">
+			  <a
+				href="https://x.com/stillponx?s=21"
+				target="_blank"
+				class="btn btn--icon"
+			  >
+				<i class="fa-brands fa-x-twitter"></i>
 			  </a>
-			  <a href="https://instagram.com/your-username" target="_blank" class="btn btn--icon">
-				  <i class="fa-brands fa-instagram"></i>
+			  <a
+				href="https://www.instagram.com/696p69?igsh=MTM0eDYzc2ZzejVxNw%3D%3D&utm_source=qr"
+				target="_blank"
+				class="btn btn--icon"
+			  >
+				<i class="fa-brands fa-instagram"></i>
 			  </a>
-			  <a href="https://facebook.com/your-username" target="_blank" class="btn btn--icon">
-				  <i class="fa-brands fa-facebook"></i>
+			  <a
+				href="https://www.facebook.com/share/15eFJiV8Sq/?mibextid=wwXIfr"
+				target="_blank"
+				class="btn btn--icon"
+			  >
+				<i class="fa-brands fa-facebook"></i>
 			  </a>
 			</div>
 		  </div>
@@ -464,35 +820,52 @@
 		<section id="page-donate" class="page" data-route="donate" hidden>
 		  <div class="container">
 			<h2 class="page__title">Support Our Website</h2>
-			<p>Your generous donation helps us keep the website running and free for everyone!</p>
-			<button class="btn btn--primary" data-action="open-donate-modal">Donate Now</button>
+			<p>
+			  Your generous donation helps us keep the website running and free
+			  for everyone!
+			</p>
+			<button class="btn btn--primary" data-action="open-donate-modal">
+			  Donate Now
+			</button>
 		  </div>
 		</section>
 	  </main>
 
 	  <nav class="bottom-nav" role="navigation" aria-label="Main">
-		<a href="#" class="bottom-nav__link is-active" data-route-link="home" aria-label="Discover">
-		  <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
-			<path d="M14.12 14.12L12 22l-2.12-7.88L2 12l7.88-2.12L12 2l2.12 7.88L22 12l-7.88 2.12z"/>
-		  </svg>
+		<a
+		  href="#"
+		  class="bottom-nav__link is-active"
+		  data-route-link="home"
+		  aria-label="Discover"
+		>
+		  <i class="fa-solid fa-fire-flame-curved bottom-nav__icon"></i>
 		  <span class="bottom-nav__label">Discover</span>
 		</a>
-		<a href="#" class="bottom-nav__link" data-route-link="matches" aria-label="Matches">
-		  <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
-			<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-		  </svg>
+		<a
+		  href="#"
+		  class="bottom-nav__link"
+		  data-route-link="matches"
+		  aria-label="Matches"
+		>
+		  <i class="fa-solid fa-star bottom-nav__icon"></i>
 		  <span class="bottom-nav__label">Matches</span>
 		</a>
-		<a href="#" class="bottom-nav__link" data-route-link="messages" aria-label="Messages">
-		  <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
-			<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-		  </svg>
+		<a
+		  href="#"
+		  class="bottom-nav__link"
+		  data-route-link="messages"
+		  aria-label="Messages"
+		>
+		  <i class="fa-solid fa-comment-dots bottom-nav__icon"></i>
 		  <span class="bottom-nav__label">Messages</span>
 		</a>
-		<a href="#" class="bottom-nav__link" data-route-link="profile" aria-label="Profile">
-		  <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
-			<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-		  </svg>
+		<a
+		  href="#"
+		  class="bottom-nav__link"
+		  data-route-link="profile"
+		  aria-label="Profile"
+		>
+		  <i class="fa-solid fa-user bottom-nav__icon"></i>
 		  <span class="bottom-nav__label">Profile</span>
 		</a>
 	  </nav>
@@ -510,20 +883,31 @@
 	  </footer>
 	</div>
 
-	<dialog id="modal-edit-profile" class="modal" aria-labelledby="modal-edit-title">
+	<dialog
+	  id="modal-edit-profile"
+	  class="modal"
+	  aria-labelledby="modal-edit-title"
+	>
 	  <div class="modal-content">
-		  <button class="btn btn--close" value="close" data-action="close-modal" aria-label="Close dialog">
-			  <i class="fa-solid fa-times"></i>
-		  </button>
-		  <h3 id="modal-edit-title">Edit Profile</h3>
-		  <form method="dialog">
-			<label>Display name <input type="text" /></label>
-			<label>Bio <textarea rows="3"></textarea></label>
-			<div class="modal-actions">
-			  <button value="cancel" class="btn btn--ghost">Cancel</button>
-			  <button value="save" class="btn btn--primary">Save</button>
-			</div>
-		  </form>
+		<button
+		  class="btn btn--close"
+		  value="close"
+		  data-action="close-modal"
+		  aria-label="Close dialog"
+		>
+		  <i class="fa-solid fa-times"></i>
+		</button>
+		<h3 id="modal-edit-title">Edit Profile</h3>
+		<form method="dialog">
+		  <label for="profile-name">Display name</label>
+		  <input type="text" id="profile-name" />
+		  <label for="profile-bio">Bio</label>
+		  <textarea id="profile-bio" rows="3"></textarea>
+		  <div class="modal-actions">
+			<button value="cancel" class="btn btn--ghost">Cancel</button>
+			<button value="save" class="btn btn--primary">Save</button>
+		  </div>
+		</form>
 	  </div>
 	</dialog>
 
@@ -532,73 +916,124 @@
 		<h3>Send a gift to <span data-recipient-name></span></h3>
 		<p>This will be a real payment to send a gift that they can cash out.</p>
 		<div class="modal-actions">
-		  <button class="btn btn--ghost" data-action="close-modal">Cancel</button>
-		  <button class="btn btn--primary" data-action="send-gift">Send Gift</button>
-		</div>
-	  </div>
-	</dialog>
-
-	<dialog id="modal-subscribe" hidden>
-	  <div class="modal-content">
-		<h3>Subscribe to Unlock Messages</h3>
-		<p>
-		  Pay a one-time fee of **5000 MWK** to unlock messaging and reply to
-		  matches.
-		</p>
-		<div class="modal-actions">
-		  <button class="btn btn--ghost" data-action="close-modal">Cancel</button>
-		  <button class="btn btn--primary" data-action="subscribe">
-			Pay 5000 MWK to Reply
+		  <button class="btn btn--ghost" data-action="close-modal">
+			Cancel
+		  </button>
+		  <button class="btn btn--primary" data-action="send-gift">
+			Send Gift
 		  </button>
 		</div>
 	  </div>
 	</dialog>
 
-	<dialog id="modal-donate" class="modal" aria-labelledby="modal-donate-title" hidden>
+	<dialog
+	  id="modal-donate"
+	  class="modal"
+	  aria-labelledby="modal-donate-title"
+	  hidden
+	>
 	  <div class="modal-content">
-		<button class="btn btn--close" data-action="close-donate-modal" aria-label="Close donation form">
+		<button
+		  class="btn btn--close"
+		  data-action="close-donate-modal"
+		  aria-label="Close donation form"
+		>
 		  <i class="fa-solid fa-times"></i>
 		</button>
 		<h3 id="modal-donate-title">Support Our Website</h3>
 		<p>Your generosity helps us keep DateMe free!</p>
 		<div class="donate-options" data-donation-step="1">
 		  <p>Choose a mobile money service:</p>
-		  <button class="btn btn--primary glowing-red" data-action="select-airtel" data-network="airtel">
-			  Donate with Airtel Money
+		  <button
+			class="btn btn--primary glowing-red"
+			data-action="select-airtel"
+			data-network="airtel"
+		  >
+			Donate with Airtel Money
 		  </button>
-		  <button class="btn btn--primary glowing-green" data-action="select-tnm" data-network="tnm">
-			  Donate with TNM Mpamba
+		  <button
+			class="btn btn--primary glowing-green"
+			data-action="select-tnm"
+			data-network="tnm"
+		  >
+			Donate with TNM Mpamba
 		  </button>
 		</div>
-		<form class="donate-form" data-donation-step="2" hidden>
+		<form
+		  class="donate-form"
+		  id="donation-form"
+		  data-donation-step="2"
+		  hidden
+		>
 		  <h4 id="donate-heading"></h4>
 		  <label for="donate-amount">Enter Amount (MWK)</label>
-		  <input id="donate-amount" type="number" name="amount" min="100" required />
+		  <input
+			id="donate-amount"
+			type="number"
+			name="amount"
+			min="100"
+			required
+		  />
 		  <div class="modal-actions">
-			  <button type="button" class="btn btn--ghost" data-action="cancel-donate">Cancel</button>
-			  <button type="submit" class="btn btn--primary">Send</button>
+			<button
+			  type="button"
+			  class="btn btn--ghost"
+			  data-action="cancel-donate"
+			>
+			  Cancel
+			</button>
+			<button type="submit" class="btn btn--primary">Send</button>
 		  </div>
 		</form>
 	  </div>
 	</dialog>
 
 	<template id="template-profile-card">
-	  <article class="card profile-card" data-profile-id="" data-floating tabindex="0">
-		<div class="profile-card__media"><img src="" alt="" /></div>
+	  <article
+		class="card profile-card"
+		data-profile-id=""
+		data-floating
+		tabindex="0"
+	  >
+		<div class="profile-card__media">
+		  <img src="" alt="" />
+		</div>
 		<div class="profile-card__body">
 		  <header class="profile-card__header">
 			<h2 class="profile-card__title">Name <span class="age">00</span></h2>
 			<p class="profile-card__meta">City • Tag • Tag</p>
 		  </header>
 		  <p class="profile-card__bio">Short bio goes here.</p>
-		  <div class="profile-card__actions" role="group" aria-label="Profile actions">
-			<button class="btn btn--icon btn--skip" data-action="skip" aria-label="Skip">
+		  <p class="profile-card__distance">
+			Distance: <span class="distance">0</span> km
+		  </p>
+		  <p class="profile-card__status">
+			Status: <span class="status">Offline</span>
+		  </p>
+		  <div
+			class="profile-card__actions"
+			role="group"
+			aria-label="Profile actions"
+		  >
+			<button
+			  class="btn btn--icon btn--skip"
+			  data-action="skip"
+			  aria-label="Skip"
+			>
 			  <i class="fa-solid fa-xmark"></i>
 			</button>
-			<button class="btn btn--icon btn--like" data-action="like" aria-label="Like">
+			<button
+			  class="btn btn--icon btn--like"
+			  data-action="like"
+			  aria-label="Like"
+			>
 			  <i class="fa-solid fa-heart"></i>
 			</button>
-			<button class="btn btn--icon btn--gift" data-action="gift" aria-label="Send gift">
+			<button
+			  class="btn btn--icon btn--gift"
+			  data-action="gift"
+			  aria-label="Send gift"
+			>
 			  <i class="fa-solid fa-gift"></i>
 			</button>
 		  </div>
@@ -606,6 +1041,94 @@
 	  </article>
 	</template>
 
+	<template id="template-match">
+	  <li class="match" tabindex="0">
+		<img src="" alt="" class="match__avatar" data-match-avatar />
+		<div class="match__body">
+		  <strong data-match-name></strong>
+		  <span class="match__meta" data-match-meta></span>
+		</div>
+		<div class="match__actions">
+		  <button
+			class="btn btn--ghost"
+			data-action="view-profile"
+			data-route-link="profile"
+		  >
+			View
+		  </button>
+		  <button
+			class="btn btn--primary"
+			data-route-link="messages"
+			data-action="message"
+		  >
+			Message
+		  </button>
+		</div>
+	  </li>
+	</template>
 	<script src="app.js"></script>
+
+	<script>
+	  document.addEventListener('DOMContentLoaded', () => {
+		const routeLinks = document.querySelectorAll('[data-route-link]');
+		const pages = document.querySelectorAll('.page');
+		const bottomNavLinks = document.querySelectorAll('.bottom-nav__link');
+
+		function navigateTo(routeName) {
+		  // Hide all pages
+		  pages.forEach(page => {
+			page.classList.remove('is-visible');
+			page.setAttribute('hidden', '');
+		  });
+
+		  // Show the target page
+		  const targetPage = document.querySelector(`[data-route="${routeName}"]`);
+		  if (targetPage) {
+			targetPage.classList.add('is-visible');
+			targetPage.removeAttribute('hidden');
+			document.title = `${routeName.charAt(0).toUpperCase() + routeName.slice(1)} - DateMe`;
+		  }
+
+		  // Update active states for both nav bars
+		  updateActiveNav(routeName);
+		}
+
+		function updateActiveNav(routeName) {
+		  // Update active state for main navigation
+		  const mainNavLinks = document.querySelectorAll('.nav__link');
+		  mainNavLinks.forEach(link => {
+			if (link.dataset.routeLink === routeName) {
+			  link.classList.add('is-active');
+			  link.setAttribute('aria-current', 'page');
+			} else {
+			  link.classList.remove('is-active');
+			  link.removeAttribute('aria-current');
+			}
+		  });
+
+		  // Update active state for bottom navigation
+		  bottomNavLinks.forEach(link => {
+			if (link.dataset.routeLink === routeName) {
+			  link.classList.add('is-active');
+			  link.setAttribute('aria-current', 'page');
+			} else {
+			  link.classList.remove('is-active');
+			  link.removeAttribute('aria-current');
+			}
+		  });
+		}
+
+		routeLinks.forEach(link => {
+		  link.addEventListener('click', (event) => {
+			event.preventDefault();
+			const routeName = link.dataset.routeLink;
+			navigateTo(routeName);
+		  });
+		});
+
+		// Set initial page and nav state on load
+		navigateTo('home');
+	  });
+	</script>
   </body>
 </html>
