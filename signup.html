@@ -1,38 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DateMe — Sign Up</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-</head>
-<body data-theme="light">
-    <main class="page signup-page is-visible">
-        <div class="form-container">
-            <h2>Join DateMe</h2>
-            <form id="signup-form">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <button type="submit" class="btn btn--primary">Sign Up</button>
-                <p>Already have an account? <a href="login.html">Log In</a></p>
-            </form>
-        </div>
-    </main>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-    <script src="auth.js"></script>
+:root {
+    --light-bg: #f5e4e8;
+    --primary-color: #ff5e80;
+    --dark-shadow: #e0d0d4;
+    --light-shadow: #fff8fc;
+}
 
-</body>
-</html>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--light-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.form-card {
+    background-color: var(--light-bg);
+    border-radius: 25px;
+    padding: 30px 25px;
+    text-align: center;
+    box-shadow: 10px 10px 20px var(--dark-shadow),
+                -10px -10px 20px var(--light-shadow);
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #333;
+    font-weight: 600;
+}
+
+.logo {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-family: 'Poppins', cursive; /* Using Poppins, but could be a more stylized font */
+}
+
+.tagline {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input, select {
+    width: 100%;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 15px;
+    outline: none;
+    background-color: var(--light-bg);
+    color: #333;
+    font-size: 0.9em;
+    box-shadow: inset 5px 5px 10px var(--dark-shadow),
+                inset -5px -5px 10px var(--light-shadow);
+    transition: all 0.2s ease-in-out;
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+input:focus, select:focus {
+    box-shadow: inset 2px 2px 5px var(--dark-shadow),
+                inset -2px -2px 5px var(--light-shadow);
+}
+
+.neumorphic-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #ff5e80, #fa5278);
+    color: white;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 8px 8px 15px var(--dark-shadow),
+                -8px -8px 15px var(--light-shadow);
+    transition: all 0.3s ease;
+}
+
+.neumorphic-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 12px 12px 25px var(--dark-shadow),
+                -12px -12px 25px var(--light-shadow);
+}
+
+.neumorphic-btn:active {
+    transform: translateY(0);
+    box-shadow: inset 5px 5px 10px var(--dark-shadow),
+                inset -5px -5px 10px var(--light-shadow);
+}
+
+.form-link {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.link {
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.link:hover {
+    color: #c94966;
+}
+
+.hidden {
+    display: none;
+}
+
