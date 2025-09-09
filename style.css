@@ -1,34 +1,27 @@
-/* =========================================================
-   DateMe — Neumorphic UI (Light & Dark)
-   Matches the HTML structure provided previously
-   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* ---------- NEUMORPHIC THEME TOKENS ---------- */
 :root {
-  /* Neumorphic Light Theme */
-  --bg: #e0e0e0;
-  --surface: #e0e0e0;
-  --surface-2: #d8d8d8;
-  --surface-3: #c8c8c8;
-  --text: #3c3c3c;
-  --text-2: #6c6c6c;
+  /* LIGHT MODE - All White */
+  --bg: #f8f8f8;
+  --surface: #ffffff;
+  --surface-2: #f0f0f0;
+  --surface-3: #e8e8e8;
+  --text: #1a1a1a;
+  --text-2: #4a4a4a;
   --text-weak: #a8a8a8;
-  --border: none; /* Neumorphism relies on shadows, so we don't need borders */
+  --border: transparent;
   --light-shadow: #ffffff;
-  --dark-shadow: #b8b8b8;
-
-  /* Standard Brand Colors (for pop) */
-  --brand: #ff4b6e;
-  --brand-600: #ff355d;
-  --brand-700: #e92d53;
-  --muted: #e6e6e6; /* Adjust muted for neumorphism */
-  --ok: #12b76a;
+  --dark-shadow: #c8c8c8;
+  --brand: #e91e63; /* Pink */
+  --brand-600: #d81b60; /* Darker Pink */
+  --brand-700: #c2185b; /* Even Darker Pink */
+  --muted: #f5e8ea;
+  --ok: #ef4444; /* Changed 'ok' (originally green) to a shade of pink */
   --danger: #ef4444;
-
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-sm: 10px;
-
   --header-h: 72px;
   --bottom-nav-h: 68px;
   --container-w: 1100px;
@@ -38,34 +31,41 @@
 }
 
 body[data-theme="dark"] {
-  /* Neumorphic Dark Theme */
-  --bg: #22252a;
-  --surface: #22252a;
-  --surface-2: #272a30;
-  --surface-3: #2d3036;
-  --text: #eef2f7;
-  --text-2: #a9b1bf;
-  --text-weak: #6a717e;
-  --light-shadow: #2a2d33;
-  --dark-shadow: #1e2025;
-  --muted: #2d3036;
+  /* DARK MODE - All Black */
+  --bg: #121212;
+  --surface: #1a1a1a;
+  --surface-2: #212121;
+  --surface-3: #2c2c2c;
+  --text: #e0e0e0;
+  --text-2: #b0b0b0;
+  --text-weak: #757575;
+  --light-shadow: #2c2c2c;
+  --dark-shadow: #000000;
+  --muted: #2c2c2c;
+  --brand: #e91e63; /* Pink */
+  --brand-600: #d81b60; /* Darker Pink */
+  --brand-700: #c2185b; /* Even Darker Pink */
+  --ok: #ef4444; /* Changed 'ok' (originally green) to a shade of pink */
 }
 
+/* All other CSS rules remain the same as they correctly use the variables */
+
 /* ---------- RESET + BASICS ---------- */
-*,
-*::before,
-*::after { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 
 html, body { height: 100%; }
 
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
   color: var(--text);
   background: var(--bg);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   transition: background var(--slow), color var(--slow);
+  /* Added for backdrop-filter to work */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 img { display: block; max-width: 100%; height: auto; }
@@ -74,11 +74,49 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
 
 /* ---------- LAYOUT ---------- */
-.app { min-height: 100dvh; display: grid; grid-template-rows: var(--header-h) 1fr auto; }
+.app {
+	min-height: 100dvh;
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+}
+
+/* Auth page styling */
+.auth-page .header,
+.auth-page .bottom-nav,
+.auth-page .footer {
+  display: none;
+}
+
+.auth-page .app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100dvh;
+}
+
+.auth-page .page {
+  padding: 0;
+}
+
+.auth-form__container {
+  max-width: 400px;
+  padding: 2rem;
+}
+.auth-form__title {
+  font-size: 1.5rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+.website-name {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3rem;
+  color: var(--brand);
+}
 
 .container { width: min(100% - 32px, var(--container-w)); margin-inline: auto; }
 .container--wide { width: min(100% - 24px, 1240px); }
-.container--flex { height: 100%; display: flex; }
+.container--split { display: grid; grid-template-columns: 1fr 2.5fr; gap: 2rem; }
 
 /* Pages */
 .page { display: none; padding-top: 24px; }
@@ -88,22 +126,143 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .page-header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
 .page-body { padding: 0 16px; }
 
+/* ---------- LOGIN/SIGNUP PAGES (AUTH-FORM) ---------- */
+.auth-form {
+  text-align: center;
+}
+.auth-form__container {
+  max-width: 400px;
+}
+.auth-form__form {
+  background: var(--surface);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  display: grid;
+  gap: 16px;
+}
+.form-group {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+.form-group label, .form-group select {
+  font-weight: 500;
+  color: var(--text-2);
+}
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--surface-2);
+  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+}
+.form-group select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c6c6c'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px top 50%;
+  padding-right: 32px;
+}
+.auth-form__btn {
+  margin-top: 12px;
+}
+.auth-form__link-text {
+  margin: 12px 0 0;
+  color: var(--text-2);
+}
+.auth-form__link-text a {
+  color: var(--brand);
+  font-weight: 600;
+}
+.auth-form__link-text a:hover {
+  text-decoration: underline;
+}
+
+/* Photo upload button */
+.form-group--photo {
+  position: relative;
+}
+.form-group--photo input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.btn--upload-photo {
+  width: 100%;
+  padding: 12px 18px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  transition: all var(--fast);
+}
+.btn--upload-photo:hover {
+  transform: translateY(0);
+  background: var(--surface-3);
+}
+.btn--upload-photo:active {
+  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+}
+
 /* ---------- HEADER / NAV ---------- */
 .header {
-  position: sticky; top: 0; z-index: 10;
+  position: sticky;
+  top: 16px;
+  z-index: 10;
   background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  border-bottom: none;
+  width: min(100% - 32px, var(--container-w));
+  margin-inline: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
 }
+
 .header__inner {
   height: var(--header-h);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 16px;
 }
+
 .header__actions { display: flex; gap: 14px; align-items: center; }
 
+/* Styles for different header content types */
+.header-nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.page-header-content {
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.page-header__left,
+.page-header__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-header__center {
+  flex-grow: 1;
+  text-align: center;
+}
+
 .brand { display: inline-flex; align-items: center; gap: 10px; }
-.brand__mark { width: 28px; height: 28px; fill: var(--brand); filter: drop-shadow(0 2px 6px rgba(255,75,110,.35)); }
+.brand__mark { width: 28px; height: 28px; fill: var(--brand); filter: drop-shadow(0 2px 6px rgba(233, 30, 99, .35)); }
 .brand__name { font-weight: 800; letter-spacing: .3px; }
 
 .nav__list { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0; }
@@ -136,7 +295,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   min-width: 22px; height: 22px; padding: 0 6px;
   margin-left: 6px;
   background: var(--brand); color: #fff; border-radius: 999px; font-size: 12px; font-weight: 700;
-  box-shadow: 0 6px 16px rgba(255,75,110,.35);
+  box-shadow: 0 6px 16px rgba(233, 30, 99, .35);
 }
 .badge--dot { width: 10px; height: 10px; min-width: 10px; padding: 0; background: var(--brand); border: 2px solid var(--surface); box-shadow: 0 0 0 2px var(--brand); }
 
@@ -205,7 +364,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   --btn-bg: var(--brand);
   --btn-fg: #fff;
   border: none;
-  box-shadow: 6px 6px 12px rgba(255,75,110,.2), -6px -6px 12px rgba(255,75,110,.2), 0 0 0 2px var(--brand);
+  box-shadow: 6px 6px 12px rgba(233, 30, 99, .2), -6px -6px 12px rgba(233, 30, 99, .2), 0 0 0 2px var(--brand);
 }
 .btn--primary:hover {
   background: var(--brand-600);
@@ -225,17 +384,21 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--surface);
   box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
 }
+
 /* ---------- CARDS / PROFILES ---------- */
 .cards {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 16px;
-  min-height: calc(100vh - var(--header-h) - var(--bottom-nav-h) - 32px);
+  min-height: calc(100dvh - var(--header-h) - var(--bottom-nav-h) - 32px);
+  position: relative;
+  overflow: hidden;
 }
+
 .profile-card {
-  width: min(100%, 500px);
-  max-height: 80vh;
+  width: 100%;
+  max-width: 500px;
   display: grid;
   grid-template-rows: auto 1fr;
   overflow: hidden;
@@ -244,23 +407,41 @@ button, input, select, textarea { font: inherit; color: inherit; }
   position: relative;
   z-index: 1;
   background: var(--surface);
+  min-height: 500px;
 }
-.profile-card__media img {
-  width: 100%;
-  height: clamp(300px, 50vw, 420px);
-  object-fit: cover;
+.profile-card__media {
+  position: relative;
+  aspect-ratio: 1 / 1.5;
+  background: var(--muted);
   border-top-left-radius: var(--radius-lg);
   border-top-right-radius: var(--radius-lg);
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-weak);
 }
+.profile-card__media img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .profile-card__body {
-  padding: 16px;
+  padding: 24px;
   display: grid;
   gap: 12px;
+  position: relative;
 }
+
 .profile-card__header {
   display: grid;
   gap: 4px;
 }
+
 .profile-card__title {
   margin: 0;
   font-size: 1.6rem;
@@ -268,22 +449,46 @@ button, input, select, textarea { font: inherit; color: inherit; }
   gap: 6px;
   align-items: baseline;
 }
+
 .profile-card__meta {
   margin: 0;
   color: var(--text-2);
-  font-size: .95rem;
+  font-size: 0.95rem;
 }
+
 .profile-card__bio {
   margin: 0;
   color: var(--text);
 }
+
+.profile-card__distance,
+.profile-card__status {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 0.95rem;
+}
+
+.profile-card__status .status--online {
+  color: var(--ok);
+}
+
 .profile-card__actions {
   display: flex;
   gap: 10px;
   justify-content: center;
   margin-top: 10px;
+  padding-top: 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--text-weak);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
-.btn--skip, .btn--like, .btn--gift {
+
+.btn--skip,
+.btn--like,
+.btn--gift {
   width: 60px;
   height: 60px;
   padding: 0;
@@ -295,23 +500,30 @@ button, input, select, textarea { font: inherit; color: inherit; }
   box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
   transition: all var(--fast);
 }
-.btn--skip:active, .btn--like:active, .btn--gift:active {
+
+.btn--skip:active,
+.btn--like:active,
+.btn--gift:active {
   box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
 }
+
 .btn--like {
   background: var(--brand);
   color: #fff;
-  box-shadow: 6px 6px 12px rgba(255,75,110,.2), -6px -6px 12px rgba(255,75,110,.2), 0 0 0 2px var(--brand);
+  box-shadow: 6px 6px 12px rgba(233, 30, 99, .2), -6px -6px 12px rgba(233, 30, 99, .2), 0 0 0 2px var(--brand);
 }
+
 .btn--like:active {
-  box-shadow: inset 4px 4px 8px rgba(0,0,0,0.2), inset -4px -4px 8px rgba(255,255,255,0.2);
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.2);
 }
+
 .btn--skip {
   color: #ef4444;
 }
 
 /* Loading state for card view */
-.loading, .no-profiles {
+.loading,
+.no-profiles {
   text-align: center;
   color: var(--text-2);
   font-style: italic;
@@ -390,7 +602,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border: none;
   border-radius: var(--radius-lg);
   background: var(--surface);
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6-6px 12px var(--light-shadow);
 }
 .chat__header {
   display: flex; align-items: center; justify-content: space-between;
@@ -424,7 +636,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .bubble--me {
   background: var(--brand); color: #fff;
-  box-shadow: 4px 4px 8px rgba(255,75,110,.2), -4px -4px 8px rgba(255,75,110,.2);
+  box-shadow: 4px 4px 8px rgba(233, 30, 99, .2), -4px -4px 8px rgba(233, 30, 99, .2);
   align-self: flex-end;
 }
 .bubble--them {
@@ -469,11 +681,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border: none;
   background: var(--surface);
   box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  color: var(--text);
 }
 .chat__composer .btn--icon {
   width: 42px;
   height: 42px;
-  box-shadow: none; /* remove box shadow for a flatter button */
+  box-shadow: none;
 }
 .chat__composer .btn--icon:hover {
   transform: translateY(0);
@@ -491,7 +704,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
   border: none;
 }
-
 .settings-group h3 {
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -499,15 +711,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font-size: 1rem;
   font-weight: 500;
 }
-
 .settings-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.75rem;
 }
-
-/* Gender buttons */
 .toggle-switch {
   display: flex;
   background: var(--surface);
@@ -515,7 +724,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   overflow: hidden;
   box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
 }
-
 .toggle-switch button {
   flex: 1;
   padding: 0.75rem;
@@ -526,14 +734,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .toggle-switch button.active {
   background: var(--brand);
   color: white;
   box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1), inset -2px -2px 4px rgba(255,255,255,0.1);
 }
-
-/* Sliders */
 .age-range {
   display: flex;
   align-items: center;
@@ -541,20 +746,28 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .age-range input[type="range"] {
   width: 100%;
-  background: transparent;
+  -webkit-appearance: none;
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+}
+.age-range input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--brand);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--surface), 0 0 0 6px var(--brand);
+  cursor: grab;
+  transition: all var(--fast);
 }
 .age-range-value {
   font-weight: 600;
   color: var(--text);
+  min-width: 60px;
+  text-align: right;
 }
-
-/* ---------- PROFILE HEADER + TABS ---------- */
-.profile-header {
-  display: grid; grid-template-columns: 120px 1fr auto; gap: 16px; align-items: center; padding: 16px;
-}
-.profile-header__actions { display: flex; gap: 10px; align-items: center; }
-
-/* switches */
 .switch { display: inline-flex; align-items: center; gap: 8px; }
 .switch input {
   appearance: none; width: 52px; height: 30px;
@@ -573,11 +786,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .switch input:checked::after {
   inset: 4px 4px 4px auto;
   background: var(--brand);
-  box-shadow: 4px 4px 8px rgba(255,75,110,.2), -4px -4px 8px rgba(255,75,110,.2);
+  box-shadow: 4px 4px 8px rgba(233, 30, 99, .2), -4px -4px 8px rgba(233, 30, 99, .2);
 }
 .switch__label { color: var(--text-2); }
-
-/* tabs */
 .tabs { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
 .tab {
   padding: 10px 14px; border-radius: 999px; border: none;
@@ -611,11 +822,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--surface);
   box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
 }
-
-/* photos */
 .photo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; align-items: start; }
-
-/* settings plans */
+.photo-grid img { border-radius: 8px; }
 .plan {
   padding: 14px;
   border: none;
@@ -627,7 +835,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .plan h3 { margin: 0; }
 
-/* ---------- BOTTOM NAVIGATION ---------- */
+/* ---------- BOTTOM NAVIGATION (GLASSPHORPHIC & NEUMORPHIC) ---------- */
 .bottom-nav {
   display: none;
   position: fixed;
@@ -635,12 +843,28 @@ button, input, select, textarea { font: inherit; color: inherit; }
   left: 0;
   right: 0;
   height: var(--bottom-nav-h);
-  background: var(--bg);
-  border-top: 1px solid var(--border);
+  /* Glassmorphism Effect */
+  background: rgba(255, 255, 255, 0.4); /* White with transparency */
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  /* Neumorphic Shadows */
+  box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.1), 0 6px 16px rgba(255, 255, 255, 0.4); /* Subtle dark shadow + light shadow */
+  border-top: none;
   grid-template-columns: repeat(4, 1fr);
   z-index: 10;
+  overflow: hidden; /* Important for the border effect */
 }
+
+/* This media query will activate the bottom nav on smaller screens */
+@media (max-width: 1000px) {
+  .bottom-nav {
+	display: grid;
+	padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 .bottom-nav__link {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -648,22 +872,63 @@ button, input, select, textarea { font: inherit; color: inherit; }
   gap: 4px;
   color: var(--text-2);
   transition: all var(--fast);
+  /* White 'glowing' border effect */
+  border-radius: 999px;
+  overflow: hidden;
 }
+.bottom-nav__link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transition: opacity var(--fast);
+}
+
+.bottom-nav__link.is-active::before {
+  opacity: 1;
+}
+
 .bottom-nav__link:hover {
   color: var(--text);
   transform: translateY(-2px);
 }
 .bottom-nav__link.is-active {
-  color: var(--brand);
+  /* Set a transparent brand color for the active icon's glow */
+  color: rgba(233, 30, 99, 0.8);
 }
+
+/* Icon and Label adjustments */
 .bottom-nav__icon {
   width: 24px;
   height: 24px;
-  fill: currentColor;
+  /* Use a gradient to replicate the dual-tone effect from the image */
+  background: linear-gradient(45deg, #1e90ff, #00ced1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  fill: var(--brand);
+  /* Subtle inner shadow for a "pressed" look */
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+  transition: all var(--fast);
 }
+.bottom-nav__link.is-active .bottom-nav__icon {
+  background: linear-gradient(45deg, var(--brand), #ff69b4);
+  -webkit-background-clip: text;
+}
+
 .bottom-nav__label {
   font-size: 11px;
   font-weight: 500;
+  color: var(--text-2);
+  transition: all var(--fast);
+}
+.bottom-nav__link.is-active .bottom-nav__label {
+  color: var(--brand);
 }
 
 /* ---------- FOOTER ---------- */
@@ -686,7 +951,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .menu li a:hover { background: var(--muted); }
 .chat-menu { right: 8px; top: 50px; }
 
-/* New modal styling */
 dialog {
   border: none;
   padding: 2rem;
@@ -725,13 +989,34 @@ dialog::backdrop {
   to { transform: translateY(0) scale(1); opacity: 1; }
 }
 
-/* ---------- RESPONSIVE ---------- */
+/* ---------- RESPONSIVE FIXES ---------- */
+/* Changed to a more robust mobile-first approach */
+
+/* Desktop-specific styles (min-width) */
+@media (min-width: 1001px) {
+  .messages-grid {
+	grid-template-columns: 1fr 2.5fr;
+  }
+  .bottom-nav {
+	display: none !important;
+  }
+}
+
+/* Mobile-specific styles (max-width) */
 @media (max-width: 1000px) {
-  .container--split { grid-template-columns: 1fr; }
-  .header__inner { grid-template-columns: auto 1fr auto auto; }
+  /* Hide the desktop nav on mobile */
   .nav { display: none; }
+
+  /* Show the bottom nav on mobile */
   .bottom-nav { display: grid; }
-  .app { padding-bottom: var(--bottom-nav-h); }
+
+  /* Add padding to prevent content from being hidden by the bottom nav */
+  .app {
+	padding-bottom: var(--bottom-nav-h);
+  }
+  .page-body {
+	padding-bottom: calc(var(--bottom-nav-h) + 16px);
+  }
 }
 
 @media (max-width: 760px) {
@@ -739,11 +1024,12 @@ dialog::backdrop {
   .profile-header__actions { justify-content: center; }
   .footer__inner { grid-template-columns: 1fr; height: auto; padding: 14px 0; text-align: center; }
 
+  /* Chat panel now takes up the whole screen on mobile */
   .chat {
 	position: fixed;
 	top: 0;
 	right: 0;
-	bottom: var(--bottom-nav-h);
+	bottom: 0;
 	left: 0;
 	background: var(--surface);
 	z-index: 100;
@@ -751,17 +1037,19 @@ dialog::backdrop {
 	border-radius: 0;
   }
   .chat-menu { right: 8px; top: 50px; }
+  .messages-grid {
+	max-width: none;
+  }
 }
-/* =========================================================
-   Donation Page & Glowing Link
-   ========================================================= */
 
-/* Glowing Donate Link */
+/* ---------- DONATION PAGE & GLOWING LINK ---------- */
 .glowing {
   position: relative;
   overflow: hidden;
+  color: var(--brand);
+  animation: glow-pulse 2.5s infinite;
+  text-shadow: 0 0 5px var(--brand), 0 0 10px var(--brand);
 }
-
 .glowing::before {
   content: '';
   position: absolute;
@@ -775,46 +1063,32 @@ dialog::backdrop {
   transition: opacity 0.3s ease;
   z-index: -1;
 }
-
 .glowing:hover::before {
   opacity: 0.15;
 }
-
-.glowing {
-  color: var(--brand);
-  animation: glow-pulse 2.5s infinite;
-  text-shadow: 0 0 5px var(--brand), 0 0 10px var(--brand);
-}
-
 @keyframes glow-pulse {
   0% { text-shadow: 0 0 5px var(--brand), 0 0 10px var(--brand); }
   50% { text-shadow: 0 0 10px var(--brand), 0 0 20px var(--brand), 0 0 30px var(--brand); }
   100% { text-shadow: 0 0 5px var(--brand), 0 0 10px var(--brand); }
 }
-
-/* Donation Modal Styles */
 #modal-donate .modal-content {
   text-align: center;
 }
-
 .donate-options {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-top: 1.5rem;
 }
-
 .donate-form {
   margin-top: 1.5rem;
   text-align: left;
 }
-
 .donate-form label {
   display: block;
   margin-bottom: 0.5rem;
   color: var(--text-2);
 }
-
 .donate-form input {
   width: 100%;
   padding: 12px;
@@ -825,8 +1099,7 @@ dialog::backdrop {
   color: var(--text);
   margin-bottom: 1rem;
 }
-
-.donate-form menu {
+.donate-form .modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
@@ -834,8 +1107,6 @@ dialog::backdrop {
   margin: 0;
   list-style: none;
 }
-
-/* Close button for modal */
 .btn--close {
   position: absolute;
   top: 10px;
@@ -847,7 +1118,6 @@ dialog::backdrop {
   cursor: pointer;
   transition: color 0.2s ease;
 }
-
 .btn--close:hover {
   color: var(--text);
 }
