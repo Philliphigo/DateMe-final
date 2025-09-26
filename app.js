@@ -54,6 +54,7 @@
   let currentUser = null;
   let allProfiles = [...db.profiles];
   let currentMatchId = null;
+  let swipedCardsHistory = []; // ✨ NEW STATE for Rewind functionality
 
   /* =========================
    DOM cache & State
@@ -77,7 +78,7 @@
   const avatarBtn = $(".avatar-btn");
   const logoutBtn = $("[data-action='logout']");
   const cardTemplate = $("#template-profile-card");
-  const cardsContainer = $(".cards");
+  const cardsContainer = $(".cards-stack"); // Updated selector to match your CSS
   const profileHeaderName = $("#profile-title");
   const profileHeaderBio = $(".profile-header__info p");
   const profileHeaderAvatar = $(".profile-header__media img");
@@ -107,6 +108,20 @@
   const messageTemplateMe = $('#template-message-me');
   const messageTemplateThem = $('#template-message-them');
   const chatBody = $('#chat-body');
+  // ✨ NEW DOM ELEMENTS
+  const searchInput = $('.search-bar__input');
+  const searchBarContainer = $('.search-bar');
+  const searchResultsContainer = $('#search-results-list'); // Assumed element in HTML
+  const backButtons = $$('[data-action="back"]');
+  const distanceSlider = $('#settings-distance-range');
+  const distanceValue = $('#settings-distance-value');
+  const ageMinSlider = $('#settings-age-min');
+  const ageMaxSlider = $('#settings-age-max');
+  const ageValue = $('#settings-age-value');
+  const hideAccountSwitch = $('#settings-hide-account');
+  const discoverySettingsForm = $('#discovery-settings-form');
+  const confirmationToast = $('#confirmation-toast'); // Assumed element in HTML
+  // END NEW DOM ELEMENTS
 
 
   /* =========================
@@ -123,6 +138,18 @@
   };
   const escapeHtml = unsafe => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   
+  // ✨ NEW UTILITY FUNCTION
+  function showConfirmationToast(message) {
+	if (confirmationToast) {
+	  confirmationToast.textContent = message;
+	  confirmationToast.classList.add('is-visible');
+	  setTimeout(() => {
+		confirmationToast.classList.remove('is-visible');
+	  }, 3000);
+	}
+  }
+  // END NEW UTILITY FUNCTION
+
   /* =========================
    AUTHENTICATION (Mocked)
    ========================= */
@@ -265,6 +292,25 @@
 		const route = e.state?.route || 'home';
 		routeTo(route, false);
 	});
+	
+	// ✨ NEW FUNCTIONALITY: Back Button Logic
+	backButtons.forEach(btn => {
+		btn.addEventListener('click', (e) => {
+			e.preventDefault();
+			const currentPage = $$('.page.is-visible')[0];
+			if (currentPage) {
+				// Add an exit animation class before navigating back
+				currentPage.classList.add('slide-out-right');
+				setTimeout(() => {
+					window.history.back();
+					currentPage.classList.remove('slide-out-right'); // Clean up the class
+				}, 300); // Match this to your CSS transition speed
+			} else {
+				window.history.back();
+			}
+		});
+	});
+	// END NEW FUNCTIONALITY
   }
   
   function routeTo(routeName = "home", push = true) {
@@ -305,17 +351,26 @@
   /* =========================
    PROFILES — render & interactions
    ========================= */
-  function loadNextProfile() {
+  function loadNextProfile(fromRewind = false, profileToLoad = null) {
 	if (!cardsContainer || !cardTemplate) return;
 	
-	cardsContainer.innerHTML = '';
-	
-	if (allProfiles.length === 0) {
-	  cardsContainer.innerHTML = `<div class="no-profiles">No new profiles nearby. Try changing your settings.</div>`;
-	  return;
+	// Remove the current card only if it's not a rewind
+	const currentCard = safeQuery('.profile-card');
+	if (currentCard) {
+		currentCard.remove();
+	}
+
+	let nextProfile;
+	if (fromRewind) {
+		nextProfile = profileToLoad;
+	} else {
+		if (allProfiles.length === 0) {
+			cardsContainer.innerHTML = `<div class="no-profiles">No new profiles nearby. Try changing your settings.</div>`;
+			return;
+		}
+		nextProfile = allProfiles.shift();
 	}
 	
-	const nextProfile = allProfiles.shift();
 	renderSingleProfile(nextProfile);
   }
 
@@ -323,12 +378,13 @@
 	if (!cardsContainer || !cardTemplate) return;
 	
 	const card = cardTemplate.content.cloneNode(true);
-	card.querySelector(".profile-card").setAttribute("data-uid", profile.uid);
+	const profileCardEl = card.querySelector(".profile-card");
+	profileCardEl.setAttribute("data-uid", profile.uid);
+	profileCardEl.setAttribute("data-profile-data", JSON.stringify(profile)); // Store profile data
 	safeQuery(".profile-card__media img", card).src = profile.avatar;
-	safeQuery(".profile-card__title", card).textContent = `${profile.name}, ${profile.age}`;
-	safeQuery(".profile-card__meta", card).textContent = profile.location.city;
+	safeQuery(".profile-card__name", card).textContent = `${profile.name}, ${profile.age}`;
+	safeQuery(".profile-card__metadata", card).textContent = `${profile.location.city} • ${Math.floor(Math.random() * 100) + 1} km away`;
 	safeQuery(".profile-card__bio", card).textContent = profile.bio;
-	safeQuery(".profile-card__distance", card).textContent = `${Math.floor(Math.random() * 100) + 1} km away`;
 	
 	cardsContainer.appendChild(card);
   }
@@ -360,44 +416,80 @@
 	const existingMatchIndex = db.matches.findIndex(m => m.users.includes(currentUser.uid) && m.users.includes(targetUid));
 	if (existingMatchIndex !== -1) {
 	  db.matches[existingMatchIndex].status = 'matched';
-	  console.log(`Simulated match found with ${targetUid}!`);
+	  alert("It's a Match! 🎉");
 	}
   }
 
+  // ✨ ANIMATION LOGIC: Card Animation
+  async function animateCardSwipe(card, action) {
+	const animationClass = action === 'like' ? 'swipe-right' : 'swipe-left';
+	card.classList.add(animationClass);
+	
+	// Wait for the animation to finish
+	return new Promise(resolve => {
+		card.addEventListener('animationend', () => {
+			card.classList.remove(animationClass); // Clean up
+			resolve();
+		}, { once: true });
+	});
+  }
+  
   function bindCardActions() {
 	if (!cardsContainer) return;
 	cardsContainer.addEventListener("click", async ev => {
 	  const btn = ev.target.closest("button[data-action]");
 	  if (!btn) return;
 	  const action = btn.getAttribute("data-action");
-	  const card = btn.closest(".profile-card");
+	  const card = safeQuery(".profile-card"); // Always target the top card
 	  if (!card) return;
 	  
 	  const targetUid = card.getAttribute("data-uid");
+	  const profileData = JSON.parse(card.getAttribute("data-profile-data"));
 	  
-	  if (action === "like" || action === "skip") {
+	  if (action === "skip" || action === "like") {
+		// Record card data before removing it
+		swipedCardsHistory.push(profileData);
+
+		// Trigger the animation and wait for it to complete
+		const swipeAction = action === "skip" ? "dislike" : "like";
+		await animateCardSwipe(card, swipeAction);
+
 		await saveUserSwipe(targetUid, action);
 		if (action === "like") {
 		  if (checkForMatch(targetUid)) {
 			createMatch(targetUid);
-			alert("It's a Match! 🎉");
 		  }
 		}
 		loadNextProfile();
-	  } else if (action === "message") {
-		const targetProfile = fetchUserProfile(targetUid);
-		if (!targetProfile) {
-			console.error("Target profile not found.");
+	  } else if (action === "rewind") {
+		// ✨ NEW FUNCTIONALITY: Rewind
+		if (swipedCardsHistory.length === 0) {
+			showConfirmationToast("Nothing to rewind! Keep swiping.");
 			return;
 		}
+		
+		const lastCard = swipedCardsHistory.pop();
+		card.remove(); // Remove the current card before loading the last one
+		loadNextProfile(true, lastCard);
+		showConfirmationToast(`${lastCard.name} is back!`);
+		// END NEW FUNCTIONALITY
+	  } else if (action === "super-like") {
+		// ✨ NEW FUNCTIONALITY: Super Like (opens chat compose)
+		const targetProfile = fetchUserProfile(targetUid);
+		if (!targetProfile) return;
+		
+		// Simulate a "Super Like" match and open the chat
+		createMatch(targetUid); // Instant match for super-like
 		
 		const matchId = [currentUser.uid, targetUid].sort().join('_');
 		currentMatchId = matchId;
 		getLiveMessages(matchId, targetUid);
 		routeTo("messages", true);
+		// END NEW FUNCTIONALITY
 	  }
 	});
   }
+  // END ANIMATION LOGIC
 
   /* =========================
    MESSAGING (Mocked)
@@ -475,10 +567,10 @@
 		  db.messages[currentMatchId].push(message);
 
 		  const match = db.matches.find(m => {
-			const [user1, user2] = m.users;
-			return (user1 === currentUser.uid && user2 === currentMatchId.split('_').find(id => id !== currentUser.uid)) ||
-				   (user2 === currentUser.uid && user1 === currentMatchId.split('_').find(id => id !== currentUser.uid));
+			const otherUserId = currentMatchId.split('_').find(id => id !== currentUser.uid);
+			return m.users.includes(currentUser.uid) && m.users.includes(otherUserId);
 		  });
+
 		  if (match) {
 			match.lastMessage = text;
 		  }
@@ -490,9 +582,77 @@
   }
 
   /* =========================
+   DISCOVERY SETTINGS
+   ========================= */
+   function bindDiscoverySettings() {
+	// ✨ NEW FUNCTIONALITY: Range Slider Logic
+	if (distanceSlider && distanceValue) {
+		const updateDistance = () => {
+			distanceValue.textContent = `${distanceSlider.value} km`;
+			currentUser.settings.distance = parseInt(distanceSlider.value);
+		};
+		distanceSlider.addEventListener('input', updateDistance);
+		// Initial setup
+		distanceSlider.value = currentUser.settings.distance || 50;
+		updateDistance();
+	}
+	
+	if (ageMinSlider && ageMaxSlider && ageValue) {
+		const updateAgeRange = () => {
+			let minAge = parseInt(ageMinSlider.value);
+			let maxAge = parseInt(ageMaxSlider.value);
+
+			if (minAge > maxAge) {
+				// Prevent min from passing max and vice versa
+				if (event.target.id === 'settings-age-min') {
+					maxAge = minAge;
+					ageMaxSlider.value = minAge;
+				} else {
+					minAge = maxAge;
+					ageMinSlider.value = maxAge;
+				}
+			}
+			
+			ageValue.textContent = `${minAge} - ${maxAge}`;
+			currentUser.settings.ageRange = [minAge, maxAge];
+		};
+
+		ageMinSlider.addEventListener('input', updateAgeRange);
+		ageMaxSlider.addEventListener('input', updateAgeRange);
+		
+		// Initial setup
+		ageMinSlider.value = currentUser.settings.ageRange?.[0] || 18;
+		ageMaxSlider.value = currentUser.settings.ageRange?.[1] || 30;
+		updateAgeRange();
+	}
+	
+	// ✨ NEW FUNCTIONALITY: Hide Account Toggle
+	if (hideAccountSwitch) {
+		hideAccountSwitch.checked = currentUser.settings.hideAccount || false;
+		hideAccountSwitch.addEventListener('change', (e) => {
+			currentUser.settings.hideAccount = e.target.checked;
+			showConfirmationToast(`Account is now ${e.target.checked ? 'Hidden' : 'Visible'}!`);
+		});
+	}
+	
+	// ✨ NEW FUNCTIONALITY: Save Button (The form submit is the save)
+	if (discoverySettingsForm) {
+		discoverySettingsForm.addEventListener('submit', (e) => {
+			e.preventDefault();
+			// Since all changes are updated on 'input' and 'change' events,
+			// we just need to confirm the save action.
+			saveUserProfile(currentUser);
+			showConfirmationToast("Discovery Settings Saved!");
+		});
+	}
+	// END DISCOVERY SETTINGS
+   }
+
+  /* =========================
    UI Render
    ========================= */
   function renderProfilePage(profile) {
+	// This function now uses the updated currentUser.settings from the settings page
 	if (!profile) return;
 	if (profileHeaderName) profileHeaderName.textContent = `${profile.name}, ${profile.age}`;
 	if (profileHeaderBio) profileHeaderBio.textContent = `${profile.location?.city || "Unknown"} • ${profile.bio || "No bio yet."}`;
@@ -509,9 +669,10 @@
 	if (photos && photos.length > 0) {
 		photoPlaceholder.hidden = true;
 		photos.forEach(url => {
-			const img = document.createElement('img');
-			img.src = url;
-			photoGallery.appendChild(img);
+			const photoItem = document.createElement('div');
+			photoItem.className = 'photo-item';
+			photoItem.innerHTML = `<img src="${url}" alt="Profile photo">`;
+			photoGallery.appendChild(photoItem);
 		});
 	} else {
 		photoPlaceholder.hidden = false;
@@ -543,24 +704,27 @@
 	}
 
 	if (shareProfileBtn) {
+		// ✨ NEW FUNCTIONALITY: Share Profile URL
 		shareProfileBtn.addEventListener("click", async () => {
+			const shareUrl = `${window.location.origin}/#profile/${currentUser.uid}`;
 			if (navigator.share) {
 				try {
 					await navigator.share({
 						title: `${currentUser.name}'s Profile`,
 						text: `Check out ${currentUser.name}'s profile on DateMe!`,
-						url: window.location.href,
+						url: shareUrl,
 					});
 					console.log('Profile shared successfully');
 				} catch (error) {
 					console.error('Error sharing:', error);
 				}
 			} else {
-				navigator.clipboard.writeText(window.location.href).then(() => {
-					alert("Profile link copied to clipboard!");
+				navigator.clipboard.writeText(shareUrl).then(() => {
+					showConfirmationToast("Profile link copied to clipboard!");
 				});
 			}
 		});
+		// END NEW FUNCTIONALITY
 	}
 	
 	if (photoUploadInput) {
@@ -571,7 +735,8 @@
 			alert("Image must be smaller than 2MB.");
 			continue;
 		  }
-		  const localUrl = URL.createObjectURL(file);
+		  // In a real app, this would be an upload URL, but we use the local URL for preview
+		  const localUrl = URL.createObjectURL(file); 
 		  const photoId = `photo-${Date.now()}`;
 		  const preview = createPhotoPreview(localUrl, photoId);
 		  photoPreviewGrid.appendChild(preview);
@@ -584,12 +749,8 @@
 			if (e.target.classList.contains('remove-btn')) {
 				const preview = e.target.closest('.photo-preview');
 				if (preview) {
-					const photoId = preview.getAttribute('data-photo-id');
-					const photoIndex = currentUser.photos.findIndex(url => url.includes(photoId));
-					if (photoIndex !== -1) {
-					  currentUser.photos.splice(photoIndex, 1);
-					}
-					preview.remove();
+					// NOTE: In the mock, we remove from the DOM but the final save will only take photos in the DOM
+					preview.remove(); 
 					console.log("Simulated photo removal.");
 				}
 			}
@@ -608,6 +769,7 @@
 	}
 
 	if (profileForm) {
+	  // ✨ NEW FUNCTIONALITY: Profile Edit Save
 	  profileForm.addEventListener("submit", async e => {
 		e.preventDefault();
 		
@@ -618,18 +780,18 @@
 		  bio: profileForm.querySelector("#profile-bio").value,
 		  gender: profileForm.querySelector("#profile-gender").value,
 		  interests: profileForm.querySelector("#profile-interests-input").value.split(",").map(i => i.trim()).filter(i => i),
-		  photos: [...currentUser.photos] // Shallow copy
 		};
 		
-		// Grab photos from the preview grid
+		// Grab the current set of photos from the preview grid DOM elements
 		const newPhotos = Array.from(photoPreviewGrid.querySelectorAll('img')).map(img => img.src);
 		updatedProfile.photos = newPhotos;
 
 		saveUserProfile(updatedProfile);
-		renderProfilePage(currentUser);
-		alert("Profile saved successfully!");
+		renderProfilePage(currentUser); // Rerender the profile page with new data
+		showConfirmationToast("Profile Updated! See your new look.");
 		routeTo("profile", true);
 	  });
+	  // END NEW FUNCTIONALITY
 	}
   }
   
@@ -643,6 +805,43 @@
 		body.setAttribute('data-theme', themeSwitch.checked ? 'dark' : 'light');
 	  });
 	}
+	
+	// ✨ NEW FUNCTIONALITY: Search Bar Logic
+	const searchIcon = $('[data-action="open-search"]');
+	if (searchIcon) {
+		searchIcon.addEventListener('click', () => {
+			searchBarContainer.classList.toggle('is-visible');
+			if (searchBarContainer.classList.contains('is-visible')) {
+				searchInput.focus();
+			} else {
+				searchInput.value = '';
+				if (searchResultsContainer) searchResultsContainer.innerHTML = '';
+			}
+		});
+	}
+	
+	if (searchInput) {
+		searchInput.addEventListener('input', (e) => {
+			const query = e.target.value.toLowerCase();
+			if (!searchResultsContainer) return;
+			searchResultsContainer.innerHTML = '';
+			
+			if (query.length > 0) {
+				const results = db.profiles.filter(p => p.name && p.name.toLowerCase().includes(query));
+				
+				if (results.length > 0) {
+					results.forEach(p => {
+						const li = document.createElement('li');
+						li.innerHTML = `<a href="#profile/${p.uid}" data-route-link="profile" data-target-uid="${p.uid}">${p.name} (${p.age})</a>`;
+						searchResultsContainer.appendChild(li);
+					});
+				} else {
+					searchResultsContainer.innerHTML = '<li>No names found.</li>';
+				}
+			}
+		});
+	}
+	// END NEW FUNCTIONALITY
 
 	const donateLink = $('[data-action="donate"]');
 	if (donateLink && modalDonate) {
@@ -661,6 +860,7 @@
 	  }
 	}
 	
+	// ✨ NEW FUNCTIONALITY: Mobile Money Donation Flow
 	let selectedProvider = null;
 	
 	if (airtelBtn) {
@@ -696,13 +896,18 @@
 		let ussd;
 		
 		if (selectedProvider === "airtel") {
-		  ussd = `*211*1*1*0994426162*${amount}#`;
+		  // Mock USSD for Airtel (example format)
+		  ussd = `*211*1*1*0994426162*${amount}#`; 
+		  alert(`Attempting to dial Airtel Money USSD for K${amount}. Follow your phone prompts: ${ussd}`);
 		} else if (selectedProvider === "tnm") {
-		  ussd = `*444*1*1*0889479863*${amount}#`;
+		  // Mock USSD for TNM (example format)
+		  ussd = `*444*1*1*0889479863*${amount}#`; 
+		  alert(`Attempting to dial TNM Mpamba USSD for K${amount}. Follow your phone prompts: ${ussd}`);
 		}
 		
 		if (ussd) {
-		  window.location.href = `tel:${ussd}`;
+		  // Use the tel: scheme to launch the phone dialer
+		  window.location.href = `tel:${encodeURIComponent(ussd)}`;
 		} else {
 		  alert("Please select a mobile money provider.");
 		}
@@ -710,6 +915,7 @@
 		modalDonate.close();
 	  });
 	}
+	// END NEW FUNCTIONALITY
   }
 
   /* =========================
@@ -718,19 +924,21 @@
   async function init() {
 	pages.forEach(p => p.hidden = true);
 	
-	// Create a new, temporary user profile to simulate a fresh signup
-	currentUser = {
-	  uid: "temp-new-user-" + Date.now(),
-	  email: "newuser@example.com",
-	  onboardingComplete: false,
-	  isSubscriber: false,
-	  settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
-	};
+	// Check for existing user or create mock new user
+	if (!currentUser) {
+		currentUser = db.profiles.find(p => p.email === "newuser@example.com");
+		if (!currentUser) {
+			currentUser = {
+				uid: "temp-new-user-" + Date.now(),
+				email: "newuser@example.com",
+				onboardingComplete: false,
+				isSubscriber: false,
+				settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
+			};
+			db.profiles.push(currentUser);
+		}
+	}
 
-	// Add this new user to our mock database
-	db.profiles.push(currentUser);
-
-	// Now, go directly to the onboarding page
 	if (currentUser && currentUser.onboardingComplete) {
 	  handleUserLogin(currentUser);
 	} else {
@@ -743,9 +951,9 @@
 	bindProfileManagement();
 	bindUI();
 	bindMessageForm();
+	bindDiscoverySettings(); // Initialize settings logic
   }
 
   document.addEventListener("DOMContentLoaded", () => init());
 
-})();
 })();
