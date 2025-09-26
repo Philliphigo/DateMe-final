@@ -32,12 +32,6 @@
 			  </svg>
 			  <span class="brand__name">DateMe</span>
 			</a>
-			<div class="search-bar">
-				<input type="text" placeholder="Search users..." class="search-bar__input">
-				<button class="btn btn--icon btn--ghost" aria-label="Search users">
-					<i class="fa-solid fa-magnifying-glass"></i>
-				</button>
-			</div>
 			<nav class="nav" role="navigation" aria-label="Main">
 			  <ul class="nav__list">
 				<li>
@@ -67,6 +61,13 @@
 			  </ul>
 			</nav>
 			<div class="header__actions">
+			  <button
+				class="btn btn--icon btn--ghost"
+				data-action="open-search"
+				aria-label="Search"
+			  >
+				<i class="fa-solid fa-magnifying-glass"></i>
+			  </button>
 			  <div class="theme-toggle">
 				<input
 				  type="checkbox"
@@ -94,13 +95,14 @@
 				<button
 				  class="avatar-btn"
 				  data-action="toggle-menu"
+				  data-route-link="profile"
 				  aria-haspopup="true"
 				  aria-expanded="false"
 				  aria-controls="menu-user"
 				  aria-label="Open user menu"
 				>
 				  <img
-					src="IMG_1078.jpeg"
+					src="https://placehold.co/120x120?text=Phil"
 					alt="User avatar"
 					class="avatar"
 				  />
@@ -143,6 +145,13 @@
 			  <h1 class="page-title"></h1>
 			</div>
 			<div class="page-header__right">
+			  <button
+				class="btn--icon btn--ghost"
+				data-action="open-search"
+				aria-label="Search"
+			  >
+				<i class="fa-solid fa-magnifying-glass"></i>
+			  </button>
 			  <button
 				class="btn--icon btn--ghost"
 				data-action="share"
@@ -288,18 +297,19 @@
 			  New here? <a href="#" data-route-link="signup">Sign Up</a>
 			</p>
 		  </div>
-		  </div>
+		</section>
+		<section id="page-home" class="page" data-route="home" hidden>
 		  <div class="cards-stack">
 			<article class="card profile-card" tabindex="0">
 			  <div class="profile-card__media">
 				<img
-				  src="IMG_1069.jpeg"
-				  alt="Profile of Himothy"
+				  src="https://placehold.co/500x700/D0D0D0/333333?text=Sophia"
+				  alt="Profile of Sophia"
 				/>
 			  </div>
 			  <div class="profile-card__content">
 				<div class="profile-card__info">
-				  <h2 class="profile-card__name">Himothy</h2>
+				  <h2 class="profile-card__name">Sophia</h2>
 				  <span class="age">24</span>
 				  <div class="profile-card__metadata">
 					<span class="profile-card__last-online">30 min ago</span>
@@ -344,27 +354,27 @@
 				<p>Find your tribe by what you're looking for.</p>
 				<div class="category-grid">
 					<a href="#" class="category-card" data-category="long-term">
-						<img src="IMG_0147.jpeg" alt="A couple holding hands, representing a long-term relationship">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Long+Term" alt="A couple holding hands, representing a long-term relationship">
 						<span class="category-card__label">Long Term</span>
 					</a>
 					<a href="#" class="category-card" data-category="casual">
-						<img src="IMG_0146.jpeg" alt="Friends laughing together, representing a casual connection">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Casual" alt="Friends laughing together, representing a casual connection">
 						<span class="category-card__label">Casual</span>
 					</a>
 					<a href="#" class="category-card" data-category="online-now">
-						<img src="IMG_0145.jpeg" alt="A group of friends on their phones, representing people currently online">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Online+Now" alt="A group of friends on their phones, representing people currently online">
 						<span class="category-card__label">Online Now</span>
 					</a>
 					<a href="#" class="category-card" data-category="friendship">
-						<img src="IMG_0144.jpeg" alt="Friends high-fiving, representing friendship">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Friendship" alt="Friends high-fiving, representing friendship">
 						<span class="category-card__label">Friendship</span>
 					</a>
 					<a href="#" class="category-card" data-category="food-dates">
-						<img src="IMG_0143.jpeg" alt="A person enjoying food at a restaurant, representing food dates">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Food+Dates" alt="A person enjoying food at a restaurant, representing food dates">
 						<span class="category-card__label">Food Dates</span>
 					</a>
 					<a href="#" class="category-card" data-category="travel-buddy">
-						<img src="IMG_0142.jpeg" alt="A person with a backpack, looking at a scenic view, representing a travel buddy">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Travel+Buddy" alt="A person with a backpack, looking at a scenic view, representing a travel buddy">
 						<span class="category-card__label">Travel Buddy</span>
 					</a>
 				</div>
@@ -390,7 +400,7 @@
 				  </button>
 				  <div class="chat__peer">
 					<img
-					  src="IMG_0141.jpeg"
+					  src="https://placehold.co/40x40?text=User"
 					  alt=""
 					  class="convo__avatar"
 					  id="chat-peer-avatar"
@@ -483,7 +493,7 @@
 		  <div class="profile-content">
 			<div class="profile-avatar">
 			  <img
-				src="IMG_1078.jpeg"
+				src="https://placehold.co/200x200?text=Phil"
 				alt="Profile avatar"
 			  />
 			</div>
@@ -663,7 +673,7 @@
 			  <div class="user-info-header">
 				<span class="user-name">Philip</span>
 				<img
-				  src="IMG_1078.jpeg"
+				  src="https://placehold.co/40x40"
 				  alt="Philip's avatar"
 				  class="user-avatar"
 				/>
@@ -960,8 +970,10 @@
 		  data-route-link="home"
 		  aria-label="Discover"
 		>
-		  <i class="fa-solid fa-fire-flame-curved bottom-nav__icon"></i>
-		  <span class="bottom-nav__label">Discover</span>
+		  <div class="bottom-nav__content">
+			<i class="fa-solid fa-fire-flame-curved bottom-nav__icon"></i>
+			<span class="bottom-nav__label">Discover</span>
+		  </div>
 		</a>
 		<a
 		  href="#"
@@ -969,8 +981,10 @@
 		  data-route-link="matches"
 		  aria-label="Matches"
 		>
-		  <i class="fa-solid fa-star bottom-nav__icon"></i>
-		  <span class="bottom-nav__label">Matches</span>
+		  <div class="bottom-nav__content">
+			<i class="fa-solid fa-star bottom-nav__icon"></i>
+			<span class="bottom-nav__label">Matches</span>
+		  </div>
 		</a>
 		<a
 		  href="#"
@@ -978,8 +992,10 @@
 		  data-route-link="connect"
 		  aria-label="Connect"
 		>
-		  <i class="fa-solid fa-handshake bottom-nav__icon"></i>
-		  <span class="bottom-nav__label">Connect</span>
+		  <div class="bottom-nav__content">
+			<i class="fa-solid fa-handshake bottom-nav__icon"></i>
+			<span class="bottom-nav__label">Connect</span>
+		  </div>
 		</a>
 		<a
 		  href="#"
@@ -987,19 +1003,12 @@
 		  data-route-link="messages"
 		  aria-label="Messages"
 		>
-		  <i class="fa-solid fa-comment-dots bottom-nav__icon"></i>
-		  <span class="bottom-nav__label">Messages</span>
+		  <div class="bottom-nav__content">
+			<i class="fa-solid fa-comment-dots bottom-nav__icon"></i>
+			<span class="bottom-nav__label">Messages</span>
+		  </div>
 		</a>
-		<a
-		  href="#"
-		  class="bottom-nav__link"
-		  data-route-link="profile"
-		  aria-label="Profile"
-		>
-		  <i class="fa-solid fa-user bottom-nav__icon"></i>
-		  <span class="bottom-nav__label">Profile</span>
-		</a>
-	  </nav>
+		</nav>
 	  <footer class="footer" role="contentinfo">
 		<div class="container footer__inner">
 		  <p class="watermark">by Phil</p>
@@ -1007,7 +1016,7 @@
 			<a href="#" data-route-link="terms">Terms</a>
 			<a href="#" data-route-link="privacy">Privacy</a>
 			<a href="#" data-route-link="contact">Contact</a>
-			<a href="#" data-route-link="donate" class="glowing">Donate</a>
+			<a href="#" data-route-link="donate" class="glowing-pink">Donate</a>
 		  </nav>
 		  <p class="copyright">© <span data-year>2025</span> DateMe</p>
 		</div>
@@ -1246,6 +1255,15 @@
 		  link.addEventListener('click', (event) => {
 			event.preventDefault();
 			const routeName = link.dataset.routeLink;
+			
+			// Custom logic for the avatar button to prevent the menu from toggling when navigating
+			if (link.classList.contains('avatar-btn') && event.target.closest('[data-action="toggle-menu"]')) {
+				// We don't want to navigate if the user is clicking the dropdown toggle area
+				// but since we made the whole button a route link, we'll navigate on all clicks for simplicity
+				// for a real app, you'd handle the dropdown menu toggle in JS and only trigger route change if a menu item is clicked
+				// Given your setup, a direct click on the avatar now navigates to the profile page.
+			}
+			
 			navigateTo(routeName);
 		  });
 		});
@@ -1253,5 +1271,4 @@
 	  });
 	</script>
   </body>
-</html>
 </html>
