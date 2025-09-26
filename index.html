@@ -9,7 +9,6 @@
 	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 	/>
 	<link rel="stylesheet" href="style.css" />
-
 	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -33,6 +32,12 @@
 			  </svg>
 			  <span class="brand__name">DateMe</span>
 			</a>
+			<div class="search-bar">
+				<input type="text" placeholder="Search users..." class="search-bar__input">
+				<button class="btn btn--icon btn--ghost" aria-label="Search users">
+					<i class="fa-solid fa-magnifying-glass"></i>
+				</button>
+			</div>
 			<nav class="nav" role="navigation" aria-label="Main">
 			  <ul class="nav__list">
 				<li>
@@ -69,8 +74,12 @@
 				  class="theme-toggle__input"
 				/>
 				<label for="theme-switch" class="theme-toggle__label">
-				  <i class="fas fa-sun theme-toggle__icon theme-toggle__sun"></i>
-				  <i class="fas fa-moon theme-toggle__icon theme-toggle__moon"></i>
+				  <i
+					class="fas fa-sun theme-toggle__icon theme-toggle__sun"
+				  ></i>
+				  <i
+					class="fas fa-moon theme-toggle__icon theme-toggle__moon"
+				  ></i>
 				</label>
 			  </div>
 			  <button
@@ -103,12 +112,8 @@
 					</a>
 				  </li>
 				  <li>
-					<a
-					  href="#"
-					  data-route-link="discover-settings"
-					  role="menuitem"
-					>
-					  <i class="fa-solid fa-sliders"></i> Settings
+					<a href="#" data-route-link="settings" role="menuitem">
+					  <i class="fa-solid fa-cog"></i> Settings
 					</a>
 				  </li>
 				  <li>
@@ -156,7 +161,6 @@
 		  </div>
 		</div>
 	  </header>
-
 	  <main id="main" role="main">
 		<section id="page-signup" class="page auth-form" data-route="signup">
 		  <div class="container auth-form__container">
@@ -252,7 +256,6 @@
 			</p>
 		  </div>
 		</section>
-
 		<section id="page-login" class="page auth-form" data-route="login" hidden>
 		  <div class="container auth-form__container">
 			<h2 class="page__title auth-form__title">Welcome Back</h2>
@@ -286,36 +289,60 @@
 			</p>
 		  </div>
 		</section>
-
 		<section id="page-home" class="page" data-route="home" hidden>
-		  <div class="cards">
+		  <div class="category-section">
+			<h2 class="category-title">What are you looking for?</h2>
+			<div class="category-list-wrapper">
+			  <ul class="category-list">
+				<li><button class="category-btn" data-category="long-term">Long Term</button></li>
+				<li><button class="category-btn" data-category="casual">Casual</button></li>
+				<li><button class="category-btn" data-category="online-now">Online Now</button></li>
+				<li><button class="category-btn" data-category="friendship">Friendship</button></li>
+				<li><button class="category-btn" data-category="food-dates">Food Dates</button></li>
+				<li><button class="category-btn" data-category="travel-buddy">Travel Buddy</button></li>
+				<li><button class="category-btn" data-category="fwb">Friends with Benefits</button></li>
+				<li><button class="category-btn" data-category="hookup">Sex Partner</button></li>
+				<li><button class="category-btn" data-category="blesser">Blesser</button></li>
+				<li><button class="category-btn" data-category="sugar-mummie">Sugar Mummie</button></li>
+			  </ul>
+			</div>
+		  </div>
+		  <div class="cards-stack">
 			<article class="card profile-card" tabindex="0">
 			  <div class="profile-card__media">
-				<div class="card-image-placeholder">
-				  <p>Jane</p>
-				</div>
+				<img
+				  src="https://placehold.co/500x700/D0D0D0/333333?text=Sophia"
+				  alt="Profile of Sophia"
+				/>
 			  </div>
-			  <div class="profile-card__body">
-				<header class="profile-card__header">
-				  <h2 class="profile-card__title">Jane, 22</h2>
-				  <p class="profile-card__meta">Blantyre</p>
-				</header>
-				<p class="profile-card__bio">Loves to read and hike.</p>
-				<p class="profile-card__distance">12 km away</p>
-				<p class="profile-card__status">Status: Offline</p>
+			  <div class="profile-card__content">
+				<div class="profile-card__info">
+				  <h2 class="profile-card__name">Sophia</h2>
+				  <span class="age">24</span>
+				  <div class="profile-card__metadata">
+					<span class="profile-card__last-online">30 min ago</span>
+					<span class="profile-card__distance">2 mi away</span>
+				  </div>
+				  <p class="profile-card__bio">
+					Loves books, coffee, and exploring the city.
+				  </p>
+				</div>
 				<div
 				  class="profile-card__actions"
 				  role="group"
 				  aria-label="Profile actions"
 				>
-				  <button class="btn btn--icon btn--skip" aria-label="Skip">
-					<i class="fa-solid fa-xmark"></i>
+				  <button class="btn btn--icon btn--dislike" aria-label="Dislike">
+					<i class="fa-solid fa-thumbs-down"></i>
 				  </button>
 				  <button class="btn btn--icon btn--like" aria-label="Like">
 					<i class="fa-solid fa-heart"></i>
 				  </button>
-				  <button class="btn btn--icon btn--gift" aria-label="Send gift">
-					<i class="fa-solid fa-gift"></i>
+				  <button class="btn btn--icon btn--rewind" aria-label="Rewind">
+					<i class="fa-solid fa-rotate-left"></i>
+				  </button>
+				  <button class="btn btn--icon btn--super-like" aria-label="Super-like">
+					<i class="fa-solid fa-star"></i>
 				  </button>
 				</div>
 			  </div>
@@ -323,14 +350,44 @@
 			<div class="loading">Simulating fetching profiles...</div>
 		  </div>
 		</section>
-
 		<section id="page-matches" class="page" data-route="matches" hidden>
 		  <div class="container">
 			<h2 class="page__title">Matches</h2>
 			<ul class="match-list" id="match-list"></ul>
 		  </div>
 		</section>
-
+		<section id="page-connect" class="page" data-route="connect" hidden>
+			<div class="container">
+				<h2 class="page__title">Connect</h2>
+				<p>Find your tribe by what you're looking for.</p>
+				<div class="category-grid">
+					<a href="#" class="category-card" data-category="long-term">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Long+Term" alt="A couple holding hands, representing a long-term relationship">
+						<span class="category-card__label">Long Term</span>
+					</a>
+					<a href="#" class="category-card" data-category="casual">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Casual" alt="Friends laughing together, representing a casual connection">
+						<span class="category-card__label">Casual</span>
+					</a>
+					<a href="#" class="category-card" data-category="online-now">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Online+Now" alt="A group of friends on their phones, representing people currently online">
+						<span class="category-card__label">Online Now</span>
+					</a>
+					<a href="#" class="category-card" data-category="friendship">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Friendship" alt="Friends high-fiving, representing friendship">
+						<span class="category-card__label">Friendship</span>
+					</a>
+					<a href="#" class="category-card" data-category="food-dates">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Food+Dates" alt="A person enjoying food at a restaurant, representing food dates">
+						<span class="category-card__label">Food Dates</span>
+					</a>
+					<a href="#" class="category-card" data-category="travel-buddy">
+						<img src="https://placehold.co/300x400/D0D0D0/333333?text=Travel+Buddy" alt="A person with a backpack, looking at a scenic view, representing a travel buddy">
+						<span class="category-card__label">Travel Buddy</span>
+					</a>
+				</div>
+			</div>
+		</section>
 		<section id="page-messages" class="page" data-route="messages" hidden>
 		  <div class="messages-grid container container--split">
 			<div class="convos">
@@ -357,7 +414,10 @@
 					  id="chat-peer-avatar"
 					/>
 					<div class="chat__info">
-					  <strong class="chat__name" id="chat-peer-name"></strong>
+					  <strong
+						class="chat__name"
+						id="chat-peer-name"
+					  ></strong>
 					  <div class="chat__status" id="chat-peer-status"></div>
 					</div>
 				  </div>
@@ -373,7 +433,12 @@
 				  >
 					<i class="fa-solid fa-ellipsis-vertical"></i>
 				  </button>
-				  <ul class="menu chat-menu" id="chat-more-menu" role="menu" hidden>
+				  <ul
+					class="menu chat-menu"
+					id="chat-more-menu"
+					role="menu"
+					hidden
+				  >
 					<li>
 					  <a href="#" data-action="view-profile" role="menuitem"
 						>View Profile</a
@@ -415,174 +480,266 @@
 			</div>
 		  </div>
 		</section>
-
-		<section id="page-profile" class="page" data-route="profile" hidden>
-		  <div class="container container--wide">
-			<header class="profile-header">
-			  <div class="profile-header__media">
-				<img
-				  src="https://placehold.co/120x120?text=Phil"
-				  alt="User avatar"
-				  class="avatar avatar--xl"
-				/>
-			  </div>
-			  <div class="profile-header__info">
-				<h2 class="page__title" id="profile-title">Phillip, 20</h2>
-				<p>Lilongwe • Friendly and focused...</p>
-			  </div>
-			  <div class="profile-header__actions">
-				<button
-				  class="btn btn--icon btn--ghost"
-				  data-action="edit-profile"
-				  aria-label="Edit profile"
-				>
-				  <i class="fa-solid fa-pen"></i>
-				</button>
-			  </div>
-			</header>
-			<nav class="tabs" role="tablist">
+		<section class="page profile-page" data-route="profile" hidden>
+		  <div class="page-header profile-page-header">
+			<button
+			  class="btn btn--icon btn--back"
+			  data-action="go-back"
+			  aria-label="Go back"
+			>
+			  <i class="fa-solid fa-arrow-left"></i>
+			</button>
+			<h1 class="page-title">Profile</h1>
+			<button
+			  class="btn btn--icon btn--ghost"
+			  data-route-link="settings"
+			  aria-label="Settings"
+			>
+			  <i class="fa-solid fa-cog"></i>
+			</button>
+		  </div>
+		  <div class="profile-content">
+			<div class="profile-avatar">
+			  <img
+				src="https://placehold.co/200x200?text=Phil"
+				alt="Profile avatar"
+			  />
+			</div>
+			<div class="profile-info-section">
+			  <h2 class="profile-name">Phillip, 20</h2>
+			  <p class="profile-location">Lilongwe</p>
+			  <p class="profile-tagline">
+				Friendly and focused. Building a modern dating site with clean
+				design and smooth UX.
+			  </p>
+			</div>
+			<div class="profile-actions">
 			  <button
-				class="tab is-active"
-				role="tab"
-				aria-selected="true"
-				aria-controls="tab-about"
-				id="tab-about-btn"
+				class="btn btn--primary"
+				id="edit-profile-btn"
+				data-route-link="profile-edit"
 			  >
-				About
+				Edit Profile
 			  </button>
 			  <button
-				class="tab"
-				role="tab"
-				aria-selected="false"
-				aria-controls="tab-interests"
-				id="tab-interests-btn"
+				class="btn btn--secondary"
+				id="share-profile-btn"
+				data-action="share-profile"
 			  >
-				Interests
+				Share Profile
 			  </button>
-			  <button
-				class="tab"
-				role="tab"
-				aria-selected="false"
-				aria-controls="tab-photos"
-				id="tab-photos-btn"
-			  >
-				Photos
-			  </button>
-			</nav>
-			<div class="tab-panels">
-			  <div
-				class="tab-panel is-visible"
-				id="tab-about"
-				role="tabpanel"
-				aria-labelledby="tab-about-btn"
-			  >
-				<p>
-				  Friendly and focused. Building a modern dating site with clean
-				  design and smooth UX.
-				</p>
-			  </div>
-			  <div
-				class="tab-panel"
-				id="tab-interests"
-				role="tabpanel"
-				aria-labelledby="tab-interests-btn"
-				hidden
-			  >
-				<ul class="chips">
-				  <li class="chip">Tech</li>
-				  <li class="chip">Design</li>
-				  <li class="chip">Entrepreneurship</li>
-				</ul>
-			  </div>
-			  <div
-				class="tab-panel"
-				id="tab-photos"
-				role="tabpanel"
-				aria-labelledby="tab-photos-btn"
-				hidden
-			  >
-				<div class="photo-grid">
+			</div>
+			<div class="profile-section">
+			  <h3 class="section-title">My Photos</h3>
+			  <div class="photo-gallery" id="photo-gallery">
+				<div class="photo-item">
 				  <img
-					src="https://placehold.co/240x240?text=Phil+1"
-					alt="My photo"
+					src="https://placehold.co/150x200/52c0f0/fff?text=Photo+1"
+					alt="User photo 1"
 				  />
+				</div>
+				<div class="photo-item">
 				  <img
-					src="https://placehold.co/240x240?text=Phil+2"
-					alt="My photo"
+					src="https://placehold.co/150x200/52c0f0/fff?text=Photo+2"
+					alt="User photo 2"
 				  />
+				</div>
+				<div class="photo-item">
 				  <img
-					src="https://placehold.co/240x240?text=Phil+3"
-					alt="My photo"
+					src="https://placehold.co/150x200/52c0f0/fff?text=Photo+3"
+					alt="User photo 3"
 				  />
-				  <button class="btn btn--ghost" data-action="add-photo">
-					+ Add Photo
-				  </button>
+				</div>
+				<div class="photo-item">
+				  <img
+					src="https://placehold.co/150x200/52c0f0/fff?text=Photo+4"
+					alt="User photo 4"
+				  />
 				</div>
 			  </div>
 			</div>
-			<div class="page-body">
-			  <h3>Discovery Settings</h3>
-			  <div class="settings-group">
-				<h3>Show Me</h3>
-				<div class="settings-item">
-				  <span>Gender</span>
-				  <div
-					class="toggle-switch switch-container"
-					id="gender-toggle"
-				  >
-					<input
-					  type="checkbox"
-					  id="gender-switch"
-					  class="toggle-checkbox"
-					/>
-					<label
-					  for="gender-switch"
-					  class="switch"
-					  aria-label="Toggle gender preference"
-					>
-					  <span class="toggle"></span>
-					  <span class="gender-label">Men</span>
-					  <span class="gender-label">Women</span>
-					</label>
-				  </div>
-				</div>
+			<div class="profile-section">
+			  <h3 class="section-title">About Me</h3>
+			  <div class="about-me-text">
+				<p id="profile-bio">
+				  Creative developer passionate about building intuitive and
+				  visually appealing user experiences. Currently building a
+				  modern dating site with a clean
+				  design and smooth UX. Always
+				  eager to learn and collaborate!
+				</p>
 			  </div>
-			  <div class="settings-group">
-				<h3>Distance</h3>
-				<div class="settings-item">
-				  <span>Max Distance</span>
-				  <div class="age-range">
-					<input
-					  type="range"
-					  id="distance"
-					  min="1"
-					  max="100"
-					  value="50"
-					/>
-					<span class="age-range-value">50 km</span>
-				  </div>
-				</div>
-			  </div>
-			  <div class="settings-group">
-				<h3>Age</h3>
-				<div class="settings-item">
-				  <span>Age Range</span>
-				  <div class="age-range">
-					<input
-					  type="range"
-					  id="age-range"
-					  min="18"
-					  max="60"
-					  value="25"
-					/>
-					<span class="age-range-value">18 - 30</span>
-				  </div>
-				</div>
+			  <div class="interests-tags" id="profile-interests">
+				<span class="interest-tag">Tech</span>
+				<span class="interest-tag">Design</span>
+				<span class="interest-tag">Entrepreneurship</span>
+				<span class="interest-tag">Innovation</span>
 			  </div>
 			</div>
 		  </div>
 		</section>
-
+		<section class="page" data-route="profile-edit" hidden>
+		  <div class="onboarding-header">
+			<button
+			  class="btn btn--icon btn--back"
+			  data-route-link="profile"
+			>
+			  <svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			  >
+				<path d="M15 18l-6-6 6-6" />
+			  </svg>
+			</button>
+			<h2>Edit Profile</h2>
+		  </div>
+		  <form class="onboarding-form" id="profile-form">
+			<div class="form-group">
+			  <label for="profile-name">Name</label>
+			  <input type="text" id="profile-name" required />
+			</div>
+			<div class="form-group">
+			  <label for="profile-age">Age</label>
+			  <input type="number" id="profile-age" required />
+			</div>
+			<div class="form-group">
+			  <label for="profile-gender">Gender</label>
+			  <select id="profile-gender" required>
+				<option value="">Select...</option>
+				<option value="male">Male</option>
+				<option value="female">Female</option>
+				<option value="non-binary">Non-binary</option>
+				<option value="other">Other</option>
+			  </select>
+			</div>
+			<div class="form-group">
+			  <label for="profile-bio">Bio</label>
+			  <textarea id="profile-bio" rows="4" required></textarea>
+			</div>
+			<div class="form-group">
+			  <label for="profile-interests-input"
+				>Interests (comma-separated)</label
+			  >
+			  <input
+				type="text"
+				id="profile-interests-input"
+				placeholder="e.g., Hiking, Tech, Art"
+			  />
+			</div>
+			<div class="form-group photo-upload-group">
+			  <label>Photos</label>
+			  <input
+				type="file"
+				id="profile-photo-upload"
+				multiple
+				accept="image/*"
+				class="sr-only"
+			  />
+			  <label for="profile-photo-upload" class="photo-upload-label">
+				<svg
+				  xmlns="http://www.w3.org/2000/svg"
+				  width="24"
+				  height="24"
+				  viewBox="0 0 24 24"
+				  fill="none"
+				  stroke="currentColor"
+				  stroke-width="2"
+				  stroke-linecap="round"
+				  stroke-linejoin="round"
+				>
+				  <path d="M12 5v14M5 12h14"></path>
+				</svg>
+				Upload Photos
+			  </label>
+			  <div class="photo-preview-grid" id="photo-preview-grid"></div>
+			</div>
+			<button
+			  type="submit"
+			  class="btn btn--primary"
+			  id="save-profile-btn"
+			>
+			  Save Profile
+			</button>
+		  </form>
+		</section>
+		<section id="page-settings" class="page" data-route="settings" hidden>
+		  <div class="container settings-container">
+			<div class="page-header page-header--back">
+			  <button
+				class="btn--icon btn--ghost"
+				data-action="go-back"
+				aria-label="Go back"
+			  >
+				<i class="fa-solid fa-arrow-left"></i>
+			  </button>
+			  <h1 class="page-title">Settings</h1>
+			  <div class="user-info-header">
+				<span class="user-name">Philip</span>
+				<img
+				  src="https://placehold.co/40x40"
+				  alt="Philip's avatar"
+				  class="user-avatar"
+				/>
+			  </div>
+			</div>
+			<div class="settings-menu">
+			  <ul class="settings-group">
+				<h3 class="settings-group-title">
+				  <i class="fa-solid fa-user"></i> Account
+				</h3>
+				<li>
+				  <a href="#" data-route-link="profile"
+					>Profile</a
+				  >
+				</li>
+				<li>
+				  <a href="#" data-route-link="manage-photos">Manage Photos</a>
+				</li>
+				<li>
+				  <a href="#">Subscription Plans & Payments</a>
+				</li>
+				<li>
+				  <a href="#">Transactions</a>
+				</li>
+			  </ul>
+			  <ul class="settings-group">
+				<h3 class="settings-group-title">
+				  <i class="fa-solid fa-gear"></i> General
+				</h3>
+				<li>
+				  <a href="#">Privacy Settings</a>
+				</li>
+				<li>
+				  <a href="#" data-route-link="terms">Terms & Condition</a>
+				</li>
+				<li>
+				  <a href="#">Refund Policy</a>
+				</li>
+				<li>
+				  <a href="#">User Agreement</a>
+				</li>
+			  </ul>
+			  <ul class="settings-group">
+				<h3 class="settings-group-title">
+				  <i class="fa-solid fa-headset"></i> Settings
+				</h3>
+				<li>
+				  <a href="#">Get Support</a>
+				</li>
+			  </ul>
+			</div>
+			<div class="logout-btn-container">
+			  <button class="btn btn--primary btn--logout">
+				Logout <i class="fa-solid fa-arrow-right"></i>
+			  </button>
+			</div>
+		  </div>
+		</section>
 		<section
 		  id="page-discover-settings"
 		  class="page"
@@ -594,27 +751,22 @@
 			<form id="settings-form">
 			  <div class="settings-group">
 				<h3>Show Me</h3>
-				<div class="settings-item">
-				  <span>Gender</span>
-				  <div
-					class="toggle-switch switch-container"
-					id="gender-toggle"
-				  >
-					<input
-					  type="checkbox"
-					  id="gender-switch"
-					  class="toggle-checkbox"
-					/>
-					<label
-					  for="gender-switch"
-					  class="switch"
-					  aria-label="Toggle gender preference"
-					>
-					  <span class="toggle"></span>
-					  <span class="gender-label">Men</span>
-					  <span class="gender-label">Women</span>
-					</label>
-				  </div>
+				<div class="gender-select" role="radiogroup" aria-label="Gender to show">
+				  <label class="gender-label">
+					<input type="radio" name="show-gender" value="male">
+					<span class="dot"></span>
+					Men
+				  </label>
+				  <label class="gender-label">
+					<input type="radio" name="show-gender" value="female">
+					<span class="dot"></span>
+					Women
+				  </label>
+				  <label class="gender-label">
+					<input type="radio" name="show-gender" value="both">
+					<span class="dot"></span>
+					Both
+				  </label>
 				</div>
 			  </div>
 			  <div class="settings-group">
@@ -624,12 +776,12 @@
 				  <div class="age-range">
 					<input
 					  type="range"
-					  id="distance"
+					  id="distance-range"
 					  min="1"
 					  max="100"
 					  value="50"
 					/>
-					<span class="age-range-value">50 km</span>
+					<span class="range-value" id="distance-value">50 km</span>
 				  </div>
 				</div>
 			  </div>
@@ -645,7 +797,7 @@
 					  max="60"
 					  value="25"
 					/>
-					<span class="age-range-value">18 - 30</span>
+					<span class="range-value" id="age-value">18 - 30</span>
 				  </div>
 				</div>
 			  </div>
@@ -667,7 +819,6 @@
 			</form>
 		  </div>
 		</section>
-
 		<section id="page-terms" class="page" data-route="terms" hidden>
 		  <div class="container">
 			<h2 class="page__title">Terms and Conditions</h2>
@@ -724,7 +875,6 @@
 			</div>
 		  </div>
 		</section>
-
 		<section id="page-privacy" class="page" data-route="privacy" hidden>
 		  <div class="container">
 			<h2 class="page__title">Privacy Policy</h2>
@@ -733,13 +883,6 @@
 				This Privacy Policy describes how we collect, use, and disclose
 				your personal information when you use our Service and the
 				choices you have associated with that data.
-			  </p>
-			  <h4>1. Information Collection And Use</h4>
-			  <p>
-				We collect several different types of information for various
-				purposes to provide and improve our Service to you. This may
-				include personal data such as your name, email address, age, and
-				location, as well as usage data (e.g., how you use the site).
 			  </p>
 			  <h4>2. Use of Data</h4>
 			  <p>DateMe uses the collected data for various purposes:</p>
@@ -783,7 +926,6 @@
 			</div>
 		  </div>
 		</section>
-
 		<section id="page-contact" class="page" data-route="contact" hidden>
 		  <div class="container">
 			<h2 class="page__title">Contact Us</h2>
@@ -816,7 +958,6 @@
 			</div>
 		  </div>
 		</section>
-
 		<section id="page-donate" class="page" data-route="donate" hidden>
 		  <div class="container">
 			<h2 class="page__title">Support Our Website</h2>
@@ -830,7 +971,6 @@
 		  </div>
 		</section>
 	  </main>
-
 	  <nav class="bottom-nav" role="navigation" aria-label="Main">
 		<a
 		  href="#"
@@ -849,6 +989,15 @@
 		>
 		  <i class="fa-solid fa-star bottom-nav__icon"></i>
 		  <span class="bottom-nav__label">Matches</span>
+		</a>
+		<a
+		  href="#"
+		  class="bottom-nav__link"
+		  data-route-link="connect"
+		  aria-label="Connect"
+		>
+		  <i class="fa-solid fa-handshake bottom-nav__icon"></i>
+		  <span class="bottom-nav__label">Connect</span>
 		</a>
 		<a
 		  href="#"
@@ -882,7 +1031,6 @@
 		</div>
 	  </footer>
 	</div>
-
 	<dialog
 	  id="modal-edit-profile"
 	  class="modal"
@@ -910,7 +1058,6 @@
 		</form>
 	  </div>
 	</dialog>
-
 	<dialog id="modal-gift" hidden>
 	  <div class="modal-content">
 		<h3>Send a gift to <span data-recipient-name></span></h3>
@@ -925,7 +1072,6 @@
 		</div>
 	  </div>
 	</dialog>
-
 	<dialog
 	  id="modal-donate"
 	  class="modal"
@@ -986,8 +1132,7 @@
 		  </div>
 		</form>
 	  </div>
-	</dialog>
-
+	</d>
 	<template id="template-profile-card">
 	  <article
 		class="card profile-card"
@@ -998,49 +1143,36 @@
 		<div class="profile-card__media">
 		  <img src="" alt="" />
 		</div>
-		<div class="profile-card__body">
-		  <header class="profile-card__header">
-			<h2 class="profile-card__title">Name <span class="age">00</span></h2>
-			<p class="profile-card__meta">City • Tag • Tag</p>
-		  </header>
-		  <p class="profile-card__bio">Short bio goes here.</p>
-		  <p class="profile-card__distance">
-			Distance: <span class="distance">0</span> km
-		  </p>
-		  <p class="profile-card__status">
-			Status: <span class="status">Offline</span>
-		  </p>
+		<div class="profile-card__content">
+		  <div class="profile-card__info">
+			<h2 class="profile-card__name">Name <span class="age">00</span></h2>
+			<div class="profile-card__metadata">
+			  <span class="profile-card__last-online">Last Online</span>
+			  <span class="profile-card__distance">Distance</span>
+			</div>
+			<p class="profile-card__bio">Short bio goes here.</p>
+		  </div>
 		  <div
 			class="profile-card__actions"
 			role="group"
 			aria-label="Profile actions"
 		  >
-			<button
-			  class="btn btn--icon btn--skip"
-			  data-action="skip"
-			  aria-label="Skip"
-			>
-			  <i class="fa-solid fa-xmark"></i>
-			</button>
-			<button
-			  class="btn btn--icon btn--like"
-			  data-action="like"
-			  aria-label="Like"
-			>
-			  <i class="fa-solid fa-heart"></i>
-			</button>
-			<button
-			  class="btn btn--icon btn--gift"
-			  data-action="gift"
-			  aria-label="Send gift"
-			>
-			  <i class="fa-solid fa-gift"></i>
-			</button>
+		  <button class="btn btn--icon btn--rewind" data-action="rewind" aria-label="Rewind">
+			<i class="fa-solid fa-rotate-left"></i>
+		  </button>
+		  <button class="btn btn--icon btn--dislike" data-action="skip" aria-label="Dislike">
+			<i class="fa-solid fa-thumbs-down"></i>
+		  </button>
+		  <button class="btn btn--icon btn--like" data-action="like" aria-label="Like">
+			<i class="fa-solid fa-heart"></i>
+		  </button>
+		  <button class="btn btn--icon btn--super-like" data-action="super-like" aria-label="Super-like">
+			<i class="fa-solid fa-star"></i>
+		  </button>
 		  </div>
 		</div>
 	  </article>
 	</template>
-
 	<template id="template-match">
 	  <li class="match" tabindex="0">
 		<img src="" alt="" class="match__avatar" data-match-avatar />
@@ -1066,35 +1198,48 @@
 		</div>
 	  </li>
 	</template>
+	<template id="template-convo">
+	  <li class="convo" data-target-uid="">
+		<img src="" alt="user avatar" class="convo__avatar" />
+		<div class="convo__info">
+		  <strong class="convo__name"></strong>
+		  <p class="convo__last"></p>
+		</div>
+		<span class="convo__meta"></span>
+	  </li>
+	</template>
+	<template id="template-message-me">
+	  <div class="bubble bubble--me">
+		<p class="bubble__text"></p>
+		<time></time>
+	  </div>
+	</template>
+	<template id="template-message-them">
+	  <div class="bubble bubble--them">
+		<p class="bubble__text"></p>
+		<time></time>
+	  </div>
+	</template>
 	<script src="app.js"></script>
-
 	<script>
 	  document.addEventListener('DOMContentLoaded', () => {
 		const routeLinks = document.querySelectorAll('[data-route-link]');
 		const pages = document.querySelectorAll('.page');
 		const bottomNavLinks = document.querySelectorAll('.bottom-nav__link');
-
 		function navigateTo(routeName) {
-		  // Hide all pages
 		  pages.forEach(page => {
 			page.classList.remove('is-visible');
 			page.setAttribute('hidden', '');
 		  });
-
-		  // Show the target page
 		  const targetPage = document.querySelector(`[data-route="${routeName}"]`);
 		  if (targetPage) {
 			targetPage.classList.add('is-visible');
 			targetPage.removeAttribute('hidden');
 			document.title = `${routeName.charAt(0).toUpperCase() + routeName.slice(1)} - DateMe`;
 		  }
-
-		  // Update active states for both nav bars
 		  updateActiveNav(routeName);
 		}
-
 		function updateActiveNav(routeName) {
-		  // Update active state for main navigation
 		  const mainNavLinks = document.querySelectorAll('.nav__link');
 		  mainNavLinks.forEach(link => {
 			if (link.dataset.routeLink === routeName) {
@@ -1105,8 +1250,6 @@
 			  link.removeAttribute('aria-current');
 			}
 		  });
-
-		  // Update active state for bottom navigation
 		  bottomNavLinks.forEach(link => {
 			if (link.dataset.routeLink === routeName) {
 			  link.classList.add('is-active');
@@ -1117,7 +1260,6 @@
 			}
 		  });
 		}
-
 		routeLinks.forEach(link => {
 		  link.addEventListener('click', (event) => {
 			event.preventDefault();
@@ -1125,10 +1267,9 @@
 			navigateTo(routeName);
 		  });
 		});
-
-		// Set initial page and nav state on load
 		navigateTo('home');
 	  });
 	</script>
   </body>
+</html>
 </html>
