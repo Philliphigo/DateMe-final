@@ -4,27 +4,60 @@
   "use strict";
 
   /* =========================
-	 Firebase Configuration
-	 ========================= */
-  const firebaseConfig = {
-	apiKey: "AIzaSyA7nZ2Y51lfpkrwHKIvYe-y_EmyIk_WEfU",
-	authDomain: "dateme-website.firebaseapp.com",
-	projectId: "dateme-website",
-	storageBucket: "dateme-website.firebasestorage.app",
-	messagingSenderId: "589523570810",
-	appId: "1:589523570810:web:b0e7f6520242704ebdebc3",
-	// Note: measurementId isn't used in v8 of the SDK, so you can leave it out.
+   Mock Database & State
+   ========================= */
+  const mockDatabase = {
+	users: [],
+	profiles: [
+	  {
+		uid: "temp-profile-1",
+		email: "jane@example.com",
+		name: "Jane",
+		age: 22,
+		bio: "Loves to read and hike.",
+		onboardingComplete: true,
+		location: { city: "Blantyre" },
+		avatar: "https://placehold.co/120x120?text=Jane",
+		photos: ["https://placehold.co/240x240?text=Jane+1", "https://placehold.co/240x240?text=Jane+2"],
+		interests: ["Reading", "Hiking", "Coffee", "Dogs"]
+	  },
+	  {
+		uid: "temp-profile-2",
+		email: "john@example.com",
+		name: "John",
+		age: 25,
+		bio: "Musician and artist.",
+		onboardingComplete: true,
+		location: { city: "Lilongwe" },
+		avatar: "https://placehold.co/120x120?text=John",
+		photos: ["https://placehold.co/240x240?text=John+1"],
+		interests: ["Music", "Art", "Travel"]
+	  },
+	  {
+		uid: "temp-profile-3",
+		email: "sarah@example.com",
+		name: "Sarah",
+		age: 21,
+		bio: "Student and coffee addict.",
+		onboardingComplete: true,
+		location: { city: "Zomba" },
+		avatar: "https://placehold.co/120x120?text=Sarah",
+		photos: ["https://placehold.co/240x240?text=Sarah+1", "https://placehold.co/240x240?text=Sarah+2", "https://placehold.co/240x240?text=Sarah+3"],
+		interests: ["Studying", "Coffee", "Movies"]
+	  },
+	],
+	matches: [],
+	messages: {}
   };
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  const storage = firebase.storage();
+  const db = mockDatabase;
+  let currentUser = null;
+  let allProfiles = [...db.profiles];
+  let currentMatchId = null;
 
   /* =========================
-	 DOM cache & State
-	 ========================= */
+   DOM cache & State
+   ========================= */
   const $ = selector => document.querySelector(selector);
   const $$ = selector => Array.from(document.querySelectorAll(selector));
 
@@ -49,11 +82,15 @@
   const profileHeaderBio = $(".profile-header__info p");
   const profileHeaderAvatar = $(".profile-header__media img");
   const navAvatar = $(".header .avatar-btn img");
-  // Photo-related DOM elements have been removed from here
+  const photoGallery = $("#photo-gallery");
+  const photoPlaceholder = $("#photo-placeholder");
+  const photoUploadInput = $("#profile-photo-upload");
+  const photoPreviewGrid = $("#photo-preview-grid");
+  const photoManagementModal = $("#modal-photo-management");
   const modalDonate = $("#modal-donate");
   const editProfileBtn = $("#edit-profile-btn");
   const saveProfileBtn = $("#save-profile-btn");
-  // NEW DONATION-RELATED DOM ELEMENTS
+  const shareProfileBtn = $("#share-profile-btn");
   const donateForm = $('#donation-form');
   const donateAmountInput = $('#donate-amount');
   const donateHeading = $('#donate-heading');
@@ -61,7 +98,6 @@
   const airtelBtn = $('[data-action="select-airtel"]');
   const tnmBtn = $('[data-action="select-tnm"]');
   const cancelDonateBtn = $('[data-action="cancel-donate"]');
-  // NEW MESSAGING DOM ELEMENTS
   const messagesContainer = $('#messages-container');
   const messageForm = $('#message-form');
   const messageInput = $('#message-input');
@@ -73,60 +109,9 @@
   const chatBody = $('#chat-body');
 
 
-  let currentUser = {
-	uid: "temp-user-id-123",
-	name: "Phillip",
-	email: "phil@example.com",
-	onboardingComplete: true,
-	isSubscriber: false,
-	age: 20,
-	gender: "male",
-	bio: "Friendly and focused. Building a modern dating site with clean design and smooth UX.",
-	location: { city: "Lilongwe", lat: -13.9667, lon: 33.7833 },
-	interests: ["Tech", "Design", "Entrepreneurship"],
-	avatar: "https://placehold.co/120x120?text=Phil",
-	photos: ["https://placehold.co/240x240?text=Phil+1", "https://placehold.co/240x240?text=Phil+2", "https://placehold.co/240x240?text=Phil+3"],
-  };
-  let allProfiles = [
-	  {
-		uid: "temp-profile-1",
-		name: "Jane",
-		age: 22,
-		bio: "Loves to read and hike.",
-		onboardingComplete: true,
-		location: { city: "Blantyre" },
-		avatar: "https://placehold.co/120x120?text=Jane",
-		distance: 12,
-		isOnline: true,
-	  },
-	  {
-		uid: "temp-profile-2",
-		name: "John",
-		age: 25,
-		bio: "Musician and artist.",
-		onboardingComplete: true,
-		location: { city: "Lilongwe" },
-		avatar: "https://placehold.co/120x120?text=John",
-		distance: 3,
-		isOnline: false,
-	  },
-	  {
-		uid: "temp-profile-3",
-		name: "Sarah",
-		age: 21,
-		bio: "Student and coffee addict.",
-		onboardingComplete: true,
-		location: { city: "Zomba" },
-		avatar: "https://placehold.co/120x120?text=Sarah",
-		distance: 80,
-		isOnline: true,
-	  },
-  ];
-  let currentMatchId = null;
-
   /* =========================
-	 Helper utilities
-	 ========================= */
+   Helper utilities
+   ========================= */
   const safeQuery = (sel, ctx = document) => {
 	try { return ctx.querySelector(sel); }
 	catch (e) { return null; }
@@ -139,46 +124,31 @@
   const escapeHtml = unsafe => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   
   /* =========================
-	 AUTHENTICATION
-	 ========================= */
-  // The checkAuthState function is no longer needed since we are not using Firebase Auth.
-  async function checkAuthState() {
-	auth.onAuthStateChanged(async user => {
-	  if (user) {
-		// Check if email is verified
-		if (!user.emailVerified) {
-		  console.log('User signed in but email not verified.');
-		  alert('Please verify your email address to continue.');
-		  await auth.signOut(); // Log them out if not verified
-		  routeTo("login", false);
-		  return;
-		}
-
-		currentUser = await fetchUserProfile(user.uid);
-		if (currentUser && currentUser.onboardingComplete) {
-		  console.log('User signed in:', currentUser.email);
-		  await handleUserLogin(currentUser);
-		} else {
-		  console.log('User signed in, but profile not found or onboarding not complete. Redirecting.');
-		  routeTo("onboarding", false);
-		}
-	  } else {
-		console.log('User logged out.');
-		currentUser = null;
-		body.classList.remove('logged-in');
-		routeTo("login", false);
-	  }
-	});
+   AUTHENTICATION (Mocked)
+   ========================= */
+  function saveUserProfile(profileData) {
+	let index = db.profiles.findIndex(p => p.uid === profileData.uid);
+	if (index !== -1) {
+	  db.profiles[index] = profileData;
+	} else {
+	  db.profiles.push(profileData);
+	}
+	currentUser = profileData;
+	console.log("Profile data saved (mocked):", profileData);
   }
 
-  async function handleUserLogin(userProfile) {
+  function fetchUserProfile(uid) {
+	return db.profiles.find(p => p.uid === uid);
+  }
+
+  function handleUserLogin(userProfile) {
 	currentUser = userProfile;
 	body.classList.add('logged-in');
 	
 	renderProfilePage(currentUser);
 	
-	await fetchAllProfiles();
-	await loadNextProfile();
+	allProfiles = db.profiles.filter(p => p.uid !== currentUser.uid);
+	loadNextProfile();
 
 	routeTo("home", false);
   }
@@ -195,30 +165,24 @@
 		  alert("Passwords do not match!");
 		  return;
 		}
-		
-		try {
-		  const { user } = await auth.createUserWithEmailAndPassword(email, password);
-		  
-		  // Send email verification
-		  await user.sendEmailVerification();
 
-		  const newProfile = {
-			uid: user.uid,
-			email: user.email,
-			onboardingComplete: false,
-			isSubscriber: false,
-			settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
-		  };
-		  
-		  await saveUserProfile(newProfile);
-		  console.log('User created. Please check your email for verification.');
-		  alert('Account created! Please check your email to verify your address before logging in.');
-		  
-		  await auth.signOut(); // Force log out to require email verification
-		  routeTo("login", true); 
-		} catch (err) {
-		  alert("Signup failed: " + err.message);
+		if (db.profiles.find(u => u.email === email)) {
+		  alert("An account with this email already exists.");
+		  return;
 		}
+
+		const newUserUid = `user-${Date.now()}`;
+		const newProfile = {
+		  uid: newUserUid,
+		  email: email,
+		  onboardingComplete: false,
+		  isSubscriber: false,
+		  settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
+		};
+		
+		saveUserProfile(newProfile);
+		alert('Account created! Please log in to complete your profile.');
+		routeTo("login", true); 
 	  });
 	}
 	
@@ -230,27 +194,22 @@
 		const gender = onboardingForm.querySelector("#onboarding-gender").value;
 		const bio = onboardingForm.querySelector("#onboarding-bio").value;
 		
-		try {
-		  const updatedProfile = {
-			...currentUser,
-			name: name,
-			age: age,
-			gender: gender,
-			bio: bio,
-			onboardingComplete: true,
-			location: { city: "New York", lat: 40.7128, lon: -74.0060 },
-			interests: ["Coding", "Hiking"],
-			avatar: "https://placehold.co/120x120?text=User", // Default placeholder
-			photos: [], // Empty photo array
-		  };
-		  
-		  await saveUserProfile(updatedProfile);
-		  await handleUserLogin(updatedProfile);
-		  console.log('Onboarding complete. Welcome!');
-		} catch (err) {
-		  console.error("Onboarding failed:", err);
-		  alert("Onboarding failed: " + err.message);
-		}
+		const updatedProfile = {
+		  ...currentUser,
+		  name: name,
+		  age: age,
+		  gender: gender,
+		  bio: bio,
+		  onboardingComplete: true,
+		  location: { city: "New York", lat: 40.7128, lon: -74.0060 },
+		  interests: ["Coding", "Hiking"],
+		  avatar: "https://placehold.co/120x120?text=User",
+		  photos: [],
+		};
+		
+		saveUserProfile(updatedProfile);
+		handleUserLogin(updatedProfile);
+		console.log('Onboarding complete. Welcome!');
 	  });
 	}
 
@@ -259,52 +218,29 @@
 		e.preventDefault();
 		const email = loginForm.querySelector("#login-email").value;
 		const password = loginForm.querySelector("#login-password").value;
-		try {
-		  await auth.signInWithEmailAndPassword(email, password);
-		} catch (err) {
-		  alert("Login failed: " + err.message);
+		
+		const userProfile = db.profiles.find(u => u.email === email);
+		if (userProfile) {
+		  handleUserLogin(userProfile);
+		} else {
+		  alert("Login failed: User not found.");
 		}
 	  });
 	}
 	
 	if (logoutBtn) {
 	  logoutBtn.addEventListener("click", async () => {
-		try {
-		  await auth.signOut();
-		} catch (err) {
-		  console.error("Logout error:", err);
-		}
+		currentUser = null;
+		body.classList.remove('logged-in');
+		routeTo("login", false);
+		console.log("Logged out successfully.");
 	  });
 	}
   }
 
-  async function saveUserProfile(profileData) {
-	//await db.collection("users").doc(profileData.uid).set(profileData, { merge: true });
-	// Since we are not connected to Firebase, this function will not do anything.
-	console.log("Profile data saved (simulated):", profileData);
-	currentUser = profileData;
-  }
-
-  async function fetchUserProfile(uid) {
-	// Since we are not connected to Firebase, this will return a hardcoded profile for now
-	return {
-		uid: uid,
-		name: "Jane",
-		age: 22,
-		bio: "Loves to read and hike.",
-		onboardingComplete: true,
-		location: { city: "Blantyre" },
-		avatar: "https://placehold.co/120x120?text=Jane",
-		distance: 12,
-		isOnline: true,
-	};
-  }
-  
-  // The uploadPhoto function has been completely removed.
-  
   /* =========================
-	 ROUTING (simple SPA)
-	 ========================= */
+   ROUTING (simple SPA)
+   ========================= */
   function bindRouting() {
 	document.addEventListener("click", ev => {
 	  const link = ev.target.closest("[data-route-link]");
@@ -315,9 +251,11 @@
 	  
 	  const targetUid = link.getAttribute('data-target-uid');
 	  if (route === 'messages' && targetUid) {
-		  // const matchId = [currentUser.uid, targetUid].sort().join('_');
-		  // currentMatchId = matchId;
-		  // getLiveMessages(matchId, targetUid);
+		  const matchId = [currentUser.uid, targetUid].sort().join('_');
+		  currentMatchId = matchId;
+		  getLiveMessages(matchId, targetUid);
+	  } else if (route === 'messages' && !targetUid) {
+		  renderConvoList();
 	  }
 	  
 	  routeTo(route, true);
@@ -330,11 +268,6 @@
   }
   
   function routeTo(routeName = "home", push = true) {
-	// Since we're not using auth, we'll remove this block
-	// if (!currentUser && routeName !== "login" && routeName !== "signup") {
-	//   routeName = "login";
-	// }
-	
 	if (routeName === "login" || routeName === "signup") {
 	  body.classList.add('auth-page');
 	} else {
@@ -357,11 +290,11 @@
 		currentPage.classList.add("is-visible");
 		currentPage.hidden = false;
 	}
-
-	// This part is for real-time data, which won't work without a logged-in user.
-	// You'll need to re-implement or mock this logic if you want to see this page.
-	if (routeName === 'messages') {
-		// renderConvoList();
+	
+	if (routeName === 'messages' && !currentMatchId) {
+		renderConvoList();
+	} else if (routeName === 'messages' && currentMatchId) {
+		// Chat page is already set up from data-target-uid
 	}
 	
 	if (push) {
@@ -370,14 +303,9 @@
   }
 
   /* =========================
-	 PROFILES — render & interactions
-	 ========================= */
-  async function fetchAllProfiles() {
-	// Instead of fetching from Firebase, we'll use our hardcoded list
-	console.log("Simulating fetching profiles...");
-  }
-
-  async function loadNextProfile() {
+   PROFILES — render & interactions
+   ========================= */
+  function loadNextProfile() {
 	if (!cardsContainer || !cardTemplate) return;
 	
 	cardsContainer.innerHTML = '';
@@ -400,27 +328,40 @@
 	safeQuery(".profile-card__title", card).textContent = `${profile.name}, ${profile.age}`;
 	safeQuery(".profile-card__meta", card).textContent = profile.location.city;
 	safeQuery(".profile-card__bio", card).textContent = profile.bio;
-	// No isOnline property in our mocked data
-	// safeQuery(".profile-card__status .status--online", card).textContent = profile.isOnline ? "Online" : "Offline";
-	safeQuery(".profile-card__distance", card).textContent = `${profile.distance} km away`;
+	safeQuery(".profile-card__distance", card).textContent = `${Math.floor(Math.random() * 100) + 1} km away`;
 	
 	cardsContainer.appendChild(card);
   }
   
-  // NEW: Matching Logic Functions
   async function saveUserSwipe(targetUid, action) {
-	// No Firebase, so we'll just log the action
-	console.log(`Simulated swipe: User liked/skipped profile ${targetUid} with action '${action}'`);
+	console.log(`Simulated swipe: User ${currentUser.uid} swiped on ${targetUid} with action '${action}'`);
+	// Mocking a match object structure
+	const match = {
+		users: [currentUser.uid, targetUid],
+		lastMessage: null,
+		status: action === 'like' ? 'pending' : 'skipped'
+	};
+	
+	// Check if a match already exists for these two users
+	let existingMatchIndex = db.matches.findIndex(m => m.users.includes(currentUser.uid) && m.users.includes(targetUid));
+	if (existingMatchIndex === -1) {
+		db.matches.push(match);
+	} else {
+		db.matches[existingMatchIndex].status = action === 'like' ? 'pending' : 'skipped';
+	}
   }
 
-  async function checkForMatch(targetUid) {
-	// Since we don't have a database, we'll just return true to simulate a match
-	return true;
+  function checkForMatch(targetUid) {
+	const otherUserMatchIndex = db.matches.findIndex(m => m.users.includes(targetUid) && m.users.includes(currentUser.uid) && m.status === 'pending');
+	return otherUserMatchIndex !== -1;
   }
 
-  async function createMatch(targetUid) {
-	// No Firebase, so we'll just log the match
-	console.log(`Simulated match found with ${targetUid}!`);
+  function createMatch(targetUid) {
+	const existingMatchIndex = db.matches.findIndex(m => m.users.includes(currentUser.uid) && m.users.includes(targetUid));
+	if (existingMatchIndex !== -1) {
+	  db.matches[existingMatchIndex].status = 'matched';
+	  console.log(`Simulated match found with ${targetUid}!`);
+	}
   }
 
   function bindCardActions() {
@@ -437,53 +378,54 @@
 	  if (action === "like" || action === "skip") {
 		await saveUserSwipe(targetUid, action);
 		if (action === "like") {
-		  const isMatch = await checkForMatch(targetUid);
-		  if (isMatch) {
+		  if (checkForMatch(targetUid)) {
+			createMatch(targetUid);
 			alert("It's a Match! 🎉");
 		  }
 		}
-		await loadNextProfile();
+		loadNextProfile();
 	  } else if (action === "message") {
-		const targetUid = card.getAttribute("data-uid");
-		// This is where you'd link to the chat page
+		const targetProfile = fetchUserProfile(targetUid);
+		if (!targetProfile) {
+			console.error("Target profile not found.");
+			return;
+		}
+		
+		const matchId = [currentUser.uid, targetUid].sort().join('_');
+		currentMatchId = matchId;
+		getLiveMessages(matchId, targetUid);
 		routeTo("messages", true);
 	  }
 	});
   }
 
   /* =========================
-	 MESSAGING
-	 ========================= */
-
-  // The messaging functions are tied to Firebase, so they won't work in this state.
-  // I am leaving them here but they will not be functional.
-
-  async function renderConvoList() {
+   MESSAGING (Mocked)
+   ========================= */
+  function renderConvoList() {
 	if (!convoList) return;
 	convoList.innerHTML = '';
-	const snapshot = await db.collection("matches").where("users", "array-contains", currentUser.uid).get();
 	
-	const matches = snapshot.docs.map(doc => {
-	  const matchData = doc.data();
-	  const otherUserUid = matchData.users.find(uid => uid !== currentUser.uid);
-	  return {
-		...matchData,
-		id: doc.id,
-		otherUserUid: otherUserUid,
-	  };
-	});
+	const matchedProfiles = db.matches
+		.filter(m => m.users.includes(currentUser.uid) && m.status === 'matched')
+		.map(m => {
+			const otherUserUid = m.users.find(uid => uid !== currentUser.uid);
+			const profile = fetchUserProfile(otherUserUid);
+			return {
+				...m,
+				otherUserUid: otherUserUid,
+				profile: profile
+			};
+		});
 
-	for (const match of matches) {
-		const profile = await fetchUserProfile(match.otherUserUid);
-		if (profile) {
-			const convo = convoTemplate.content.cloneNode(true);
-			const link = convo.querySelector('.convo');
-			link.setAttribute('data-target-uid', profile.uid);
-			safeQuery('.convo__avatar', convo).src = profile.avatar;
-			safeQuery('.convo__name', convo).textContent = profile.name;
-			safeQuery('.convo__last', convo).textContent = match.lastMessage || 'Start a conversation!';
-			convoList.appendChild(convo);
-		}
+	for (const match of matchedProfiles) {
+	  const convo = convoTemplate.content.cloneNode(true);
+	  const link = convo.querySelector('.convo');
+	  link.setAttribute('data-target-uid', match.otherUserUid);
+	  safeQuery('.convo__avatar', convo).src = match.profile.avatar;
+	  safeQuery('.convo__name', convo).textContent = match.profile.name;
+	  safeQuery('.convo__last', convo).textContent = match.lastMessage || 'Start a conversation!';
+	  convoList.appendChild(convo);
 	}
   }
 
@@ -493,22 +435,14 @@
 	chatBody.innerHTML = '';
 	safeQuery('.chat').style.display = 'grid';
 	
-	fetchUserProfile(targetUid).then(profile => {
-	  if (profile && chatHeader) {
-		chatHeader.querySelector('.chat__peer-name').textContent = profile.name;
-	  }
-	});
+	const profile = fetchUserProfile(targetUid);
+	if (profile && chatHeader) {
+	  chatHeader.querySelector('.chat__peer-name').textContent = profile.name;
+	}
 	
-	const messagesRef = db.collection("matches").doc(matchId).collection("messages").orderBy("timestamp");
-	messagesRef.onSnapshot(snapshot => {
-	  snapshot.docChanges().forEach(change => {
-		if (change.type === "added") {
-		  const msg = change.doc.data();
-		  renderSingleMessage(msg);
-		}
-	  });
-	  chatBody.scrollTop = chatBody.scrollHeight;
-	});
+	const messages = db.messages[matchId] || [];
+	messages.forEach(msg => renderSingleMessage(msg));
+	chatBody.scrollTop = chatBody.scrollHeight;
   }
 
   function renderSingleMessage(msg) {
@@ -517,10 +451,8 @@
 	const template = isMe ? messageTemplateMe : messageTemplateThem;
 	const bubble = template.content.cloneNode(true);
 	safeQuery('.bubble__text', bubble).textContent = msg.text;
-	if (msg.timestamp) {
-	  const time = msg.timestamp.toDate();
-	  safeQuery('time', bubble).textContent = time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-	}
+	const time = new Date(msg.timestamp);
+	safeQuery('time', bubble).textContent = time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 	chatBody.appendChild(bubble);
   }
   
@@ -534,25 +466,32 @@
 		  const message = {
 			  text: escapeHtml(text),
 			  senderId: currentUser.uid,
-			  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+			  timestamp: Date.now()
 		  };
 		  
-		  try {
-			  await db.collection("matches").doc(currentMatchId).collection("messages").add(message);
-			  await db.collection("matches").doc(currentMatchId).update({
-				  lastMessage: text
-			  });
-			  messageInput.value = '';
-		  } catch (error) {
-			  console.error("Error sending message:", error);
+		  if (!db.messages[currentMatchId]) {
+			  db.messages[currentMatchId] = [];
 		  }
+		  db.messages[currentMatchId].push(message);
+
+		  const match = db.matches.find(m => {
+			const [user1, user2] = m.users;
+			return (user1 === currentUser.uid && user2 === currentMatchId.split('_').find(id => id !== currentUser.uid)) ||
+				   (user2 === currentUser.uid && user1 === currentMatchId.split('_').find(id => id !== currentUser.uid));
+		  });
+		  if (match) {
+			match.lastMessage = text;
+		  }
+
+		  renderSingleMessage(message);
+		  messageInput.value = '';
+		  chatBody.scrollTop = chatBody.scrollHeight;
 	  });
   }
 
-
   /* =========================
-	 UI Render
-	 ========================= */
+   UI Render
+   ========================= */
   function renderProfilePage(profile) {
 	if (!profile) return;
 	if (profileHeaderName) profileHeaderName.textContent = `${profile.name}, ${profile.age}`;
@@ -560,27 +499,115 @@
 	if (profileHeaderAvatar) profileHeaderAvatar.src = profile.avatar;
 	if (navAvatar) navAvatar.src = profile.avatar;
 	
-	// The profile photo grid is no longer rendered here
+	renderPhotoGallery(profile.photos);
+	renderInterests(profile.interests);
+  }
+
+  function renderPhotoGallery(photos) {
+	if (!photoGallery) return;
+	photoGallery.innerHTML = '';
+	if (photos && photos.length > 0) {
+		photoPlaceholder.hidden = true;
+		photos.forEach(url => {
+			const img = document.createElement('img');
+			img.src = url;
+			photoGallery.appendChild(img);
+		});
+	} else {
+		photoPlaceholder.hidden = false;
+	}
+  }
+
+  function renderInterests(interests) {
+	const interestsContainer = $('#profile-interests');
+	if (!interestsContainer) return;
+	interestsContainer.innerHTML = '';
+	if (interests && interests.length > 0) {
+		interests.forEach(interest => {
+			const tag = document.createElement('span');
+			tag.className = 'interest-tag';
+			tag.textContent = interest;
+			interestsContainer.appendChild(tag);
+		});
+	}
   }
   
   /* =========================
-	 Profile Management
-	 ========================= */
+   Profile Management (Mocked)
+   ========================= */
   function bindProfileManagement() {
 	if (editProfileBtn) {
 	  editProfileBtn.addEventListener("click", () => {
 		routeTo("profile-edit", true);
 	  });
 	}
+
+	if (shareProfileBtn) {
+		shareProfileBtn.addEventListener("click", async () => {
+			if (navigator.share) {
+				try {
+					await navigator.share({
+						title: `${currentUser.name}'s Profile`,
+						text: `Check out ${currentUser.name}'s profile on DateMe!`,
+						url: window.location.href,
+					});
+					console.log('Profile shared successfully');
+				} catch (error) {
+					console.error('Error sharing:', error);
+				}
+			} else {
+				navigator.clipboard.writeText(window.location.href).then(() => {
+					alert("Profile link copied to clipboard!");
+				});
+			}
+		});
+	}
 	
-	// The photo upload event listener has been removed from here
+	if (photoUploadInput) {
+	  photoUploadInput.addEventListener("change", async (e) => {
+		const files = Array.from(e.target.files);
+		for (const file of files) {
+		  if (file.size > 2 * 1024 * 1024) {
+			alert("Image must be smaller than 2MB.");
+			continue;
+		  }
+		  const localUrl = URL.createObjectURL(file);
+		  const photoId = `photo-${Date.now()}`;
+		  const preview = createPhotoPreview(localUrl, photoId);
+		  photoPreviewGrid.appendChild(preview);
+		}
+	  });
+	}
 	
+	if (photoPreviewGrid) {
+		photoPreviewGrid.addEventListener('click', (e) => {
+			if (e.target.classList.contains('remove-btn')) {
+				const preview = e.target.closest('.photo-preview');
+				if (preview) {
+					const photoId = preview.getAttribute('data-photo-id');
+					const photoIndex = currentUser.photos.findIndex(url => url.includes(photoId));
+					if (photoIndex !== -1) {
+					  currentUser.photos.splice(photoIndex, 1);
+					}
+					preview.remove();
+					console.log("Simulated photo removal.");
+				}
+			}
+		});
+	}
+	
+	function createPhotoPreview(url, id) {
+		const div = document.createElement('div');
+		div.className = 'photo-preview';
+		div.setAttribute('data-photo-id', id);
+		div.innerHTML = `
+			<img src="${url}" alt="Photo preview">
+			<button class="remove-btn" type="button">&times;</button>
+		`;
+		return div;
+	}
+
 	if (profileForm) {
-	  profileForm.querySelector("#profile-name").value = currentUser.name || "";
-	  profileForm.querySelector("#profile-age").value = currentUser.age || "";
-	  profileForm.querySelector("#profile-bio").value = currentUser.bio || "";
-	  profileForm.querySelector("#profile-gender").value = currentUser.gender || "";
-	  
 	  profileForm.addEventListener("submit", async e => {
 		e.preventDefault();
 		
@@ -589,25 +616,26 @@
 		  name: profileForm.querySelector("#profile-name").value,
 		  age: parseInt(profileForm.querySelector("#profile-age").value),
 		  bio: profileForm.querySelector("#profile-bio").value,
-		  gender: profileForm.querySelector("#profile-gender").value
+		  gender: profileForm.querySelector("#profile-gender").value,
+		  interests: profileForm.querySelector("#profile-interests-input").value.split(",").map(i => i.trim()).filter(i => i),
+		  photos: [...currentUser.photos] // Shallow copy
 		};
+		
+		// Grab photos from the preview grid
+		const newPhotos = Array.from(photoPreviewGrid.querySelectorAll('img')).map(img => img.src);
+		updatedProfile.photos = newPhotos;
 
-		try {
-		  await saveUserProfile(updatedProfile);
-		  currentUser = updatedProfile;
-		  renderProfilePage(currentUser);
-		  alert("Profile saved successfully!");
-		  routeTo("profile", true);
-		} catch (err) {
-		  alert("Failed to save profile: " + err.message);
-		}
+		saveUserProfile(updatedProfile);
+		renderProfilePage(currentUser);
+		alert("Profile saved successfully!");
+		routeTo("profile", true);
 	  });
 	}
   }
   
   /* =========================
-	 UI Elements & Modals
-	 ========================= */
+   UI Elements & Modals
+   ========================= */
   function bindUI() {
 	const themeSwitch = $('#theme-switch');
 	if (themeSwitch) {
@@ -633,7 +661,6 @@
 	  }
 	}
 	
-	// NEW: Donation logic
 	let selectedProvider = null;
 	
 	if (airtelBtn) {
@@ -686,15 +713,29 @@
   }
 
   /* =========================
-	 Init everything
-	 ========================= */
+   Init everything
+   ========================= */
   async function init() {
 	pages.forEach(p => p.hidden = true);
 	
-	// await checkAuthState(); // Comment out to skip auth check
-	
-	// Add some temporary user data so the UI can be rendered
-	handleUserLogin(currentUser);
+	// Create a new, temporary user profile to simulate a fresh signup
+	currentUser = {
+	  uid: "temp-new-user-" + Date.now(),
+	  email: "newuser@example.com",
+	  onboardingComplete: false,
+	  isSubscriber: false,
+	  settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
+	};
+
+	// Add this new user to our mock database
+	db.profiles.push(currentUser);
+
+	// Now, go directly to the onboarding page
+	if (currentUser && currentUser.onboardingComplete) {
+	  handleUserLogin(currentUser);
+	} else {
+	  routeTo("onboarding", false);
+	}
 
 	bindAuthForms();
 	bindRouting();
@@ -703,6 +744,10 @@
 	bindUI();
 	bindMessageForm();
   }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+
+})();
 
   document.addEventListener("DOMContentLoaded", () => init());
 
