@@ -2,111 +2,138 @@
 
 /*
  * =================================================================
- * ✨ 1. NEUMORPHIC THEME TOKENS (Soft Shadow Polish)
+ * ✨ 1. NEUMORPHIC THEME TOKENS (Modern Polish)
  * =================================================================
  */
 :root {
-  /* LIGHT MODE - Soft White Neumorphism */
-  --bg: #f0f2f5; /* A slightly more pronounced light background */
-  --surface: #e6e9ee; /* Primary surface color */
-  --surface-2: #dae0e6; /* Used for subtle insets/depth */
-  --surface-3: #cdd5dc; /* Slightly deeper depth */
-  --text: #1a1a1a;
-  --text-2: #4a4a4a;
-  --text-weak: #a8a8a8;
+  /* LIGHT MODE - Softer White Neumorphism */
+  --bg: #eef0f4; /* Slightly warmer, softer background */
+  --surface: #f5f7fa; /* Primary surface color, brighter */
+  --surface-2: #e9ecf1; /* Used for subtle insets/depth */
+  --surface-3: #dfe4ea; /* Slightly deeper depth */
+  --text: #1c1d21;
+  --text-2: #5a5c63;
+  --text-weak: #a1a5b0;
   --border: transparent;
-  /* Soft Shadows: Lighter 'light' shadow and less harsh 'dark' shadow */
-  --light-shadow: #ffffff;
-  --dark-shadow: #a3b1c6; /* Softer, blue-gray tone for better depth */
+  /* Softer Shadows: Increased blur and softer colors for a more subtle effect */
+  --light-shadow: rgba(255, 255, 255, 0.9);
+  --dark-shadow: #bec8d9; /* Softer, less intense dark shadow */
   --brand: #e91e63; /* Pink */
   --brand-600: #d81b60; /* Darker Pink */
   --brand-700: #c2185b; /* Even Darker Pink */
   --muted: #f5e8ea;
   --ok: #ef4444;
   --danger: #ef4444;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 10px;
-  --header-h: 60px; /* Smaller Header Height */
-  --bottom-nav-h: 68px;
+  /* Modern Radii: Rounder corners for a friendlier look */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --header-h: 60px;
+  --bottom-nav-h: 70px;
   --container-w: 1100px;
   --easing: cubic-bezier(.22, 1, .36, 1);
-  --fast: .18s var(--easing);
-  --slow: .32s var(--easing);
+  --fast: .2s var(--easing); /* Slightly slower for smoother feel */
+  --slow: .35s var(--easing);
 
-  /* Soft Neumorphic Profile Shadow: Smaller blur, lighter color */
-  --profile-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  /* Polished Neumorphic Shadow: Larger blur, more distance for a softer lift */
+  --profile-shadow: 6px 6px 14px var(--dark-shadow), -6px -6px 14px var(--light-shadow);
+  --profile-shadow-hover: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+  --inset-shadow: inset 3px 3px 6px var(--dark-shadow), inset -3px -3px 6px var(--light-shadow);
+  --inset-shadow-deep: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow);
+
   --profile-bg: var(--bg);
   --profile-surface: var(--surface);
   --profile-text: var(--text);
   --profile-text-2: var(--text-2);
+
+  /* --- BOTTOM NAVIGATION VARIABLES --- */
+  --nav-bg: var(--surface);
+  --nav-shadow-light: var(--light-shadow);
+  --nav-shadow-dark: var(--dark-shadow);
+  --inactive-color: var(--text-2);
+  --inactive-icon-fill: #55aaff;
+  --active-color: var(--brand);
+  
+  /* --- ✨ GEMINI'S MAGIC: GRADIENTS --- */
+  --heading-gradient: linear-gradient(110deg, #f795d2 0%, #a18cd1 50%, #84fab0 100%);
 }
 
 body[data-theme="dark"] {
-  /* DARK MODE - Soft Black Neumorphism */
-  --bg: #21242d; /* Softer dark background */
-  --surface: #2b2e38; /* Primary surface color */
-  --surface-2: #343743; /* For subtle inset/depth */
-  --surface-3: #414552; /* Slightly deeper depth */
-  --text: #e0e0e0;
-  --text-2: #b0b0b0;
-  --text-weak: #757575;
-  --light-shadow: #3f424c; /* Lighter light-shadow for soft-dark neumorphism */
-  --dark-shadow: #181a1f; /* Deeper dark-shadow for soft-dark neumorphism */
+  /* DARK MODE - Deeper, Richer Neumorphism */
+  --bg: #1e2027; /* Deeper, less blue background */
+  --surface: #252830;
+  --surface-2: #2e313a;
+  --surface-3: #3a3e49;
+  --text: #f0f0f0;
+  --text-2: #c0c0c0;
+  --text-weak: #808080;
+  --light-shadow: #2c2f38; /* Subtler light shadow */
+  --dark-shadow: #15161a; /* Deeper dark shadow */
   --muted: #2c2c2c;
-  --brand: #e91e63;
-  --brand-600: #d81b60;
-  --brand-700: #c2185b;
-  --ok: #ef4444;
 
-  /* Soft Neumorphic Profile Shadow for Dark Mode */
-  --profile-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  /* Polished Neumorphic Shadow for Dark Mode */
+  --profile-shadow: 6px 6px 14px var(--dark-shadow), -6px -6px 14px var(--light-shadow);
+  --profile-shadow-hover: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+  --inset-shadow: inset 3px 3px 6px var(--dark-shadow), inset -3px -3px 6px var(--light-shadow);
+  --inset-shadow-deep: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow);
+
   --profile-bg: var(--bg);
   --profile-surface: var(--surface);
   --profile-text: var(--text);
   --profile-text-2: var(--text-2);
+
+  /* --- BOTTOM NAVIGATION VARIABLES --- */
+  --nav-bg: var(--surface);
+  --nav-shadow-light: var(--light-shadow);
+  --nav-shadow-dark: var(--dark-shadow);
+  --inactive-color: var(--text-2);
 }
 
-/* Update all neumorphic elements to use the new, softer shadow properties */
+/* Update all neumorphic elements to use the new, polished shadow properties */
 .btn {
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 .btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  transform: translateY(-2px);
+  box-shadow: var(--profile-shadow-hover);
 }
 .btn:active {
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
   transform: translateY(0);
 }
 
 .btn--primary {
-  box-shadow: 4px 4px 8px rgba(233, 30, 99, .3), -4px -4px 8px rgba(233, 30, 99, .3); /* Softer brand shadow */
+  box-shadow: 4px 4px 12px rgba(233, 30, 99, .35), -4px -4px 12px rgba(255, 255, 255, .05);
 }
 .btn--primary:active {
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow); /* Pressed effect uses general shadows */
+  box-shadow: var(--inset-shadow-deep);
 }
 
 /* Apply new soft shadows to other elements */
-[data-floating], .match, .convos, .settings-group, .plan, dialog, .profile-section, .avatar-btn {
+[data-floating], .match, .convos, .settings-group, .plan, .profile-section, .avatar-btn {
 	box-shadow: var(--profile-shadow);
+	transition: all var(--slow);
+}
+
+[data-floating]:hover, .match:hover, .settings-group:hover, .plan:hover, .profile-section:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--profile-shadow-hover);
 }
 
 /* Specific inset shadow updates */
-.form-group input, .form-group select, .form-group textarea, 
-.search-bar__input, .category-btn, .tab, .chat__composer input, 
-.gender-label input[type="radio"], .toggle-switch, .chip, 
+.form-group input, .form-group select, .form-group textarea,
+.search-bar__input, .category-btn, .tab, .chat__composer input,
+.gender-label input[type="radio"], .toggle-switch, .chip,
 .btn--upload-photo, .photo-upload-label {
-	box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+	box-shadow: var(--inset-shadow);
 }
 
-/* Other shadow updates */
 .theme-toggle__label {
-	box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+	box-shadow: var(--inset-shadow-deep);
 }
 
 .gender-label input[type="radio"]:checked {
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 /* ----------------------------------------------------------------- */
@@ -131,7 +158,6 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   transition: background var(--slow), color var(--slow);
-  /* Added for backdrop-filter to work */
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
@@ -195,9 +221,8 @@ textarea {
 }
 
 .auth-form__title {
-  font-size: 1.5rem;
+  font-size: 1.8rem; /* Made it larger to showcase gradient */
   font-family: 'Inter', sans-serif;
-  color: var(--text);
   margin-bottom: 24px;
 }
 
@@ -234,7 +259,8 @@ textarea {
 
 .page__title {
   margin: 0 0 8px;
-  font-size: clamp(1.3rem, 1.2rem + .6vw, 1.8rem);
+  font-size: clamp(1.5rem, 1.3rem + .8vw, 2.2rem);
+  font-weight: 800;
 }
 
 .page__subtitle {
@@ -253,7 +279,7 @@ textarea {
   padding: 0 16px;
 }
 
-/* ---------- LOGIN/SIGNUP PAGES (AUTH-FORM) - CONVERTED TO GLASSMORPHISM (Retained) ---------- */
+/* ---------- LOGIN/SIGNUP PAGES (AUTH-FORM) - GLASSMORPHISM ---------- */
 .auth-form {
   text-align: center;
 }
@@ -263,16 +289,13 @@ textarea {
 }
 
 .auth-form__form {
-  /* Use a more transparent background */
   background: rgba(255, 255, 255, 0.1);
-  /* Reduce the blur for a clearer, transparent effect */
-  backdrop-filter: blur(5px) saturate(180%);
-  -webkit-backdrop-filter: blur(5px) saturate(180%);
-  padding: 24px;
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  padding: 32px; /* Increased padding */
   border-radius: var(--radius-lg);
-  /* Replace neumorphic shadows with a more subtle glassmorphic shadow */
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
   display: grid;
   gap: 16px;
 }
@@ -295,10 +318,9 @@ textarea {
   width: 100%;
   padding: 12px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--surface-2);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
 }
 
 .form-group select {
@@ -347,10 +369,9 @@ textarea {
   padding: 12px 18px;
   background: var(--surface-2);
   color: var(--text-2);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-weight: 500;
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
   transition: all var(--fast);
 }
 
@@ -360,30 +381,27 @@ textarea {
 }
 
 .btn--upload-photo:active {
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
 
 /*
  * =================================================================
- * ✨ 2. HEADER / NAV (Grouped Options & Search Bar Smaller)
+ * ✨ 2. HEADER / NAV (Polished)
  * =================================================================
  */
 .header {
   position: sticky;
   top: 16px;
   z-index: 10;
-  /* Use neumorphism for a cohesive soft-shadow look */
   background: var(--surface);
   width: min(100% - 32px, var(--container-w));
   margin-inline: auto;
   border-radius: var(--radius-lg);
-  /* Use the soft neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .header__inner {
-  height: var(--header-h); /* Uses smaller header height var */
+  height: var(--header-h);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -396,7 +414,6 @@ textarea {
   align-items: center;
 }
 
-/* Styles for different header content types (Retained) */
 .header-nav-content {
   display: flex;
   justify-content: space-between;
@@ -441,32 +458,31 @@ textarea {
   font-weight: 800;
   letter-spacing: .3px;
   color: var(--brand);
-  font-size: 2rem; /* Adjusted to fit better in the smaller header */
+  font-size: 2rem;
 }
 
-/* Grouped Options Button */
 .btn--grouped-options {
-  --size: 40px; /* Reduced size for more options */
+  --size: 40px;
   width: var(--size);
   height: var(--size);
   padding: 0;
   border-radius: 50%;
   background: var(--surface-2);
-  color: var(--brand); /* Brand color for the icon */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  color: var(--brand);
+  box-shadow: var(--profile-shadow);
   transition: all var(--fast);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem; /* Size for the plus icon */
-  cursor: pointer; /* Ensure cursor is a pointer */
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 .btn--grouped-options:hover {
-  transform: translateY(-1px);
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  transform: translateY(-2px);
+  box-shadow: var(--profile-shadow-hover);
 }
 .btn--grouped-options:active {
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
   transform: translateY(0);
 }
 
@@ -487,31 +503,27 @@ textarea {
   border-radius: 999px;
   color: var(--text-2);
   transition: all var(--fast);
-  /* Changed to soft neumorphism background for consistency */
   background: var(--surface);
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .nav__link:hover {
-  transform: translateY(-1px);
-  /* A more pronounced shadow on hover */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  transform: translateY(-2px);
+  box-shadow: var(--profile-shadow-hover);
   color: var(--text);
 }
 
 .nav__link:active {
-  /* A subtle 'pressed' effect without the heavy neumorphic shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
   transform: translateY(0);
 }
 
 .nav__link.is-active {
   background: var(--brand);
   color: #fff;
-  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, .2), inset -4px -4px 8px rgba(255, 255, 255, .2);
+  box-shadow: var(--inset-shadow-deep);
 }
 
-/* badges (Retained) */
 .badge {
   display: inline-grid;
   place-items: center;
@@ -537,7 +549,10 @@ textarea {
   box-shadow: 0 0 0 2px var(--brand);
 }
 
-/* theme toggle (Retained) */
+/* * =================================================================
+ * ✨ NEUMORPHIC THEME TOGGLE OVERHAUL (Sun/Moon, Pink Ball)
+ * =================================================================
+ */
 .theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -550,29 +565,34 @@ textarea {
 }
 
 .theme-toggle__label {
-  --w: 54px;
-  --h: 30px;
+  --w: 70px;
+  --h: 36px;
   position: relative;
   width: var(--w);
   height: var(--h);
   border-radius: 999px;
   cursor: pointer;
   user-select: none;
-  background: var(--bg);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  background: var(--surface-2);
+  box-shadow: var(--inset-shadow-deep);
+  transition: all var(--slow);
+  overflow: hidden;
 }
 
 .theme-toggle__label::after {
   content: "";
   position: absolute;
-  inset: 4px auto 4px 4px;
-  width: calc(var(--h) - 8px);
+  inset: 3px auto 3px 3px;
+  width: calc(var(--h) - 6px);
   border-radius: 50%;
-  background: var(--surface);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
-  transition: inset var(--fast), transform var(--fast);
+  background: var(--brand);
+  box-shadow: var(--profile-shadow);
+  transition: inset var(--slow), box-shadow var(--slow), background var(--slow);
+}
+
+#theme-switch:checked + .theme-toggle__label::after {
+  inset: 3px 3px 3px auto;
+  box-shadow: 4px 4px 12px rgba(233, 30, 99, 0.4);
 }
 
 .theme-toggle__sun,
@@ -580,23 +600,34 @@ textarea {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 14px;
-  opacity: .7;
+  font-size: 1.25rem;
+  transition: opacity var(--slow), color var(--slow);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .theme-toggle__sun {
-  left: 8px;
+  left: 10px;
+  color: var(--text-2);
+  opacity: 1;
 }
 
 .theme-toggle__moon {
-  right: 8px;
+  right: 10px;
+  color: #4a4a4a;
+  opacity: 1;
 }
 
-#theme-switch:checked+.theme-toggle__label::after {
-  inset: 4px 4px 4px auto;
+#theme-switch:checked + .theme-toggle__label .theme-toggle__sun {
+  opacity: 0;
 }
 
-/* avatar/menu (Retained) */
+#theme-switch:checked + .theme-toggle__label .theme-toggle__moon {
+  opacity: 1;
+  color: var(--text);
+}
+/* END THEME TOGGLE OVERHAUL */
+
 .avatar {
   width: 36px;
   height: 36px;
@@ -614,35 +645,31 @@ textarea {
   border: none;
   border-radius: 50%;
   padding: 4px;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   transition: all var(--fast);
 }
 
 .avatar-btn:active {
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
 
-/* Search Bar Styling (Smaller) */
 .search-bar {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-grow: 1;
-  max-width: 300px; /* Smaller max-width for search bar */
-  margin: 0 10px; /* Reduced margins */
+  max-width: 300px;
+  margin: 0 10px;
 }
 
 .search-bar__input {
   flex-grow: 1;
-  padding: 8px 14px; /* Smaller padding */
+  padding: 8px 14px;
   border: none;
   border-radius: 999px;
   background: var(--surface);
-  /* Softer inset and adjusted shadow on focus */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
-  font-size: 0.9rem; /* Smaller font size */
+  box-shadow: var(--inset-shadow);
+  font-size: 0.9rem;
   height: 40px;
   transition: all var(--fast);
 }
@@ -653,10 +680,10 @@ textarea {
 
 .search-bar__input:focus {
   outline: none;
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow), 0 0 0 2px var(--brand);
+  box-shadow: var(--inset-shadow), 0 0 0 2px var(--brand);
 }
 
-/* ---------- BUTTONS (Retained) ---------- */
+/* ---------- BUTTONS ---------- */
 .btn {
   --btn-bg: var(--surface);
   --btn-fg: var(--text);
@@ -669,23 +696,20 @@ textarea {
   border: none;
   background: var(--btn-bg);
   color: var(--btn-fg);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   cursor: pointer;
   transform: translateZ(0);
   transition: all var(--fast);
 }
 
 .btn:hover {
-  transform: translateY(-1px);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  transform: translateY(-2px);
+  box-shadow: var(--profile-shadow-hover);
 }
 
 .btn:active {
   transform: translateY(0);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
 
 .btn--block {
@@ -696,8 +720,7 @@ textarea {
   --btn-bg: var(--brand);
   --btn-fg: #fff;
   border: none;
-  /* Uses updated neumorphic brand shadow */
-  box-shadow: 4px 4px 8px rgba(233, 30, 99, .3), -4px -4px 8px rgba(233, 30, 99, .3), 0 0 0 2px var(--brand);
+  box-shadow: 4px 4px 12px rgba(233, 30, 99, .35), 0 0 0 2px var(--brand);
 }
 
 .btn--primary:hover {
@@ -705,7 +728,7 @@ textarea {
 }
 
 .btn--primary:active {
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
 
 .btn--icon {
@@ -747,43 +770,37 @@ textarea {
 }
 
 .btn--secondary:active {
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
 }
 
-
-/* ---------- FLOATING UTILITY (Retained) ---------- */
+/* ---------- FLOATING UTILITY ---------- */
 [data-floating] {
   border-radius: var(--radius-lg);
   background: var(--surface);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
-/* ---------- CATEGORY SECTION (Retained) ---------- */
+/* ---------- CATEGORY SECTION ---------- */
 .category-section {
   padding: 1rem 0;
   margin-bottom: 24px;
 }
 
 .category-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 12px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 16px;
 }
 
 .category-list-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  /* Firefox */
   -ms-overflow-style: none;
-  /* IE and Edge */
 }
 
 .category-list-wrapper::-webkit-scrollbar {
   display: none;
-  /* Chrome, Safari, Opera */
 }
 
 .category-list {
@@ -810,36 +827,30 @@ textarea {
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   transition: all var(--fast);
 }
 
 .category-btn:hover {
   transform: translateY(-2px);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow-hover);
 }
 
 .category-btn:active {
   transform: translateY(0);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
-
 
 /*
  * =================================================================
- * ✨ 3. CARDS / PROFILES (Smaller Card Size)
+ * ✨ 3. CARDS / PROFILES (Polished)
  * =================================================================
  */
-/* Profile Cards for a Stack Layout (e.g., swipe view) */
 .cards-stack {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 16px;
-  /* Adjusted min-height to ensure it fits on screen, accounting for smaller header */
   min-height: calc(100dvh - var(--header-h) - var(--bottom-nav-h) - 32px);
   position: relative;
   overflow: hidden;
@@ -848,12 +859,12 @@ textarea {
 .profile-card {
   position: relative;
   width: 100%;
-  max-width: 320px; /* Smaller Max-Width for the swipe card */
+  max-width: 320px;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Lighter shadow for the card stack */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   background-color: var(--surface);
-  min-height: 450px; /* Smaller Min-Height */
+  min-height: 450px;
   display: flex;
   flex-direction: column;
 }
@@ -869,7 +880,6 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(100%);
   display: block;
 }
 
@@ -895,7 +905,7 @@ textarea {
 
 .profile-card__name {
   font-family: 'Inter', sans-serif;
-  font-size: 2rem; /* Slightly smaller name */
+  font-size: 2rem;
   font-weight: 700;
   margin: 0 0 4px;
 }
@@ -924,7 +934,6 @@ textarea {
   gap: 16px;
 }
 
-/* Glassmorphic buttons retained for the swipe card actions */
 .btn--dislike,
 .btn--like,
 .btn--rewind,
@@ -962,67 +971,64 @@ textarea {
   box-shadow: 0 6px 16px rgba(233, 30, 99, 0.4);
 }
 
-/* Hide the loading and no-profiles messages from the card layout */
 .loading,
 .no-profiles {
   display: none;
 }
 
-/* Profile Cards for a Grid Layout (e.g., discovery view) */
+/* Profile Cards for a Grid Layout */
 .card-grid {
   display: grid;
-  /* Smaller minmax to fit more cards on one line */
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem; /* Reduced gap */
+  gap: 1.5rem;
   width: 100%;
 }
 
 .profile-card--grid {
-  max-width: none; /* Let the grid handle the width */
-  min-height: 350px; /* Reduced min-height for grid cards */
-  box-shadow: var(--profile-shadow); /* Use soft neumorphic shadow */
+  max-width: none;
+  min-height: 350px;
+  box-shadow: var(--profile-shadow);
 }
 
 .profile-card__img {
   width: 100%;
-  height: 200px; /* Reduced image height */
+  height: 200px;
   object-fit: cover;
 }
 
 .btn--card-action {
-  --size: 38px; /* Smaller action buttons on the grid card */
+  --size: 38px;
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
   background: var(--surface-2);
   color: var(--text-2);
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   transition: all var(--fast);
 }
 
 .btn--card-action:hover {
   transform: translateY(-2px);
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow-hover);
 }
 
 .btn--card-action:active {
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
 
 .btn--like-card {
   background: var(--brand);
   color: #fff;
-  box-shadow: 4px 4px 8px rgba(233, 30, 99, 0.3), -4px -4px 8px rgba(233, 30, 99, 0.3);
+  box-shadow: 4px 4px 8px rgba(233, 30, 99, 0.3);
 }
 
 .btn--like-card:hover {
   background: var(--brand-600);
-  box-shadow: 6px 6px 12px rgba(233, 30, 99, 0.4), -6px -6px 12px rgba(233, 30, 99, 0.4);
+  box-shadow: 6px 6px 12px rgba(233, 30, 99, 0.4);
 }
 /* ----------------------------------------------------------------- */
 
-
-/* ---------- MATCHES LIST (Retained) ---------- */
+/* ---------- MATCHES LIST ---------- */
 .match-list {
   list-style: none;
   margin: 0;
@@ -1040,20 +1046,17 @@ textarea {
   border: none;
   border-radius: var(--radius-lg);
   background: var(--surface);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   transition: all var(--fast);
 }
 
 .match:hover {
   transform: translateY(-2px);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 8px 8px 16px var(--dark-shadow), -8px -8px 16px var(--light-shadow);
+  box-shadow: var(--profile-shadow-hover);
 }
 
 .match:active {
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
   transform: translateY(0);
 }
 
@@ -1069,7 +1072,7 @@ textarea {
   font-size: .9rem;
 }
 
-/* ---------- MESSAGES (SPLIT LAYOUT) (Retained) ---------- */
+/* ---------- MESSAGES (SPLIT LAYOUT) ---------- */
 .messages-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1078,14 +1081,12 @@ textarea {
   gap: 2rem;
 }
 
-/* left column */
 .convos {
   padding: 12px;
   border: none;
   border-radius: var(--radius-lg);
   background: var(--surface);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .convo-list {
@@ -1104,17 +1105,17 @@ textarea {
   padding: 10px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  background: var(--surface);
+  background: transparent; /* Changed for better hover */
   transition: all var(--fast);
 }
 
 .convo:hover {
-  background: var(--muted);
+  background: var(--surface-2);
 }
 
 .convo.is-active {
   background: color-mix(in oklab, var(--brand) 12%, transparent);
-  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1), inset -2px -2px 4px rgba(255, 255, 255, 0.1);
+  box-shadow: var(--inset-shadow);
 }
 
 .convo__avatar {
@@ -1129,15 +1130,13 @@ textarea {
   font-size: .9rem;
 }
 
-/* chat panel */
 .chat {
   display: none;
   grid-template-rows: auto 1fr auto;
   border: none;
   border-radius: var(--radius-lg);
   background: var(--surface);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .chat__header {
@@ -1145,7 +1144,7 @@ textarea {
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  border-bottom: 1px solid var(--text-weak);
+  border-bottom: 1px solid var(--surface-3); /* Softer border */
   border-top-left-radius: var(--radius-lg);
   border-top-right-radius: var(--radius-lg);
 }
@@ -1165,7 +1164,6 @@ textarea {
   right: 8px;
 }
 
-/* bubbles */
 .chat__body {
   padding: 14px;
   overflow: auto;
@@ -1182,8 +1180,7 @@ textarea {
   border-radius: 18px;
   background: var(--surface);
   border: none;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   position: relative;
   animation: bubbleIn var(--slow);
 }
@@ -1191,8 +1188,7 @@ textarea {
 .bubble--me {
   background: var(--brand);
   color: #fff;
-  /* Uses updated neumorphic brand shadow */
-  box-shadow: 4px 4px 8px rgba(233, 30, 99, .3), -4px -4px 8px rgba(233, 30, 99, .3);
+  box-shadow: 4px 4px 12px rgba(233, 30, 99, .35);
   align-self: flex-end;
 }
 
@@ -1213,11 +1209,9 @@ textarea {
   border-radius: var(--radius-md);
   padding: 16px;
   margin-top: 12px;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
-/* typing indicator */
 .typing {
   display: inline-flex;
   gap: 6px;
@@ -1227,8 +1221,7 @@ textarea {
   background: var(--surface);
   border: none;
   width: fit-content;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   align-self: flex-start;
 }
 
@@ -1248,13 +1241,12 @@ textarea {
   animation-delay: .3s;
 }
 
-/* composer */
 .chat__composer {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 12px;
-  border-top: 1px solid var(--text-weak);
+  border-top: 1px solid var(--surface-3); /* Softer border */
   border-bottom-left-radius: var(--radius-lg);
   border-bottom-right-radius: var(--radius-lg);
 }
@@ -1265,8 +1257,7 @@ textarea {
   border-radius: 999px;
   border: none;
   background: var(--surface);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
   color: var(--text);
 }
 
@@ -1281,18 +1272,16 @@ textarea {
 }
 
 .chat__composer .btn--icon:active {
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
 }
 
-/* ---------- DISCOVERY SETTINGS PAGE (Retained) ---------- */
+/* ---------- DISCOVERY SETTINGS PAGE ---------- */
 .settings-group {
   background: var(--surface);
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   margin-bottom: 1.5rem;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   border: none;
 }
 
@@ -1314,10 +1303,9 @@ textarea {
 .toggle-switch {
   display: flex;
   background: var(--surface);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
 
 .toggle-switch button {
@@ -1334,7 +1322,7 @@ textarea {
 .toggle-switch button.active {
   background: var(--brand);
   color: white;
-  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1), inset -2px -2px 4px rgba(255, 255, 255, 0.1);
+  box-shadow: var(--inset-shadow);
 }
 
 .age-range {
@@ -1349,8 +1337,7 @@ textarea {
   height: 8px;
   background: var(--surface-2);
   border-radius: 999px;
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
 }
 
 .age-range input[type="range"]::-webkit-slider-thumb {
@@ -1386,8 +1373,7 @@ textarea {
   border-radius: 999px;
   position: relative;
   cursor: pointer;
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
 
 .switch input::after {
@@ -1397,16 +1383,14 @@ textarea {
   width: 22px;
   border-radius: 50%;
   background: var(--surface);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   transition: inset var(--fast);
 }
 
 .switch input:checked::after {
   inset: 4px 4px 4px auto;
   background: var(--brand);
-  /* Uses updated neumorphic brand shadow */
-  box-shadow: 4px 4px 8px rgba(233, 30, 99, .2), -4px -4px 8px rgba(233, 30, 99, .2);
+  box-shadow: 4px 4px 8px rgba(233, 30, 99, .2);
 }
 
 .switch__label {
@@ -1427,8 +1411,7 @@ textarea {
   background: var(--surface);
   color: var(--text-2);
   cursor: pointer;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   transition: all var(--fast);
 }
 
@@ -1438,15 +1421,14 @@ textarea {
 }
 
 .tab:active {
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
   transform: translateY(0);
 }
 
 .tab.is-active {
   background: var(--brand);
   color: #fff;
-  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1), inset -2px -2px 4px rgba(255, 255, 255, 0.1);
+  box-shadow: var(--inset-shadow);
 }
 
 .tab-panel {
@@ -1454,8 +1436,7 @@ textarea {
   border: none;
   border-radius: var(--radius-lg);
   background: var(--surface);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .chips {
@@ -1471,8 +1452,7 @@ textarea {
   padding: 8px 12px;
   border-radius: 999px;
   background: var(--surface);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
 }
 
 .photo-grid {
@@ -1483,7 +1463,7 @@ textarea {
 }
 
 .photo-grid img {
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .plan {
@@ -1493,15 +1473,19 @@ textarea {
   background: var(--surface);
   display: grid;
   gap: 8px;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .plan h3 {
   margin: 0;
 }
 
-/* ---------- BOTTOM NAVIGATION (GLASSPHORPHIC & NEUMORPHIC) ---------- */
+/*
+ * =================================================================
+ * COMPLETE SOFT NEUMORPHIC BOTTOM NAVIGATION (REVISED)
+ * =================================================================
+ */
+
 .bottom-nav {
   display: none;
   position: fixed;
@@ -1509,27 +1493,12 @@ textarea {
   left: 0;
   right: 0;
   height: var(--bottom-nav-h);
-  /* Glassmorphism Effect */
-  background: rgba(255, 255, 255, 0.4);
-  /* White with transparency */
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  /* Neumorphic Shadows */
-  box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.1), 0 6px 16px rgba(255, 255, 255, 0.4);
-  /* Subtle dark shadow + light shadow */
-  border-top: none;
+  background: var(--nav-bg);
+  box-shadow: var(--profile-shadow);
+  border-radius: 20px 20px 0 0;
   grid-template-columns: repeat(4, 1fr);
   z-index: 10;
-  overflow: hidden;
-  /* Important for the border effect */
-}
-
-/* This media query will activate the bottom nav on smaller screens */
-@media (max-width: 1000px) {
-  .bottom-nav {
-	display: grid;
-	padding-bottom: env(safe-area-inset-bottom);
-  }
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .bottom-nav__link {
@@ -1538,75 +1507,58 @@ textarea {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  color: var(--text-2);
+  gap: 2px;
+  color: var(--inactive-color);
   transition: all var(--fast);
-  /* White 'glowing' border effect */
-  border-radius: 999px;
-  overflow: hidden;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  background: transparent;
+  box-shadow: none; /* Removed initial shadow for a cleaner look */
 }
 
-.bottom-nav__link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.5);
-  opacity: 0;
-  transition: opacity var(--fast);
-}
-
-.bottom-nav__link.is-active::before {
-  opacity: 1;
-}
-
-.bottom-nav__link:hover {
-  color: var(--text);
+.bottom-nav__link:hover,
+.bottom-nav__link:focus {
+  color: var(--active-color);
   transform: translateY(-2px);
 }
 
-.bottom-nav__link.is-active {
-  /* Set a transparent brand color for the active icon's glow */
-  color: rgba(233, 30, 99, 0.8);
+.bottom-nav__link.is-active,
+.bottom-nav__link:active {
+  color: var(--active-color);
+  transform: translateY(0);
+  background: var(--nav-bg);
+  box-shadow: var(--inset-shadow-deep);
+  filter: none;
 }
 
-/* Icon and Label adjustments */
+
 .bottom-nav__icon {
   width: 24px;
   height: 24px;
-  /* Use a gradient to replicate the dual-tone effect from the image */
-  background: linear-gradient(45deg, #1e90ff, #00ced1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  fill: var(--brand);
-  /* Subtle inner shadow for a "pressed" look */
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+  fill: var(--inactive-icon-fill);
   transition: all var(--fast);
+  filter: none;
 }
 
 .bottom-nav__link.is-active .bottom-nav__icon {
-  background: linear-gradient(45deg, var(--brand), #ff69b4);
-  -webkit-background-clip: text;
+  fill: var(--active-color);
 }
 
 .bottom-nav__label {
   font-size: 11px;
   font-weight: 500;
-  color: var(--text-2);
+  color: var(--inactive-color);
   transition: all var(--fast);
 }
 
 .bottom-nav__link.is-active .bottom-nav__label {
-  color: var(--brand);
+  color: var(--active-color);
+  text-shadow: none;
 }
 
 /* ---------- FOOTER ---------- */
 .footer {
-  border-top: 1px solid var(--text-weak);
+  border-top: 1px solid var(--surface-3); /* Softer border */
   background: var(--bg);
 }
 
@@ -1631,8 +1583,7 @@ textarea {
   background: var(--surface);
   border: none;
   border-radius: var(--radius-md);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
   position: absolute;
   right: 16px;
   top: calc(var(--header-h) + 8px);
@@ -1641,7 +1592,7 @@ textarea {
 .menu li a {
   display: block;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .menu li a:hover {
@@ -1653,19 +1604,6 @@ textarea {
   top: 50px;
 }
 
-dialog {
-  border: none;
-  padding: 2rem;
-  border-radius: 16px;
-  background: var(--surface);
-  color: var(--text);
-  /* Uses updated neumorphic shadow */
-  box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
-}
-
-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.4);
-}
 
 .modal-content h3 {
   margin-top: 0;
@@ -1682,7 +1620,7 @@ dialog::backdrop {
   margin-top: 1rem;
 }
 
-/* ---------- UTILITIES (Retained) ---------- */
+/* ---------- UTILITIES ---------- */
 .skip-link {
   position: absolute;
   left: -9999px;
@@ -1695,11 +1633,11 @@ dialog::backdrop {
   background: var(--brand);
   color: #fff;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   z-index: 1000;
 }
 
-/* ---------- ANIMATIONS (Retained) ---------- */
+/* ---------- ANIMATIONS ---------- */
 @keyframes bounce {
   0%,
   80%,
@@ -1726,33 +1664,27 @@ dialog::backdrop {
   }
 }
 
-/* ---------- RESPONSIVE FIXES (Updated for new header height) ---------- */
-/* Desktop-specific styles (min-width) */
+
+/* ---------- RESPONSIVE FIXES ---------- */
 @media (min-width: 1001px) {
   .messages-grid {
 	grid-template-columns: 1fr 2.5fr;
   }
 
-  /* Added to hide the bottom nav on desktop, as requested */
   .bottom-nav {
 	display: none !important;
   }
 }
 
-/* Mobile-specific styles (max-width) */
 @media (max-width: 1000px) {
-
-  /* Hide the desktop nav on mobile */
   .nav {
 	display: none;
   }
 
-  /* Show the bottom nav on mobile */
   .bottom-nav {
 	display: grid;
   }
 
-  /* Add padding to prevent content from being hidden by the bottom nav */
   .app {
 	padding-bottom: var(--bottom-nav-h);
   }
@@ -1761,38 +1693,35 @@ dialog::backdrop {
 	padding-bottom: calc(var(--bottom-nav-h) + 16px);
   }
 
-  /* Header adjustments for mobile */
   .header {
-	width: 100%; /* Make the header full-width */
-	top: 0; /* Align it to the top of the screen */
-	border-radius: 0; /* Remove the rounded corners */
-	margin: 0; /* Remove side margins */
-	box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Use a subtle bottom shadow */
-	border: none; /* Remove the border */
-	position: sticky; /* Keep it sticky at the top */
-	background: var(--surface); /* Use surface for solid color on mobile */
+	width: 100%;
+	top: 0;
+	border-radius: 0;
+	margin: 0;
+	box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Softer shadow for mobile */
+	border: none;
+	position: sticky;
+	background: var(--surface);
   }
 
   .header__inner {
-	padding: 0 16px; /* Ensure padding is on the inner content */
+	padding: 0 16px;
   }
 
   .brand__name {
-	font-size: 1.8rem; /* Even smaller for mobile header */
+	font-size: 1.8rem;
   }
 
-  /* Search bar hidden on mobile header, usually moved to a separate page or a small button */
   .search-bar {
 	display: none;
   }
 
-  /* Adjusting the category section for mobile */
   .category-list {
-	flex-wrap: nowrap; /* Prevent wrapping to keep the horizontal scroll effect */
+	flex-wrap: nowrap;
   }
 
   .category-list-wrapper {
-	overflow-x: auto; /* Enable horizontal scrolling */
+	overflow-x: auto;
 	-webkit-overflow-scrolling: touch;
 	scrollbar-width: none;
 	-ms-overflow-style: none;
@@ -1801,13 +1730,12 @@ dialog::backdrop {
 	display: none;
   }
 
-  /* Card stack fix with new smaller header height */
   .cards-stack {
-	min-height: calc(100dvh - var(--header-h) - var(--bottom-nav-h) - 16px); /* Adjusted min-height for mobile view */
-	padding: 16px 8px; /* Reduced side padding for cards */
+	min-height: calc(100dvh - var(--header-h) - var(--bottom-nav-h) - 16px);
+	padding: 16px 8px;
   }
   .profile-card {
-	max-width: 100%; /* Make the card take full width on smaller screens */
+	max-width: 100%;
   }
 }
 
@@ -1828,7 +1756,6 @@ dialog::backdrop {
 	text-align: center;
   }
 
-  /* Chat panel now takes up the whole screen on mobile */
   .chat {
 	position: fixed;
 	top: 0;
@@ -1857,7 +1784,6 @@ dialog::backdrop {
   max-width: 600px;
   margin: 0 auto;
   padding-top: 0;
-  /* Remove top padding as the header is now part of the page */
 }
 
 .profile-page-header {
@@ -1866,11 +1792,11 @@ dialog::backdrop {
   justify-content: space-between;
   padding: 1rem;
   background: var(--profile-surface);
-  border-bottom: 1px solid var(--text-weak);
+  border-bottom: 1px solid var(--surface-3);
   position: sticky;
   top: 0;
   z-index: 5;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .profile-content {
@@ -1888,7 +1814,7 @@ dialog::backdrop {
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 8px 8px 16px var(--dark-shadow), -8px -8px 16px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .profile-info-section {
@@ -1924,16 +1850,14 @@ dialog::backdrop {
   background: var(--profile-surface);
   padding: 1.5rem;
   border-radius: var(--radius-lg);
-  /* Uses updated neumorphic shadow */
   box-shadow: var(--profile-shadow);
   margin-bottom: 1.5rem;
 }
 
 .section-title {
   margin-top: 0;
-  font-size: 1.2rem;
-  color: var(--profile-text-2);
-  border-bottom: 1px solid var(--text-weak);
+  font-size: 1.5rem; /* Larger to showcase gradient */
+  font-weight: 700;
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -1950,8 +1874,7 @@ dialog::backdrop {
   border-radius: var(--radius-md);
   object-fit: cover;
   aspect-ratio: 1/1;
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
 }
 
 .about-me-text p {
@@ -1971,8 +1894,7 @@ dialog::backdrop {
   font-size: 0.85rem;
   background: var(--surface-2);
   color: var(--text);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
 }
 
 /* --- Profile Edit Page --- */
@@ -1981,9 +1903,9 @@ dialog::backdrop {
   align-items: center;
   gap: 1rem;
   padding: 1.5rem 1rem;
-  border-bottom: 1px solid var(--text-weak);
+  border-bottom: 1px solid var(--surface-3);
   background: var(--surface);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 5;
@@ -2011,13 +1933,11 @@ dialog::backdrop {
   background: var(--surface);
   border: none;
   cursor: pointer;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .photo-upload-label:active {
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--inset-shadow-deep);
 }
 
 .photo-upload-label svg {
@@ -2037,8 +1957,7 @@ dialog::backdrop {
   aspect-ratio: 1/1;
   border-radius: var(--radius-md);
   overflow: hidden;
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .photo-preview img {
@@ -2063,15 +1982,13 @@ dialog::backdrop {
   cursor: pointer;
 }
 
-/* Updated Gender Select in Settings */
 .gender-select {
   display: flex;
   justify-content: space-around;
   background: var(--surface-2);
   padding: 8px;
   border-radius: var(--radius-md);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
 }
 
 .gender-label {
@@ -2090,8 +2007,7 @@ dialog::backdrop {
   border-radius: 50%;
   border: none;
   background: var(--surface);
-  /* Uses updated neumorphic inset shadow */
-  box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+  box-shadow: var(--inset-shadow);
   position: relative;
   transition: all var(--fast);
 }
@@ -2110,10 +2026,57 @@ dialog::backdrop {
 }
 
 .gender-label input[type="radio"]:checked {
-  /* Uses updated neumorphic shadow */
-  box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+  box-shadow: var(--profile-shadow);
 }
 
 .gender-label input[type="radio"]:checked::before {
   transform: translate(-50%, -50%) scale(1);
+}
+
+/*
+ * =================================================================
+ * ✨ 4. MODERN POLISH & COLORFUL ACCENTS (Gemini's Magic)
+ * =================================================================
+ */
+
+/* 1. Animated Gradient Headings */
+.page__title, .section-title, .category-title, .auth-form__title, .plan h3, .profile-name {
+  background: var(--heading-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent; /* Fallback */
+  background-size: 200% auto;
+  animation: gradientShine 8s linear infinite;
+}
+
+@keyframes gradientShine {
+  to {
+	background-position: 200% center;
+  }
+}
+
+/* 2. Glassmorphism Modal/Dialog */
+dialog {
+  padding: 2rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  color: var(--text);
+  /* Glassmorphism Effect */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+}
+
+body[data-theme="dark"] dialog {
+	background: rgba(43, 46, 56, 0.7); /* Dark glass */
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
