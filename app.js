@@ -4,61 +4,27 @@
   "use strict";
 
   /* =========================
-   Mock Database & State
-   ========================= */
-  const mockDatabase = {
-	users: [],
-	profiles: [
-	  {
-		uid: "temp-profile-1",
-		email: "jane@example.com",
-		name: "Jane",
-		age: 22,
-		bio: "Loves to read and hike.",
-		onboardingComplete: true,
-		location: { city: "Blantyre" },
-		avatar: "https://placehold.co/120x120?text=Jane",
-		photos: ["https://placehold.co/240x240?text=Jane+1", "https://placehold.co/240x240?text=Jane+2"],
-		interests: ["Reading", "Hiking", "Coffee", "Dogs"]
-	  },
-	  {
-		uid: "temp-profile-2",
-		email: "john@example.com",
-		name: "John",
-		age: 25,
-		bio: "Musician and artist.",
-		onboardingComplete: true,
-		location: { city: "Lilongwe" },
-		avatar: "https://placehold.co/120x120?text=John",
-		photos: ["https://placehold.co/240x240?text=John+1"],
-		interests: ["Music", "Art", "Travel"]
-	  },
-	  {
-		uid: "temp-profile-3",
-		email: "sarah@example.com",
-		name: "Sarah",
-		age: 21,
-		bio: "Student and coffee addict.",
-		onboardingComplete: true,
-		location: { city: "Zomba" },
-		avatar: "https://placehold.co/120x120?text=Sarah",
-		photos: ["https://placehold.co/240x240?text=Sarah+1", "https://placehold.co/240x240?text=Sarah+2", "https://placehold.co/240x240?text=Sarah+3"],
-		interests: ["Studying", "Coffee", "Movies"]
-	  },
-	],
-	matches: [],
-	messages: {}
+	 Firebase Configuration
+	 ========================= */
+  const firebaseConfig = {
+	apiKey: "AIzaSyA7nZ2Y51lfpkrwHKIvYe-y_EmyIk_WEfU",
+	authDomain: "dateme-website.firebaseapp.com",
+	projectId: "dateme-website",
+	storageBucket: "dateme-website.firebasestorage.app",
+	messagingSenderId: "589523570810",
+	appId: "1:589523570810:web:b0e7f6520242704ebdebc3",
+	// Note: measurementId isn't used in v8 of the SDK, so you can leave it out.
   };
 
-  const db = mockDatabase;
-  let currentUser = null;
-  let allProfiles = [...db.profiles];
-  let currentMatchId = null;
-  let swipedCardsHistory = []; // ✨ NEW STATE for Rewind functionality
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
 
   /* =========================
-   DOM cache & State
-   ========================= */
+	 DOM cache & State
+	 ========================= */
   const $ = selector => document.querySelector(selector);
   const $$ = selector => Array.from(document.querySelectorAll(selector));
 
@@ -78,20 +44,16 @@
   const avatarBtn = $(".avatar-btn");
   const logoutBtn = $("[data-action='logout']");
   const cardTemplate = $("#template-profile-card");
-  const cardsContainer = $(".cards-stack"); // Updated selector to match your CSS
+  const cardsContainer = $(".cards");
   const profileHeaderName = $("#profile-title");
   const profileHeaderBio = $(".profile-header__info p");
   const profileHeaderAvatar = $(".profile-header__media img");
   const navAvatar = $(".header .avatar-btn img");
-  const photoGallery = $("#photo-gallery");
-  const photoPlaceholder = $("#photo-placeholder");
-  const photoUploadInput = $("#profile-photo-upload");
-  const photoPreviewGrid = $("#photo-preview-grid");
-  const photoManagementModal = $("#modal-photo-management");
+  // Photo-related DOM elements have been removed from here
   const modalDonate = $("#modal-donate");
   const editProfileBtn = $("#edit-profile-btn");
   const saveProfileBtn = $("#save-profile-btn");
-  const shareProfileBtn = $("#share-profile-btn");
+  // NEW DONATION-RELATED DOM ELEMENTS
   const donateForm = $('#donation-form');
   const donateAmountInput = $('#donate-amount');
   const donateHeading = $('#donate-heading');
@@ -99,6 +61,7 @@
   const airtelBtn = $('[data-action="select-airtel"]');
   const tnmBtn = $('[data-action="select-tnm"]');
   const cancelDonateBtn = $('[data-action="cancel-donate"]');
+  // NEW MESSAGING DOM ELEMENTS
   const messagesContainer = $('#messages-container');
   const messageForm = $('#message-form');
   const messageInput = $('#message-input');
@@ -108,25 +71,82 @@
   const messageTemplateMe = $('#template-message-me');
   const messageTemplateThem = $('#template-message-them');
   const chatBody = $('#chat-body');
-  // ✨ NEW DOM ELEMENTS
-  const searchInput = $('.search-bar__input');
-  const searchBarContainer = $('.search-bar');
-  const searchResultsContainer = $('#search-results-list'); // Assumed element in HTML
-  const backButtons = $$('[data-action="back"]');
-  const distanceSlider = $('#settings-distance-range');
-  const distanceValue = $('#settings-distance-value');
-  const ageMinSlider = $('#settings-age-min');
-  const ageMaxSlider = $('#settings-age-max');
-  const ageValue = $('#settings-age-value');
-  const hideAccountSwitch = $('#settings-hide-account');
-  const discoverySettingsForm = $('#discovery-settings-form');
-  const confirmationToast = $('#confirmation-toast'); // Assumed element in HTML
-  // END NEW DOM ELEMENTS
 
+  // New DOM elements for requested features
+  const searchIcon = $('[data-action="search"]'); // Assume this exists in header
+  const searchContainer = $('#search-container'); // Assume a modal or div for search
+  const searchInput = $('#search-input');
+  const searchResults = $('#search-results');
+  const refreshBtn = $('[data-action="refresh-profiles"]'); // Assume button in discover
+  const maxDistanceSlider = $('#max-distance-slider');
+  const maxDistanceValue = $('#max-distance-value');
+  const ageRangeMin = $('#age-range-min');
+  const ageRangeMax = $('#age-range-max');
+  const ageRangeValue = $('#age-range-value');
+  const hideAccountToggle = $('#hide-account-toggle');
+  const confirmationModal = $('#confirmation-modal'); // Assume modal for confirms
+  const confirmBtn = $('#confirm-btn');
+  const cancelConfirmBtn = $('#cancel-confirm-btn');
+  const shareProfileBtn = $('[data-action="share-profile"]'); // Assume in profile page
+  const backButtons = $$('[data-action="back"]'); // All back buttons
+  const settingsLinks = $$('.settings-link'); // Assume class on settings items
+
+  let currentUser = {
+	uid: "temp-user-id-123",
+	name: "Phillip",
+	email: "phil@example.com",
+	onboardingComplete: true,
+	isSubscriber: false,
+	age: 20,
+	gender: "male",
+	bio: "Friendly and focused. Building a modern dating site with clean design and smooth UX.",
+	location: { city: "Lilongwe", lat: -13.9667, lon: 33.7833 },
+	interests: ["Tech", "Design", "Entrepreneurship"],
+	avatar: "https://placehold.co/120x120?text=Phil",
+	photos: ["https://placehold.co/240x240?text=Phil+1", "https://placehold.co/240x240?text=Phil+2", "https://placehold.co/240x240?text=Phil+3"],
+	settings: { maxDistance: 50, ageRange: [18, 30], hideAccount: false },
+  };
+  let allProfiles = [
+	  {
+		uid: "temp-profile-1",
+		name: "Jane",
+		age: 22,
+		bio: "Loves to read and hike.",
+		onboardingComplete: true,
+		location: { city: "Blantyre" },
+		avatar: "https://placehold.co/120x120?text=Jane",
+		distance: 12,
+		isOnline: true,
+	  },
+	  {
+		uid: "temp-profile-2",
+		name: "John",
+		age: 25,
+		bio: "Musician and artist.",
+		onboardingComplete: true,
+		location: { city: "Lilongwe" },
+		avatar: "https://placehold.co/120x120?text=John",
+		distance: 3,
+		isOnline: false,
+	  },
+	  {
+		uid: "temp-profile-3",
+		name: "Sarah",
+		age: 21,
+		bio: "Student and coffee addict.",
+		onboardingComplete: true,
+		location: { city: "Zomba" },
+		avatar: "https://placehold.co/120x120?text=Sarah",
+		distance: 80,
+		isOnline: true,
+	  },
+  ];
+  let currentMatchId = null;
+  let pendingChanges = null; // For confirmation
 
   /* =========================
-   Helper utilities
-   ========================= */
+	 Helper utilities
+	 ========================= */
   const safeQuery = (sel, ctx = document) => {
 	try { return ctx.querySelector(sel); }
 	catch (e) { return null; }
@@ -138,44 +158,56 @@
   };
   const escapeHtml = unsafe => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   
-  // ✨ NEW UTILITY FUNCTION
-  function showConfirmationToast(message) {
-	if (confirmationToast) {
-	  confirmationToast.textContent = message;
-	  confirmationToast.classList.add('is-visible');
-	  setTimeout(() => {
-		confirmationToast.classList.remove('is-visible');
-	  }, 3000);
-	}
-  }
-  // END NEW UTILITY FUNCTION
+  // New helper for debouncing (for search)
+  const debounce = (func, delay) => {
+	let timeout;
+	return (...args) => {
+	  clearTimeout(timeout);
+	  timeout = setTimeout(() => func(...args), delay);
+	};
+  };
 
   /* =========================
-   AUTHENTICATION (Mocked)
-   ========================= */
-  function saveUserProfile(profileData) {
-	let index = db.profiles.findIndex(p => p.uid === profileData.uid);
-	if (index !== -1) {
-	  db.profiles[index] = profileData;
-	} else {
-	  db.profiles.push(profileData);
-	}
-	currentUser = profileData;
-	console.log("Profile data saved (mocked):", profileData);
+	 AUTHENTICATION
+	 ========================= */
+  // The checkAuthState function is no longer needed since we are not using Firebase Auth.
+  async function checkAuthState() {
+	auth.onAuthStateChanged(async user => {
+	  if (user) {
+		// Check if email is verified
+		if (!user.emailVerified) {
+		  console.log('User signed in but email not verified.');
+		  alert('Please verify your email address to continue.');
+		  await auth.signOut(); // Log them out if not verified
+		  routeTo("login", false);
+		  return;
+		}
+
+		currentUser = await fetchUserProfile(user.uid);
+		if (currentUser && currentUser.onboardingComplete) {
+		  console.log('User signed in:', currentUser.email);
+		  await handleUserLogin(currentUser);
+		} else {
+		  console.log('User signed in, but profile not found or onboarding not complete. Redirecting.');
+		  routeTo("onboarding", false);
+		}
+	  } else {
+		console.log('User logged out.');
+		currentUser = null;
+		body.classList.remove('logged-in');
+		routeTo("login", false);
+	  }
+	});
   }
 
-  function fetchUserProfile(uid) {
-	return db.profiles.find(p => p.uid === uid);
-  }
-
-  function handleUserLogin(userProfile) {
+  async function handleUserLogin(userProfile) {
 	currentUser = userProfile;
 	body.classList.add('logged-in');
 	
 	renderProfilePage(currentUser);
 	
-	allProfiles = db.profiles.filter(p => p.uid !== currentUser.uid);
-	loadNextProfile();
+	await fetchAllProfiles();
+	await loadNextProfile();
 
 	routeTo("home", false);
   }
@@ -192,24 +224,30 @@
 		  alert("Passwords do not match!");
 		  return;
 		}
-
-		if (db.profiles.find(u => u.email === email)) {
-		  alert("An account with this email already exists.");
-		  return;
-		}
-
-		const newUserUid = `user-${Date.now()}`;
-		const newProfile = {
-		  uid: newUserUid,
-		  email: email,
-		  onboardingComplete: false,
-		  isSubscriber: false,
-		  settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
-		};
 		
-		saveUserProfile(newProfile);
-		alert('Account created! Please log in to complete your profile.');
-		routeTo("login", true); 
+		try {
+		  const { user } = await auth.createUserWithEmailAndPassword(email, password);
+		  
+		  // Send email verification
+		  await user.sendEmailVerification();
+
+		  const newProfile = {
+			uid: user.uid,
+			email: user.email,
+			onboardingComplete: false,
+			isSubscriber: false,
+			settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
+		  };
+		  
+		  await saveUserProfile(newProfile);
+		  console.log('User created. Please check your email for verification.');
+		  alert('Account created! Please check your email to verify your address before logging in.');
+		  
+		  await auth.signOut(); // Force log out to require email verification
+		  routeTo("login", true); 
+		} catch (err) {
+		  alert("Signup failed: " + err.message);
+		}
 	  });
 	}
 	
@@ -221,22 +259,27 @@
 		const gender = onboardingForm.querySelector("#onboarding-gender").value;
 		const bio = onboardingForm.querySelector("#onboarding-bio").value;
 		
-		const updatedProfile = {
-		  ...currentUser,
-		  name: name,
-		  age: age,
-		  gender: gender,
-		  bio: bio,
-		  onboardingComplete: true,
-		  location: { city: "New York", lat: 40.7128, lon: -74.0060 },
-		  interests: ["Coding", "Hiking"],
-		  avatar: "https://placehold.co/120x120?text=User",
-		  photos: [],
-		};
-		
-		saveUserProfile(updatedProfile);
-		handleUserLogin(updatedProfile);
-		console.log('Onboarding complete. Welcome!');
+		try {
+		  const updatedProfile = {
+			...currentUser,
+			name: name,
+			age: age,
+			gender: gender,
+			bio: bio,
+			onboardingComplete: true,
+			location: { city: "New York", lat: 40.7128, lon: -74.0060 },
+			interests: ["Coding", "Hiking"],
+			avatar: "https://placehold.co/120x120?text=User", // Default placeholder
+			photos: [], // Empty photo array
+		  };
+		  
+		  await saveUserProfile(updatedProfile);
+		  await handleUserLogin(updatedProfile);
+		  console.log('Onboarding complete. Welcome!');
+		} catch (err) {
+		  console.error("Onboarding failed:", err);
+		  alert("Onboarding failed: " + err.message);
+		}
 	  });
 	}
 
@@ -245,29 +288,55 @@
 		e.preventDefault();
 		const email = loginForm.querySelector("#login-email").value;
 		const password = loginForm.querySelector("#login-password").value;
-		
-		const userProfile = db.profiles.find(u => u.email === email);
-		if (userProfile) {
-		  handleUserLogin(userProfile);
-		} else {
-		  alert("Login failed: User not found.");
+		try {
+		  await auth.signInWithEmailAndPassword(email, password);
+		} catch (err) {
+		  alert("Login failed: " + err.message);
 		}
 	  });
 	}
 	
 	if (logoutBtn) {
 	  logoutBtn.addEventListener("click", async () => {
-		currentUser = null;
-		body.classList.remove('logged-in');
-		routeTo("login", false);
-		console.log("Logged out successfully.");
+		try {
+		  await auth.signOut();
+		  currentUser = null; // Clear current user for real logout
+		  localStorage.clear(); // Clear any stored data
+		  routeTo("login", true);
+		} catch (err) {
+		  console.error("Logout error:", err);
+		}
 	  });
 	}
   }
 
+  async function saveUserProfile(profileData) {
+	//await db.collection("users").doc(profileData.uid).set(profileData, { merge: true });
+	// Since we are not connected to Firebase, this function will not do anything.
+	console.log("Profile data saved (simulated):", profileData);
+	currentUser = profileData;
+  }
+
+  async function fetchUserProfile(uid) {
+	// Since we are not connected to Firebase, this will return a hardcoded profile for now
+	return {
+		uid: uid,
+		name: "Jane",
+		age: 22,
+		bio: "Loves to read and hike.",
+		onboardingComplete: true,
+		location: { city: "Blantyre" },
+		avatar: "https://placehold.co/120x120?text=Jane",
+		distance: 12,
+		isOnline: true,
+	};
+  }
+  
+  // The uploadPhoto function has been completely removed.
+  
   /* =========================
-   ROUTING (simple SPA)
-   ========================= */
+	 ROUTING (simple SPA)
+	 ========================= */
   function bindRouting() {
 	document.addEventListener("click", ev => {
 	  const link = ev.target.closest("[data-route-link]");
@@ -278,11 +347,9 @@
 	  
 	  const targetUid = link.getAttribute('data-target-uid');
 	  if (route === 'messages' && targetUid) {
-		  const matchId = [currentUser.uid, targetUid].sort().join('_');
-		  currentMatchId = matchId;
-		  getLiveMessages(matchId, targetUid);
-	  } else if (route === 'messages' && !targetUid) {
-		  renderConvoList();
+		  // const matchId = [currentUser.uid, targetUid].sort().join('_');
+		  // currentMatchId = matchId;
+		  // getLiveMessages(matchId, targetUid);
 	  }
 	  
 	  routeTo(route, true);
@@ -292,28 +359,14 @@
 		const route = e.state?.route || 'home';
 		routeTo(route, false);
 	});
-	
-	// ✨ NEW FUNCTIONALITY: Back Button Logic
-	backButtons.forEach(btn => {
-		btn.addEventListener('click', (e) => {
-			e.preventDefault();
-			const currentPage = $$('.page.is-visible')[0];
-			if (currentPage) {
-				// Add an exit animation class before navigating back
-				currentPage.classList.add('slide-out-right');
-				setTimeout(() => {
-					window.history.back();
-					currentPage.classList.remove('slide-out-right'); // Clean up the class
-				}, 300); // Match this to your CSS transition speed
-			} else {
-				window.history.back();
-			}
-		});
-	});
-	// END NEW FUNCTIONALITY
   }
   
   function routeTo(routeName = "home", push = true) {
+	// Since we're not using auth, we'll remove this block
+	// if (!currentUser && routeName !== "login" && routeName !== "signup") {
+	//   routeName = "login";
+	// }
+	
 	if (routeName === "login" || routeName === "signup") {
 	  body.classList.add('auth-page');
 	} else {
@@ -336,11 +389,11 @@
 		currentPage.classList.add("is-visible");
 		currentPage.hidden = false;
 	}
-	
-	if (routeName === 'messages' && !currentMatchId) {
-		renderConvoList();
-	} else if (routeName === 'messages' && currentMatchId) {
-		// Chat page is already set up from data-target-uid
+
+	// This part is for real-time data, which won't work without a logged-in user.
+	// You'll need to re-implement or mock this logic if you want to see this page.
+	if (routeName === 'messages') {
+		// renderConvoList();
 	}
 	
 	if (push) {
@@ -349,28 +402,31 @@
   }
 
   /* =========================
-   PROFILES — render & interactions
-   ========================= */
-  function loadNextProfile(fromRewind = false, profileToLoad = null) {
+	 PROFILES — render & interactions
+	 ========================= */
+  async function fetchAllProfiles() {
+	// Instead of fetching from Firebase, we'll use our hardcoded list
+	console.log("Simulating fetching profiles...");
+	// Apply filters based on settings
+	allProfiles = allProfiles.filter(profile => {
+	  if (currentUser.settings.hideAccount) return false; // Simulate hiding
+	  if (profile.distance > currentUser.settings.maxDistance) return false;
+	  if (profile.age < currentUser.settings.ageRange[0] || profile.age > currentUser.settings.ageRange[1]) return false;
+	  return true;
+	});
+  }
+
+  async function loadNextProfile() {
 	if (!cardsContainer || !cardTemplate) return;
 	
-	// Remove the current card only if it's not a rewind
-	const currentCard = safeQuery('.profile-card');
-	if (currentCard) {
-		currentCard.remove();
-	}
-
-	let nextProfile;
-	if (fromRewind) {
-		nextProfile = profileToLoad;
-	} else {
-		if (allProfiles.length === 0) {
-			cardsContainer.innerHTML = `<div class="no-profiles">No new profiles nearby. Try changing your settings.</div>`;
-			return;
-		}
-		nextProfile = allProfiles.shift();
+	cardsContainer.innerHTML = '';
+	
+	if (allProfiles.length === 0) {
+	  cardsContainer.innerHTML = `<div class="no-profiles">No new profiles nearby. Try changing your settings.</div>`;
+	  return;
 	}
 	
+	const nextProfile = allProfiles.shift();
 	renderSingleProfile(nextProfile);
   }
 
@@ -378,146 +434,101 @@
 	if (!cardsContainer || !cardTemplate) return;
 	
 	const card = cardTemplate.content.cloneNode(true);
-	const profileCardEl = card.querySelector(".profile-card");
-	profileCardEl.setAttribute("data-uid", profile.uid);
-	profileCardEl.setAttribute("data-profile-data", JSON.stringify(profile)); // Store profile data
+	card.querySelector(".profile-card").setAttribute("data-uid", profile.uid);
 	safeQuery(".profile-card__media img", card).src = profile.avatar;
-	safeQuery(".profile-card__name", card).textContent = `${profile.name}, ${profile.age}`;
-	safeQuery(".profile-card__metadata", card).textContent = `${profile.location.city} • ${Math.floor(Math.random() * 100) + 1} km away`;
+	safeQuery(".profile-card__title", card).textContent = `${profile.name}, ${profile.age}`;
+	safeQuery(".profile-card__meta", card).textContent = profile.location.city;
 	safeQuery(".profile-card__bio", card).textContent = profile.bio;
+	// No isOnline property in our mocked data
+	// safeQuery(".profile-card__status .status--online", card).textContent = profile.isOnline ? "Online" : "Offline";
+	safeQuery(".profile-card__distance", card).textContent = `${profile.distance} km away`;
 	
 	cardsContainer.appendChild(card);
   }
   
+  // NEW: Matching Logic Functions
   async function saveUserSwipe(targetUid, action) {
-	console.log(`Simulated swipe: User ${currentUser.uid} swiped on ${targetUid} with action '${action}'`);
-	// Mocking a match object structure
-	const match = {
-		users: [currentUser.uid, targetUid],
-		lastMessage: null,
-		status: action === 'like' ? 'pending' : 'skipped'
-	};
-	
-	// Check if a match already exists for these two users
-	let existingMatchIndex = db.matches.findIndex(m => m.users.includes(currentUser.uid) && m.users.includes(targetUid));
-	if (existingMatchIndex === -1) {
-		db.matches.push(match);
-	} else {
-		db.matches[existingMatchIndex].status = action === 'like' ? 'pending' : 'skipped';
-	}
+	// No Firebase, so we'll just log the action
+	console.log(`Simulated swipe: User liked/skipped profile ${targetUid} with action '${action}'`);
   }
 
-  function checkForMatch(targetUid) {
-	const otherUserMatchIndex = db.matches.findIndex(m => m.users.includes(targetUid) && m.users.includes(currentUser.uid) && m.status === 'pending');
-	return otherUserMatchIndex !== -1;
+  async function checkForMatch(targetUid) {
+	// Since we don't have a database, we'll just return true to simulate a match
+	return true;
   }
 
-  function createMatch(targetUid) {
-	const existingMatchIndex = db.matches.findIndex(m => m.users.includes(currentUser.uid) && m.users.includes(targetUid));
-	if (existingMatchIndex !== -1) {
-	  db.matches[existingMatchIndex].status = 'matched';
-	  alert("It's a Match! 🎉");
-	}
+  async function createMatch(targetUid) {
+	// No Firebase, so we'll just log the match
+	console.log(`Simulated match found with ${targetUid}!`);
   }
 
-  // ✨ ANIMATION LOGIC: Card Animation
-  async function animateCardSwipe(card, action) {
-	const animationClass = action === 'like' ? 'swipe-right' : 'swipe-left';
-	card.classList.add(animationClass);
-	
-	// Wait for the animation to finish
-	return new Promise(resolve => {
-		card.addEventListener('animationend', () => {
-			card.classList.remove(animationClass); // Clean up
-			resolve();
-		}, { once: true });
-	});
-  }
-  
   function bindCardActions() {
 	if (!cardsContainer) return;
 	cardsContainer.addEventListener("click", async ev => {
 	  const btn = ev.target.closest("button[data-action]");
 	  if (!btn) return;
 	  const action = btn.getAttribute("data-action");
-	  const card = safeQuery(".profile-card"); // Always target the top card
+	  const card = btn.closest(".profile-card");
 	  if (!card) return;
 	  
 	  const targetUid = card.getAttribute("data-uid");
-	  const profileData = JSON.parse(card.getAttribute("data-profile-data"));
 	  
-	  if (action === "skip" || action === "like") {
-		// Record card data before removing it
-		swipedCardsHistory.push(profileData);
-
-		// Trigger the animation and wait for it to complete
-		const swipeAction = action === "skip" ? "dislike" : "like";
-		await animateCardSwipe(card, swipeAction);
-
-		await saveUserSwipe(targetUid, action);
-		if (action === "like") {
-		  if (checkForMatch(targetUid)) {
-			createMatch(targetUid);
+	  if (action === "like" || action === "skip") {
+		// Animate fall
+		card.classList.add(action === "like" ? "fall-right" : "fall-left");
+		card.addEventListener("animationend", async () => {
+		  card.remove();
+		  await saveUserSwipe(targetUid, action);
+		  if (action === "like") {
+			const isMatch = await checkForMatch(targetUid);
+			if (isMatch) {
+			  alert("It's a Match! 🎉");
+			}
 		  }
-		}
-		loadNextProfile();
-	  } else if (action === "rewind") {
-		// ✨ NEW FUNCTIONALITY: Rewind
-		if (swipedCardsHistory.length === 0) {
-			showConfirmationToast("Nothing to rewind! Keep swiping.");
-			return;
-		}
-		
-		const lastCard = swipedCardsHistory.pop();
-		card.remove(); // Remove the current card before loading the last one
-		loadNextProfile(true, lastCard);
-		showConfirmationToast(`${lastCard.name} is back!`);
-		// END NEW FUNCTIONALITY
-	  } else if (action === "super-like") {
-		// ✨ NEW FUNCTIONALITY: Super Like (opens chat compose)
-		const targetProfile = fetchUserProfile(targetUid);
-		if (!targetProfile) return;
-		
-		// Simulate a "Super Like" match and open the chat
-		createMatch(targetUid); // Instant match for super-like
-		
-		const matchId = [currentUser.uid, targetUid].sort().join('_');
-		currentMatchId = matchId;
-		getLiveMessages(matchId, targetUid);
+		  await loadNextProfile();
+		}, { once: true });
+	  } else if (action === "message") { // Assuming star is data-action="message"
+		const targetUid = card.getAttribute("data-uid");
+		// Open message inbox
 		routeTo("messages", true);
-		// END NEW FUNCTIONALITY
+		messageInput.focus(); // Pre-focus for writing message
 	  }
 	});
   }
-  // END ANIMATION LOGIC
 
   /* =========================
-   MESSAGING (Mocked)
-   ========================= */
-  function renderConvoList() {
+	 MESSAGING
+	 ========================= */
+
+  // The messaging functions are tied to Firebase, so they won't work in this state.
+  // I am leaving them here but they will not be functional.
+
+  async function renderConvoList() {
 	if (!convoList) return;
 	convoList.innerHTML = '';
+	const snapshot = await db.collection("matches").where("users", "array-contains", currentUser.uid).get();
 	
-	const matchedProfiles = db.matches
-		.filter(m => m.users.includes(currentUser.uid) && m.status === 'matched')
-		.map(m => {
-			const otherUserUid = m.users.find(uid => uid !== currentUser.uid);
-			const profile = fetchUserProfile(otherUserUid);
-			return {
-				...m,
-				otherUserUid: otherUserUid,
-				profile: profile
-			};
-		});
+	const matches = snapshot.docs.map(doc => {
+	  const matchData = doc.data();
+	  const otherUserUid = matchData.users.find(uid => uid !== currentUser.uid);
+	  return {
+		...matchData,
+		id: doc.id,
+		otherUserUid: otherUserUid,
+	  };
+	});
 
-	for (const match of matchedProfiles) {
-	  const convo = convoTemplate.content.cloneNode(true);
-	  const link = convo.querySelector('.convo');
-	  link.setAttribute('data-target-uid', match.otherUserUid);
-	  safeQuery('.convo__avatar', convo).src = match.profile.avatar;
-	  safeQuery('.convo__name', convo).textContent = match.profile.name;
-	  safeQuery('.convo__last', convo).textContent = match.lastMessage || 'Start a conversation!';
-	  convoList.appendChild(convo);
+	for (const match of matches) {
+		const profile = await fetchUserProfile(match.otherUserUid);
+		if (profile) {
+			const convo = convoTemplate.content.cloneNode(true);
+			const link = convo.querySelector('.convo');
+			link.setAttribute('data-target-uid', profile.uid);
+			safeQuery('.convo__avatar', convo).src = profile.avatar;
+			safeQuery('.convo__name', convo).textContent = profile.name;
+			safeQuery('.convo__last', convo).textContent = match.lastMessage || 'Start a conversation!';
+			convoList.appendChild(convo);
+		}
 	}
   }
 
@@ -527,14 +538,22 @@
 	chatBody.innerHTML = '';
 	safeQuery('.chat').style.display = 'grid';
 	
-	const profile = fetchUserProfile(targetUid);
-	if (profile && chatHeader) {
-	  chatHeader.querySelector('.chat__peer-name').textContent = profile.name;
-	}
+	fetchUserProfile(targetUid).then(profile => {
+	  if (profile && chatHeader) {
+		chatHeader.querySelector('.chat__peer-name').textContent = profile.name;
+	  }
+	});
 	
-	const messages = db.messages[matchId] || [];
-	messages.forEach(msg => renderSingleMessage(msg));
-	chatBody.scrollTop = chatBody.scrollHeight;
+	const messagesRef = db.collection("matches").doc(matchId).collection("messages").orderBy("timestamp");
+	messagesRef.onSnapshot(snapshot => {
+	  snapshot.docChanges().forEach(change => {
+		if (change.type === "added") {
+		  const msg = change.doc.data();
+		  renderSingleMessage(msg);
+		}
+	  });
+	  chatBody.scrollTop = chatBody.scrollHeight;
+	});
   }
 
   function renderSingleMessage(msg) {
@@ -543,8 +562,10 @@
 	const template = isMe ? messageTemplateMe : messageTemplateThem;
 	const bubble = template.content.cloneNode(true);
 	safeQuery('.bubble__text', bubble).textContent = msg.text;
-	const time = new Date(msg.timestamp);
-	safeQuery('time', bubble).textContent = time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+	if (msg.timestamp) {
+	  const time = msg.timestamp.toDate();
+	  safeQuery('time', bubble).textContent = time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+	}
 	chatBody.appendChild(bubble);
   }
   
@@ -558,246 +579,73 @@
 		  const message = {
 			  text: escapeHtml(text),
 			  senderId: currentUser.uid,
-			  timestamp: Date.now()
+			  timestamp: firebase.firestore.FieldValue.serverTimestamp()
 		  };
 		  
-		  if (!db.messages[currentMatchId]) {
-			  db.messages[currentMatchId] = [];
+		  try {
+			  await db.collection("matches").doc(currentMatchId).collection("messages").add(message);
+			  await db.collection("matches").doc(currentMatchId).update({
+				  lastMessage: text
+			  });
+			  messageInput.value = '';
+		  } catch (error) {
+			  console.error("Error sending message:", error);
 		  }
-		  db.messages[currentMatchId].push(message);
-
-		  const match = db.matches.find(m => {
-			const otherUserId = currentMatchId.split('_').find(id => id !== currentUser.uid);
-			return m.users.includes(currentUser.uid) && m.users.includes(otherUserId);
-		  });
-
-		  if (match) {
-			match.lastMessage = text;
-		  }
-
-		  renderSingleMessage(message);
-		  messageInput.value = '';
-		  chatBody.scrollTop = chatBody.scrollHeight;
 	  });
   }
 
-  /* =========================
-   DISCOVERY SETTINGS
-   ========================= */
-   function bindDiscoverySettings() {
-	// ✨ NEW FUNCTIONALITY: Range Slider Logic
-	if (distanceSlider && distanceValue) {
-		const updateDistance = () => {
-			distanceValue.textContent = `${distanceSlider.value} km`;
-			currentUser.settings.distance = parseInt(distanceSlider.value);
-		};
-		distanceSlider.addEventListener('input', updateDistance);
-		// Initial setup
-		distanceSlider.value = currentUser.settings.distance || 50;
-		updateDistance();
-	}
-	
-	if (ageMinSlider && ageMaxSlider && ageValue) {
-		const updateAgeRange = () => {
-			let minAge = parseInt(ageMinSlider.value);
-			let maxAge = parseInt(ageMaxSlider.value);
-
-			if (minAge > maxAge) {
-				// Prevent min from passing max and vice versa
-				if (event.target.id === 'settings-age-min') {
-					maxAge = minAge;
-					ageMaxSlider.value = minAge;
-				} else {
-					minAge = maxAge;
-					ageMinSlider.value = maxAge;
-				}
-			}
-			
-			ageValue.textContent = `${minAge} - ${maxAge}`;
-			currentUser.settings.ageRange = [minAge, maxAge];
-		};
-
-		ageMinSlider.addEventListener('input', updateAgeRange);
-		ageMaxSlider.addEventListener('input', updateAgeRange);
-		
-		// Initial setup
-		ageMinSlider.value = currentUser.settings.ageRange?.[0] || 18;
-		ageMaxSlider.value = currentUser.settings.ageRange?.[1] || 30;
-		updateAgeRange();
-	}
-	
-	// ✨ NEW FUNCTIONALITY: Hide Account Toggle
-	if (hideAccountSwitch) {
-		hideAccountSwitch.checked = currentUser.settings.hideAccount || false;
-		hideAccountSwitch.addEventListener('change', (e) => {
-			currentUser.settings.hideAccount = e.target.checked;
-			showConfirmationToast(`Account is now ${e.target.checked ? 'Hidden' : 'Visible'}!`);
-		});
-	}
-	
-	// ✨ NEW FUNCTIONALITY: Save Button (The form submit is the save)
-	if (discoverySettingsForm) {
-		discoverySettingsForm.addEventListener('submit', (e) => {
-			e.preventDefault();
-			// Since all changes are updated on 'input' and 'change' events,
-			// we just need to confirm the save action.
-			saveUserProfile(currentUser);
-			showConfirmationToast("Discovery Settings Saved!");
-		});
-	}
-	// END DISCOVERY SETTINGS
-   }
 
   /* =========================
-   UI Render
-   ========================= */
+	 UI Render
+	 ========================= */
   function renderProfilePage(profile) {
-	// This function now uses the updated currentUser.settings from the settings page
 	if (!profile) return;
 	if (profileHeaderName) profileHeaderName.textContent = `${profile.name}, ${profile.age}`;
 	if (profileHeaderBio) profileHeaderBio.textContent = `${profile.location?.city || "Unknown"} • ${profile.bio || "No bio yet."}`;
 	if (profileHeaderAvatar) profileHeaderAvatar.src = profile.avatar;
 	if (navAvatar) navAvatar.src = profile.avatar;
 	
-	renderPhotoGallery(profile.photos);
-	renderInterests(profile.interests);
-  }
-
-  function renderPhotoGallery(photos) {
-	if (!photoGallery) return;
-	photoGallery.innerHTML = '';
-	if (photos && photos.length > 0) {
-		photoPlaceholder.hidden = true;
-		photos.forEach(url => {
-			const photoItem = document.createElement('div');
-			photoItem.className = 'photo-item';
-			photoItem.innerHTML = `<img src="${url}" alt="Profile photo">`;
-			photoGallery.appendChild(photoItem);
-		});
-	} else {
-		photoPlaceholder.hidden = false;
-	}
-  }
-
-  function renderInterests(interests) {
-	const interestsContainer = $('#profile-interests');
-	if (!interestsContainer) return;
-	interestsContainer.innerHTML = '';
-	if (interests && interests.length > 0) {
-		interests.forEach(interest => {
-			const tag = document.createElement('span');
-			tag.className = 'interest-tag';
-			tag.textContent = interest;
-			interestsContainer.appendChild(tag);
-		});
-	}
+	// The profile photo grid is no longer rendered here
   }
   
   /* =========================
-   Profile Management (Mocked)
-   ========================= */
+	 Profile Management
+	 ========================= */
   function bindProfileManagement() {
 	if (editProfileBtn) {
 	  editProfileBtn.addEventListener("click", () => {
 		routeTo("profile-edit", true);
 	  });
 	}
-
-	if (shareProfileBtn) {
-		// ✨ NEW FUNCTIONALITY: Share Profile URL
-		shareProfileBtn.addEventListener("click", async () => {
-			const shareUrl = `${window.location.origin}/#profile/${currentUser.uid}`;
-			if (navigator.share) {
-				try {
-					await navigator.share({
-						title: `${currentUser.name}'s Profile`,
-						text: `Check out ${currentUser.name}'s profile on DateMe!`,
-						url: shareUrl,
-					});
-					console.log('Profile shared successfully');
-				} catch (error) {
-					console.error('Error sharing:', error);
-				}
-			} else {
-				navigator.clipboard.writeText(shareUrl).then(() => {
-					showConfirmationToast("Profile link copied to clipboard!");
-				});
-			}
-		});
-		// END NEW FUNCTIONALITY
-	}
 	
-	if (photoUploadInput) {
-	  photoUploadInput.addEventListener("change", async (e) => {
-		const files = Array.from(e.target.files);
-		for (const file of files) {
-		  if (file.size > 2 * 1024 * 1024) {
-			alert("Image must be smaller than 2MB.");
-			continue;
-		  }
-		  // In a real app, this would be an upload URL, but we use the local URL for preview
-		  const localUrl = URL.createObjectURL(file); 
-		  const photoId = `photo-${Date.now()}`;
-		  const preview = createPhotoPreview(localUrl, photoId);
-		  photoPreviewGrid.appendChild(preview);
-		}
-	  });
-	}
+	// The photo upload event listener has been removed from here
 	
-	if (photoPreviewGrid) {
-		photoPreviewGrid.addEventListener('click', (e) => {
-			if (e.target.classList.contains('remove-btn')) {
-				const preview = e.target.closest('.photo-preview');
-				if (preview) {
-					// NOTE: In the mock, we remove from the DOM but the final save will only take photos in the DOM
-					preview.remove(); 
-					console.log("Simulated photo removal.");
-				}
-			}
-		});
-	}
-	
-	function createPhotoPreview(url, id) {
-		const div = document.createElement('div');
-		div.className = 'photo-preview';
-		div.setAttribute('data-photo-id', id);
-		div.innerHTML = `
-			<img src="${url}" alt="Photo preview">
-			<button class="remove-btn" type="button">&times;</button>
-		`;
-		return div;
-	}
-
 	if (profileForm) {
-	  // ✨ NEW FUNCTIONALITY: Profile Edit Save
+	  profileForm.querySelector("#profile-name").value = currentUser.name || "";
+	  profileForm.querySelector("#profile-age").value = currentUser.age || "";
+	  profileForm.querySelector("#profile-bio").value = currentUser.bio || "";
+	  profileForm.querySelector("#profile-gender").value = currentUser.gender || "";
+	  
 	  profileForm.addEventListener("submit", async e => {
 		e.preventDefault();
 		
-		const updatedProfile = {
+		pendingChanges = {
 		  ...currentUser,
 		  name: profileForm.querySelector("#profile-name").value,
 		  age: parseInt(profileForm.querySelector("#profile-age").value),
 		  bio: profileForm.querySelector("#profile-bio").value,
-		  gender: profileForm.querySelector("#profile-gender").value,
-		  interests: profileForm.querySelector("#profile-interests-input").value.split(",").map(i => i.trim()).filter(i => i),
+		  gender: profileForm.querySelector("#profile-gender").value
 		};
-		
-		// Grab the current set of photos from the preview grid DOM elements
-		const newPhotos = Array.from(photoPreviewGrid.querySelectorAll('img')).map(img => img.src);
-		updatedProfile.photos = newPhotos;
 
-		saveUserProfile(updatedProfile);
-		renderProfilePage(currentUser); // Rerender the profile page with new data
-		showConfirmationToast("Profile Updated! See your new look.");
-		routeTo("profile", true);
+		// Show confirmation modal
+		if (confirmationModal) confirmationModal.showModal();
 	  });
-	  // END NEW FUNCTIONALITY
 	}
   }
   
   /* =========================
-   UI Elements & Modals
-   ========================= */
+	 UI Elements & Modals
+	 ========================= */
   function bindUI() {
 	const themeSwitch = $('#theme-switch');
 	if (themeSwitch) {
@@ -805,43 +653,6 @@
 		body.setAttribute('data-theme', themeSwitch.checked ? 'dark' : 'light');
 	  });
 	}
-	
-	// ✨ NEW FUNCTIONALITY: Search Bar Logic
-	const searchIcon = $('[data-action="open-search"]');
-	if (searchIcon) {
-		searchIcon.addEventListener('click', () => {
-			searchBarContainer.classList.toggle('is-visible');
-			if (searchBarContainer.classList.contains('is-visible')) {
-				searchInput.focus();
-			} else {
-				searchInput.value = '';
-				if (searchResultsContainer) searchResultsContainer.innerHTML = '';
-			}
-		});
-	}
-	
-	if (searchInput) {
-		searchInput.addEventListener('input', (e) => {
-			const query = e.target.value.toLowerCase();
-			if (!searchResultsContainer) return;
-			searchResultsContainer.innerHTML = '';
-			
-			if (query.length > 0) {
-				const results = db.profiles.filter(p => p.name && p.name.toLowerCase().includes(query));
-				
-				if (results.length > 0) {
-					results.forEach(p => {
-						const li = document.createElement('li');
-						li.innerHTML = `<a href="#profile/${p.uid}" data-route-link="profile" data-target-uid="${p.uid}">${p.name} (${p.age})</a>`;
-						searchResultsContainer.appendChild(li);
-					});
-				} else {
-					searchResultsContainer.innerHTML = '<li>No names found.</li>';
-				}
-			}
-		});
-	}
-	// END NEW FUNCTIONALITY
 
 	const donateLink = $('[data-action="donate"]');
 	if (donateLink && modalDonate) {
@@ -860,7 +671,7 @@
 	  }
 	}
 	
-	// ✨ NEW FUNCTIONALITY: Mobile Money Donation Flow
+	// NEW: Donation logic
 	let selectedProvider = null;
 	
 	if (airtelBtn) {
@@ -896,18 +707,13 @@
 		let ussd;
 		
 		if (selectedProvider === "airtel") {
-		  // Mock USSD for Airtel (example format)
-		  ussd = `*211*1*1*0994426162*${amount}#`; 
-		  alert(`Attempting to dial Airtel Money USSD for K${amount}. Follow your phone prompts: ${ussd}`);
+		  ussd = `*211*2*1*1*0994426162*${amount}#`;
 		} else if (selectedProvider === "tnm") {
-		  // Mock USSD for TNM (example format)
-		  ussd = `*444*1*1*0889479863*${amount}#`; 
-		  alert(`Attempting to dial TNM Mpamba USSD for K${amount}. Follow your phone prompts: ${ussd}`);
+		  ussd = `*444*2*1*1*0889479863*${amount}#`;
 		}
 		
 		if (ussd) {
-		  // Use the tel: scheme to launch the phone dialer
-		  window.location.href = `tel:${encodeURIComponent(ussd)}`;
+		  window.location.href = `tel:${ussd}`;
 		} else {
 		  alert("Please select a mobile money provider.");
 		}
@@ -915,35 +721,124 @@
 		modalDonate.close();
 	  });
 	}
-	// END NEW FUNCTIONALITY
+
+	// New: Search functionality
+	if (searchIcon && searchContainer) {
+	  searchIcon.addEventListener('click', () => {
+		searchContainer.classList.toggle('active'); // Show/hide search
+		searchInput.focus();
+	  });
+	  const debouncedSearch = debounce((query) => {
+		searchResults.innerHTML = '';
+		if (query.length < 2) return;
+		const matches = allProfiles.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+		matches.forEach(match => {
+		  const resultItem = document.createElement('div');
+		  resultItem.classList.add('search-result');
+		  resultItem.textContent = match.name;
+		  resultItem.addEventListener('click', () => {
+			// Route to profile or highlight
+			routeTo('profile', true); // Example
+			searchContainer.classList.remove('active');
+		  });
+		  searchResults.appendChild(resultItem);
+		});
+	  }, 300);
+	  searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+	}
+
+	// New: Refresh button
+	if (refreshBtn) {
+	  refreshBtn.addEventListener('click', async () => {
+		refreshBtn.classList.add('spinning'); // Assume CSS animation
+		await fetchAllProfiles(); // Refetch with filters
+		await loadNextProfile();
+		setTimeout(() => refreshBtn.classList.remove('spinning'), 1000);
+	  });
+	}
+
+	// New: Discovery settings sliders
+	if (maxDistanceSlider && maxDistanceValue) {
+	  maxDistanceSlider.addEventListener('input', (e) => {
+		currentUser.settings.maxDistance = parseInt(e.target.value);
+		maxDistanceValue.textContent = `${currentUser.settings.maxDistance} km`;
+	  });
+	}
+	if (ageRangeMin && ageRangeMax && ageRangeValue) {
+	  const updateAgeValue = () => {
+		ageRangeValue.textContent = `${ageRangeMin.value} - ${ageRangeMax.value}`;
+		currentUser.settings.ageRange = [parseInt(ageRangeMin.value), parseInt(ageRangeMax.value)];
+	  };
+	  ageRangeMin.addEventListener('input', updateAgeValue);
+	  ageRangeMax.addEventListener('input', updateAgeValue);
+	}
+	if (hideAccountToggle) {
+	  hideAccountToggle.addEventListener('change', (e) => {
+		currentUser.settings.hideAccount = e.target.checked;
+		// Apply immediately or on save
+	  });
+	}
+
+	// New: Confirmation for saves
+	if (confirmationModal && confirmBtn && cancelConfirmBtn) {
+	  confirmBtn.addEventListener('click', async () => {
+		if (pendingChanges) {
+		  await saveUserProfile(pendingChanges);
+		  currentUser = pendingChanges;
+		  renderProfilePage(currentUser);
+		  alert("Changes confirmed!");
+		  routeTo("profile", true);
+		  pendingChanges = null;
+		}
+		confirmationModal.close();
+	  });
+	  cancelConfirmBtn.addEventListener('click', () => {
+		pendingChanges = null;
+		confirmationModal.close();
+	  });
+	}
+
+	// New: Share profile
+	if (shareProfileBtn) {
+	  shareProfileBtn.addEventListener('click', () => {
+		const profileUrl = `${window.location.origin}/#profile?uid=${currentUser.uid}`;
+		navigator.clipboard.writeText(profileUrl).then(() => {
+		  alert("Profile URL copied to clipboard!");
+		});
+	  });
+	}
+
+	// New: Back buttons with animation
+	backButtons.forEach(btn => {
+	  btn.addEventListener('click', () => {
+		body.classList.add('slide-back'); // Assume CSS transition
+		history.back();
+		setTimeout(() => body.classList.remove('slide-back'), 300);
+	  });
+	});
+
+	// New: Settings links
+	settingsLinks.forEach(link => {
+	  link.addEventListener('click', (e) => {
+		const target = link.getAttribute('data-target-section');
+		if (target === 'support') routeTo('contact', true);
+		if (target === 'transactions') routeTo('donate', true);
+		if (target === 'manage-photos') routeTo('profile-edit', true); // Assuming photos in edit
+		if (target === 'subscriptions') routeTo('donate', true);
+	  });
+	});
   }
 
   /* =========================
-   Init everything
-   ========================= */
+	 Init everything
+	 ========================= */
   async function init() {
 	pages.forEach(p => p.hidden = true);
 	
-	// Check for existing user or create mock new user
-	if (!currentUser) {
-		currentUser = db.profiles.find(p => p.email === "newuser@example.com");
-		if (!currentUser) {
-			currentUser = {
-				uid: "temp-new-user-" + Date.now(),
-				email: "newuser@example.com",
-				onboardingComplete: false,
-				isSubscriber: false,
-				settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
-			};
-			db.profiles.push(currentUser);
-		}
-	}
-
-	if (currentUser && currentUser.onboardingComplete) {
-	  handleUserLogin(currentUser);
-	} else {
-	  routeTo("onboarding", false);
-	}
+	// await checkAuthState(); // Comment out to skip auth check
+	
+	// Add some temporary user data so the UI can be rendered
+	handleUserLogin(currentUser);
 
 	bindAuthForms();
 	bindRouting();
@@ -951,7 +846,6 @@
 	bindProfileManagement();
 	bindUI();
 	bindMessageForm();
-	bindDiscoverySettings(); // Initialize settings logic
   }
 
   document.addEventListener("DOMContentLoaded", () => init());
