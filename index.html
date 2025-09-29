@@ -3,7 +3,7 @@
   <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>DateMe</title>
+	<title>DateWise</title>
 	<link
 	  rel="stylesheet"
 	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -17,12 +17,14 @@
   <body data-theme="light">
 	<a href="#main" class="skip-link">Skip to main content</a>
 	<div class="app">
+
 	  <header class="header" role="banner">
 		<div class="container header__inner">
 		  <div class="header-nav-content" data-header-content="main-nav">
+
 			<a href="#" class="brand" data-route-link="home">
 			  <svg
-				class="brand__mark"
+				class="brand__mark brand__mark--animated"
 				viewBox="0 0 24 24"
 				xmlns="http://www.w3.org/2000/svg"
 			  >
@@ -30,103 +32,93 @@
 				  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
 				></path>
 			  </svg>
-			  <span class="brand__name">DateMe</span>
+			  <span class="brand__name">DateWise</span>
 			</a>
-			<nav class="nav" role="navigation" aria-label="Main">
-			  <ul class="nav__list">
-				<li>
-				  <a
-					href="#"
-					class="nav__link is-active"
-					data-route-link="home"
-					aria-current="page"
-				  >
-					<i class="fa-solid fa-fire-flame-curved"></i>
-					Discover
-				  </a>
-				</li>
-				<li>
-				  <a href="#" class="nav__link" data-route-link="matches">
-					<i class="fa-solid fa-star"></i>
-					Matches
-				  </a>
-				</li>
-				<li>
-				  <a href="#" class="nav__link" data-route-link="messages">
-					<i class="fa-solid fa-comment-dots"></i>
-					Messages
-					<span class="badge" id="badge-messages"></span>
-				  </a>
-				</li>
-			  </ul>
-			</nav>
+			
+			<nav class="nav" role="navigation" aria-label="Main" hidden></nav>
+
 			<div class="header__actions">
+			  
 			  <button
 				class="btn btn--icon btn--ghost"
-				data-action="open-search"
-				aria-label="Search"
-			  >
-				<i class="fa-solid fa-magnifying-glass"></i>
-			  </button>
-			  <div class="theme-toggle">
-				<input
-				  type="checkbox"
-				  id="theme-switch"
-				  class="theme-toggle__input"
-				/>
-				<label for="theme-switch" class="theme-toggle__label">
-				  <i
-					class="fas fa-sun theme-toggle__icon theme-toggle__sun"
-				  ></i>
-				  <i
-					class="fas fa-moon theme-toggle__icon theme-toggle__moon"
-				  ></i>
-				</label>
-			  </div>
-			  <button
-				class="btn btn--icon"
 				data-route-link="discover-settings"
 				id="discover-settings-btn"
 				aria-label="Discovery settings"
 			  >
 				<i class="fa-solid fa-sliders"></i>
 			  </button>
+
 			  <div class="user-menu-wrapper">
 				<button
-				  class="avatar-btn"
+				  class="btn btn--icon btn--ghost"
+				  id="hamburger-menu-btn"
 				  data-action="toggle-menu"
-				  data-route-link="profile"
 				  aria-haspopup="true"
 				  aria-expanded="false"
-				  aria-controls="menu-user"
-				  aria-label="Open user menu"
+				  aria-controls="menu-main"
+				  aria-label="Open main menu"
 				>
-				  <img
-					src="IMG_1078.jpeg"
-					alt="User avatar"
-					class="avatar"
-				  />
+				  <i class="fa-solid fa-bars"></i>
 				</button>
-				<ul class="menu" id="menu-user" role="menu" hidden>
-				  <li>
+
+				<ul class="menu menu--floating" id="menu-main" role="menu" hidden>
+				  
+				  <li class="menu__item menu__item--no-hover" role="none">
+					<div class="menu-search-bar">
+						<input type="search" class="menu-search-bar__input" placeholder="Search profiles..." aria-label="Search profiles">
+						<button class="btn btn--icon" type="button" aria-label="Perform search">
+							<i class="fa-solid fa-magnifying-glass"></i>
+						</button>
+					</div>
+				  </li>
+
+				  <li role="none">
 					<a href="#" data-route-link="profile" role="menuitem">
-					  <i class="fa-solid fa-user"></i> My Profile
+					  <img src="IMG_1078.jpeg" alt="User avatar" class="avatar avatar--small"> My Profile
 					</a>
 				  </li>
-				  <li>
+				  
+				  <hr class="menu__divider">
+
+				  <li role="none">
 					<a href="#" data-route-link="settings" role="menuitem">
 					  <i class="fa-solid fa-cog"></i> Settings
 					</a>
 				  </li>
-				  <li>
+				  <li role="none">
+					<a href="#" data-route-link="privacy" role="menuitem">
+					  <i class="fa-solid fa-lock"></i> Privacy Policy
+					</a>
+				  </li>
+				  <li role="none">
+					<a href="#" data-route-link="about" role="menuitem">
+					  <i class="fa-solid fa-info-circle"></i> About
+					</a>
+				  </li>
+				  <li role="none">
+					<a href="#" data-route-link="contact" role="menuitem">
+					  <i class="fa-solid fa-headset"></i> Contact
+					</a>
+				  </li>
+				  <li role="none">
+					<a href="#" data-route-link="donate" class="glowing-pink" role="menuitem">
+						<i class="fa-solid fa-heart-circle-bolt"></i> Donate
+					</a>
+				  </li>
+
+				  <hr class="menu__divider">
+
+				  <li role="none">
 					<a href="#" data-action="logout" role="menuitem">
-					  <i class="fa-solid fa-sign-out"></i> Logout
+					  <i class="fa-solid fa-sign-out-alt"></i> Logout
 					</a>
 				  </li>
 				</ul>
 			  </div>
+			  
 			</div>
 		  </div>
+		  
 		  <div
 			class="page-header-content"
 			data-header-content="page-title"
@@ -135,7 +127,7 @@
 			<div class="page-header__left">
 			  <button
 				class="btn--icon btn--ghost"
-				data-action="go-back"
+				data-action="back"
 				aria-label="Go back"
 			  >
 				<i class="fa-solid fa-arrow-left"></i>
@@ -170,11 +162,15 @@
 		  </div>
 		</div>
 	  </header>
+	  <div id="search-container" class="search-overlay" hidden>
+		<input type="text" id="search-input" placeholder="Search names...">
+		<div id="search-results"></div>
+	  </div>
 	  <main id="main" role="main">
 		<section id="page-signup" class="page auth-form" data-route="signup">
 		  <div class="container auth-form__container">
 			<h2 class="page__title auth-form__title">
-			  Welcome to <span class="website-name">DateMe</span>
+			  Welcome to <span class="website-name">DateWise</span>
 			  <br />
 			  find your match here for free
 			</h2>
@@ -299,7 +295,10 @@
 		  </div>
 		</section>
 		<section id="page-home" class="page" data-route="home" hidden>
-		  <div class="cards-stack">
+		  <button data-action="refresh-profiles" class="btn btn--icon" aria-label="Refresh profiles">
+			<i class="fa-solid fa-sync"></i>
+		  </button>
+		  <div class="cards">
 			<article class="card profile-card" tabindex="0">
 			  <div class="profile-card__media">
 				<img
@@ -362,7 +361,7 @@
 						<span class="category-card__label">Casual</span>
 					</a>
 					<a href="#" class="category-card" data-category="online-now">
-						<img src="IMG_0167.png" alt="A group of friends on their phones, representing people currently online">
+						<img src="IMG_0145.jpeg" alt="A group of friends on their phones, representing people currently online">
 						<span class="category-card__label">Online Now</span>
 					</a>
 					<a href="#" class="category-card" data-category="friendship">
@@ -476,7 +475,7 @@
 		  <div class="page-header profile-page-header">
 			<button
 			  class="btn btn--icon btn--back"
-			  data-action="go-back"
+			  data-action="back"
 			  aria-label="Go back"
 			>
 			  <i class="fa-solid fa-arrow-left"></i>
@@ -491,16 +490,17 @@
 			</button>
 		  </div>
 		  <div class="profile-content">
-			<div class="profile-avatar">
+			<div class="profile-header__media">
 			  <img
+				id="profile-header-avatar"
 				src="IMG_1078.jpeg"
 				alt="Profile avatar"
 			  />
 			</div>
-			<div class="profile-info-section">
-			  <h2 class="profile-name">Phillip, 20</h2>
-			  <p class="profile-location">Lilongwe</p>
-			  <p class="profile-tagline">
+			<div class="profile-header__info">
+			  <h2 id="profile-title">Phillip, 20</h2>
+			  <p>Lilongwe</p>
+			  <p>
 				Friendly and focused. Building a modern dating site with clean
 				design and smooth UX.
 			  </p>
@@ -664,73 +664,248 @@
 			<div class="page-header page-header--back">
 			  <button
 				class="btn--icon btn--ghost"
-				data-action="go-back"
+				data-action="back"
 				aria-label="Go back"
 			  >
 				<i class="fa-solid fa-arrow-left"></i>
 			  </button>
 			  <h1 class="page-title">Settings</h1>
-			  <div class="user-info-header">
-				<span class="user-name">Philip</span>
-				<img
-				  src="IMG_1078.jpeg"
-				  alt="Philip's avatar"
-				  class="user-avatar"
-				/>
-			  </div>
 			</div>
-			<div class="settings-menu">
-			  <ul class="settings-group">
-				<h3 class="settings-group-title">
-				  <i class="fa-solid fa-user"></i> Account
-				</h3>
-				<li>
-				  <a href="#" data-route-link="profile"
-					>Profile</a
-				  >
-				</li>
-				<li>
-				  <a href="#" data-route-link="manage-photos">Manage Photos</a>
-				</li>
-				<li>
-				  <a href="#">Subscription Plans & Payments</a>
-				</li>
-				<li>
-				  <a href="#">Transactions</a>
-				</li>
-			  </ul>
-			  <ul class="settings-group">
-				<h3 class="settings-group-title">
-				  <i class="fa-solid fa-gear"></i> General
-				</h3>
-				<li>
-				  <a href="#">Privacy Settings</a>
-				</li>
-				<li>
-				  <a href="#" data-route-link="terms">Terms & Condition</a>
-				</li>
-				<li>
-				  <a href="#">Refund Policy</a>
-				</li>
-				<li>
-				  <a href="#">User Agreement</a>
-				</li>
-			  </ul>
-			  <ul class="settings-group">
-				<h3 class="settings-group-title">
-				  <i class="fa-solid fa-headset"></i> Settings
-				</h3>
-				<li>
-				  <a href="#">Get Support</a>
-				</li>
-			  </ul>
-			</div>
-			<div class="logout-btn-container">
-			  <button class="btn btn--primary btn--logout">
-				Logout <i class="fa-solid fa-arrow-right"></i>
-			  </button>
+
+			<div class="settings-menu-list">
+
+				<div class="settings-group">
+					<a href="#" class="settings-link-card" data-route-link="discover-settings">
+						<i class="fa-solid fa-compass"></i>
+						<div class="settings-link-card__body">
+							<strong>Discovery</strong>
+							<p>Control who you see and who can see you</p>
+						</div>
+						<i class="fa-solid fa-chevron-right"></i>
+					</a>
+				</div>
+				
+				<div class="settings-group">
+					<a href="#" class="settings-link-card" data-route-link="profile">
+						<i class="fa-solid fa-user-circle"></i>
+						<div class="settings-link-card__body">
+							<strong>Account</strong>
+							<p>View or edit your profile and account settings</p>
+						</div>
+						<i class="fa-solid fa-chevron-right"></i>
+					</a>
+				</div>
+
+				<div class="settings-group">
+					<a href="#" class="settings-link-card" data-route-link="appearance-settings">
+						<i class="fa-solid fa-palette"></i>
+						<div class="settings-link-card__body">
+							<strong>Appearance</strong>
+							<p>Customize your app theme and display</p>
+						</div>
+						<i class="fa-solid fa-chevron-right"></i>
+					</a>
+				</div>
+
+				<div class="settings-group">
+					<a href="#" class="settings-link-card" data-route-link="privacy">
+						<i class="fa-solid fa-lock"></i>
+						<div class="settings-link-card__body">
+							<strong>Privacy</strong>
+							<p>Manage your privacy and data settings</p>
+						</div>
+						<i class="fa-solid fa-chevron-right"></i>
+					</a>
+				</div>
+
+				<div class="settings-group">
+					<a href="#" class="settings-link-card" data-route-link="notification-settings">
+						<i class="fa-solid fa-bell"></i>
+						<div class="settings-link-card__body">
+							<strong>Notifications</strong>
+							<p>Manage your notification preferences</p>
+						</div>
+						<i class="fa-solid fa-chevron-right"></i>
+					</a>
+				</div>
+
+				<hr>
+				
+				<div class="settings-group settings-group--toggles">
+					<h3 class="settings-group-title">Appearance</h3>
+					<div class="settings-item settings-item--toggle">
+						<span>Dark Mode</span>
+						<p class="settings-item__desc">Switch between light and dark modes.</p>
+						<div class="switch">
+							<input type="checkbox" id="dark-mode-toggle" class="sr-only" />
+							<label class="switch__label" for="dark-mode-toggle"></label>
+						</div>
+					</div>
+				</div>
+
+				<div class="settings-group settings-group--toggles">
+					<h3 class="settings-group-title">Notifications</h3>
+					<div class="settings-item settings-item--toggle">
+						<span>New Matches</span>
+						<p class="settings-item__desc">Get notified when you have a new match.</p>
+						<div class="switch">
+							<input type="checkbox" id="notify-matches" class="sr-only" checked />
+							<label class="switch__label" for="notify-matches"></label>
+						</div>
+					</div>
+					<div class="settings-item settings-item--toggle">
+						<span>Likes</span>
+						<p class="settings-item__desc">Be notified when someone likes your profile.</p>
+						<div class="switch">
+							<input type="checkbox" id="notify-likes" class="sr-only" checked />
+							<label class="switch__label" for="notify-likes"></label>
+						</div>
+					</div>
+					<div class="settings-item settings-item--toggle">
+						<span>Messages</span>
+						<p class="settings-item__desc">Receive alerts about new messages.</p>
+						<div class="switch">
+							<input type="checkbox" id="notify-messages" class="sr-only" checked />
+							<label class="switch__label" for="notify-messages"></label>
+						</div>
+					</div>
+					<div class="settings-item settings-item--toggle">
+						<span>Marketing</span>
+						<p class="settings-item__desc">Updates about new features and promotions.</p>
+						<div class="switch">
+							<input type="checkbox" id="notify-marketing" class="sr-only" />
+							<label class="switch__label" for="notify-marketing"></label>
+						</div>
+					</div>
+				</div>
+				
+				<div class="settings-group settings-group--toggles">
+					<h3 class="settings-group-title">Privacy</h3>
+					<div class="settings-item settings-item--toggle">
+						<span>Show My Age</span>
+						<p class="settings-item__desc">Display your age on your profile.</p>
+						<div class="switch">
+							<input type="checkbox" id="privacy-show-age" class="sr-only" checked />
+							<label class="switch__label" for="privacy-show-age"></label>
+						</div>
+					</div>
+					<div class="settings-item settings-item--toggle">
+						<span>Show Location</span>
+						<p class="settings-item__desc">Display your location to other users.</p>
+						<div class="switch">
+							<input type="checkbox" id="privacy-show-location" class="sr-only" checked />
+							<label class="switch__label" for="privacy-show-location"></label>
+						</div>
+					</div>
+					<div class="settings-item settings-item--toggle">
+						<span>Show Online Status</span>
+						<p class="settings-item__desc">Let others know when you are online.</p>
+						<div class="switch">
+							<input type="checkbox" id="privacy-show-status" class="sr-only" checked />
+							<label class="switch__label" for="privacy-show-status"></label>
+						</div>
+					</div>
+				</div>
+
+				<div class="settings-group settings-group--links">
+					<h3 class="settings-group-title">Account</h3>
+					<ul class="settings-list">
+						<li>
+							<a href="#" class="settings-link" data-route-link="profile-edit">
+								<i class="fa-solid fa-pencil"></i> Edit Profile
+							</a>
+						</li>
+						<li>
+							<a href="#" class="settings-link" data-route-link="discovery-settings">
+								<i class="fa-solid fa-sliders"></i> Discovery Preferences
+							</a>
+						</li>
+						<li>
+							<a href="#" class="settings-link" data-route-link="blocked-users">
+								<i class="fa-solid fa-user-slash"></i> Blocked Users
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="settings-group settings-group--danger">
+					<h3 class="settings-group-title">Danger Zone</h3>
+					<ul class="settings-list">
+						<li>
+							<a href="#" class="settings-link settings-link--danger" data-route-link="delete-account">
+								<i class="fa-solid fa-user-xmark"></i> Delete Account
+							</a>
+						</li>
+						<li>
+							<a href="#" class="settings-link settings-link--danger" data-action="logout">
+								<i class="fa-solid fa-sign-out"></i> Sign Out
+							</a>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="settings-group settings-group--legal">
+					<h3 class="settings-group-title">Legal & Support</h3>
+					<p class="settings-group__desc">Need help? Get in touch with our team.</p>
+					<div class="settings-item">
+						<a href="#" class="settings-link" data-route-link="support">
+							<i class="fa-solid fa-headset"></i> Get Support
+						</a>
+					</div>
+					<div class="settings-item">
+						<a href="#" class="settings-link" data-route-link="terms">
+							<i class="fa-solid fa-file-contract"></i> Terms & Conditions
+						</a>
+					</div>
+					<div class="settings-item">
+						<a href="#" class="settings-link" data-route-link="privacy">
+							<i class="fa-solid fa-shield"></i> Privacy Policy
+						</a>
+					</div>
+				</div>
+
+				<div class="logout-btn-container">
+					<button data-action="logout" class="btn btn--primary btn--logout">
+						Logout <i class="fa-solid fa-arrow-right"></i>
+					</button>
+				</div>
+				
+				<p class="app-version">DateWise v1.0.0 (Build 265)</p>
+
 			</div>
 		  </div>
+		</section>
+
+		<section id="page-blocked-users" class="page" data-route="blocked-users" hidden>
+			<div class="container">
+				<h2 class="page__title">Blocked Users</h2>
+				<p>List of users you have blocked.</p>
+				</div>
+		</section>
+		<section id="page-delete-account" class="page" data-route="delete-account" hidden>
+			<div class="container">
+				<h2 class="page__title page__title--danger">Delete Account</h2>
+				<p>We're sad to see you go! Are you sure you want to permanently delete your account? This action cannot be undone.</p>
+				<button class="btn btn--danger">Permanently Delete Account</button>
+			</div>
+		</section>
+		<section id="page-support" class="page" data-route="support" hidden>
+			<div class="container">
+				<h2 class="page__title">Get Support</h2>
+				<p>Find answers to common questions or contact our support team.</p>
+				</div>
+		</section>
+		<section id="page-appearance-settings" class="page" data-route="appearance-settings" hidden>
+			<div class="container">
+				<h2 class="page__title">Appearance Settings</h2>
+				<p>Customise your app's visual style.</p>
+			</div>
+		</section>
+		<section id="page-notification-settings" class="page" data-route="notification-settings" hidden>
+			<div class="container">
+				<h2 class="page__title">Notification Settings</h2>
+				<p>Control all your alerts.</p>
+			</div>
 		</section>
 		<section
 		  id="page-discover-settings"
@@ -768,12 +943,12 @@
 				  <div class="age-range">
 					<input
 					  type="range"
-					  id="distance-range"
+					  id="max-distance-slider"
 					  min="1"
 					  max="100"
 					  value="50"
 					/>
-					<span class="range-value" id="distance-value">50 km</span>
+					<span class="range-value" id="max-distance-value">50 km</span>
 				  </div>
 				</div>
 			  </div>
@@ -784,12 +959,19 @@
 				  <div class="age-range">
 					<input
 					  type="range"
-					  id="age-range"
+					  id="age-range-min"
 					  min="18"
 					  max="60"
-					  value="25"
+					  value="18"
 					/>
-					<span class="range-value" id="age-value">18 - 30</span>
+					<input
+					  type="range"
+					  id="age-range-max"
+					  min="18"
+					  max="60"
+					  value="30"
+					/>
+					<span class="range-value" id="age-range-value">18 - 30</span>
 				  </div>
 				</div>
 			  </div>
@@ -798,8 +980,8 @@
 				<div class="settings-item">
 				  <span>Hide My Account</span>
 				  <div class="switch">
-					<input type="checkbox" id="hide-account" />
-					<label class="switch__label" for="hide-account"
+					<input type="checkbox" id="hide-account-toggle" />
+					<label class="switch__label" for="hide-account-toggle"
 					  >Hide me from discovery</label
 					>
 				  </div>
@@ -816,7 +998,7 @@
 			<h2 class="page__title">Terms and Conditions</h2>
 			<div class="legal-text">
 			  <p>
-				Welcome to DateMe. By accessing or using our website, you agree
+				Welcome to DateWise. By accessing or using our website, you agree
 				to be bound by these Terms and Conditions ("Terms"). If you
 				disagree with any part of the terms, you may not access the
 				service. These terms apply to all visitors, users, and others
@@ -836,14 +1018,14 @@
 			  <p>
 				The Service and its original content, features, and
 				functionality are and will remain the exclusive property of
-				DateMe and its licensors. Our trademarks and trade dress may not
+				DateWise and its licensors. Our trademarks and trade dress may not
 				be used in connection with any product or service without the
 				prior written consent of DateMe.
 			  </p>
 			  <h4>3. Links To Other Websites</h4>
 			  <p>
 				Our Service may contain links to third-party web sites or
-				services that are not owned or controlled by DateMe. We have no
+				services that are not owned or controlled by DateWise. We have no
 				control over, and assume no responsibility for, the content,
 				privacy policies, or practices of any third-party web sites or
 				services. You further acknowledge and agree that DateMe shall
@@ -877,7 +1059,7 @@
 				choices you have associated with that data.
 			  </p>
 			  <h4>2. Use of Data</h4>
-			  <p>DateMe uses the collected data for various purposes:</p>
+			  <p>DateWise uses the collected data for various purposes:</p>
 			  <ul>
 				<li>To provide and maintain the Service.</li>
 				<li>To notify you about changes to our Service.</li>
@@ -902,7 +1084,7 @@
 			  <p>
 				We may disclose your Personal Data in the good faith belief that
 				such action is necessary to: comply with a legal obligation,
-				protect and defend the rights or property of DateMe, prevent or
+				protect and defend the rights or property of DateWise, prevent or
 				investigate possible wrongdoing in connection with the Service,
 				protect the personal safety of users of the Service or the
 				public, or protect against legal liability.
@@ -1018,7 +1200,7 @@
 			<a href="#" data-route-link="contact">Contact</a>
 			<a href="#" data-route-link="donate" class="glowing-pink">Donate</a>
 		  </nav>
-		  <p class="copyright">© <span data-year>2025</span> DateMe</p>
+		  <p class="copyright">© <span data-year>2025</span> DateWise</p>
 		</div>
 	  </footer>
 	</div>
@@ -1123,7 +1305,17 @@
 		  </div>
 		</form>
 	  </div>
-	</d>
+	</dialog>
+	<dialog id="confirmation-modal" class="modal" aria-labelledby="confirmation-title" hidden>
+	  <div class="modal-content">
+		<h3 id="confirmation-title">Confirm Changes</h3>
+		<p>Are you sure you want to save these changes?</p>
+		<div class="modal-actions">
+		  <button id="cancel-confirm-btn" class="btn btn--ghost">Cancel</button>
+		  <button id="confirm-btn" class="btn btn--primary">Confirm</button>
+		</div>
+	  </div>
+	</dialog>
 	<template id="template-profile-card">
 	  <article
 		class="card profile-card"
@@ -1157,7 +1349,7 @@
 		  <button class="btn btn--icon btn--like" data-action="like" aria-label="Like">
 			<i class="fa-solid fa-heart"></i>
 		  </button>
-		  <button class="btn btn--icon btn--super-like" data-action="super-like" aria-label="Super-like">
+		  <button class="btn btn--icon btn--super-like" data-action="message" aria-label="Message">
 			<i class="fa-solid fa-star"></i>
 		  </button>
 		  </div>
@@ -1217,6 +1409,35 @@
 		const routeLinks = document.querySelectorAll('[data-route-link]');
 		const pages = document.querySelectorAll('.page');
 		const bottomNavLinks = document.querySelectorAll('.bottom-nav__link');
+
+		// New: Hamburger Menu Toggling Logic
+		const menuButton = document.getElementById('hamburger-menu-btn');
+		const menu = document.getElementById('menu-main');
+		const menuWrapper = menuButton ? menuButton.closest('.user-menu-wrapper') : null;
+
+		if (menuButton && menu) {
+			menuButton.addEventListener('click', (event) => {
+				event.stopPropagation(); // Prevent the click from immediately closing the menu
+				const isHidden = menu.hasAttribute('hidden');
+				if (isHidden) {
+					menu.removeAttribute('hidden');
+					menuButton.setAttribute('aria-expanded', 'true');
+				} else {
+					menu.setAttribute('hidden', '');
+					menuButton.setAttribute('aria-expanded', 'false');
+				}
+			});
+
+			// Close the menu if the user clicks outside of it
+			document.addEventListener('click', (event) => {
+				const isClickInside = menuWrapper.contains(event.target);
+				if (!isClickInside && !menu.hasAttribute('hidden')) {
+					menu.setAttribute('hidden', '');
+					menuButton.setAttribute('aria-expanded', 'false');
+				}
+			});
+		}
+		
 		function navigateTo(routeName) {
 		  pages.forEach(page => {
 			page.classList.remove('is-visible');
@@ -1226,11 +1447,18 @@
 		  if (targetPage) {
 			targetPage.classList.add('is-visible');
 			targetPage.removeAttribute('hidden');
-			document.title = `${routeName.charAt(0).toUpperCase() + routeName.slice(1)} - DateMe`;
+			document.title = `${routeName.charAt(0).toUpperCase() + routeName.slice(1)} - DateWise`;
 		  }
 		  updateActiveNav(routeName);
+		  
+		  // New: Close menu after navigation for smooth transition
+		  if (menuButton && menu) {
+			  menu.setAttribute('hidden', '');
+			  menuButton.setAttribute('aria-expanded', 'false');
+		  }
 		}
 		function updateActiveNav(routeName) {
+		  // Old Main Nav links are now hidden, but keeping the logic for consistency if you reintroduce it
 		  const mainNavLinks = document.querySelectorAll('.nav__link');
 		  mainNavLinks.forEach(link => {
 			if (link.dataset.routeLink === routeName) {
@@ -1256,13 +1484,8 @@
 			event.preventDefault();
 			const routeName = link.dataset.routeLink;
 			
-			// Custom logic for the avatar button to prevent the menu from toggling when navigating
-			if (link.classList.contains('avatar-btn') && event.target.closest('[data-action="toggle-menu"]')) {
-				// We don't want to navigate if the user is clicking the dropdown toggle area
-				// but since we made the whole button a route link, we'll navigate on all clicks for simplicity
-				// for a real app, you'd handle the dropdown menu toggle in JS and only trigger route change if a menu item is clicked
-				// Given your setup, a direct click on the avatar now navigates to the profile page.
-			}
+			// Custom logic for preventing menu toggle action from also routing (already handled in new JS)
+			// However, clicking an item *inside* the menu should still route.
 			
 			navigateTo(routeName);
 		  });
