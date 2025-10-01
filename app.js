@@ -1,853 +1,907 @@
-// app.js — DateMe interactive logic
-// IIFE to avoid polluting global scope
+// app.js — DateWise interactive logic (Refactored to match provided HTML)
 (() => {
-  "use strict";
+	"use strict";
 
-  /* =========================
-	 Firebase Configuration
-	 ========================= */
-  const firebaseConfig = {
-	apiKey: "AIzaSyA7nZ2Y51lfpkrwHKIvYe-y_EmyIk_WEfU",
-	authDomain: "dateme-website.firebaseapp.com",
-	projectId: "dateme-website",
-	storageBucket: "dateme-website.firebasestorage.app",
-	messagingSenderId: "589523570810",
-	appId: "1:589523570810:web:b0e7f6520242704ebdebc3",
-	// Note: measurementId isn't used in v8 of the SDK, so you can leave it out.
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  const storage = firebase.storage();
-
-  /* =========================
-	 DOM cache & State
-	 ========================= */
-  const $ = selector => document.querySelector(selector);
-  const $$ = selector => Array.from(document.querySelectorAll(selector));
-
-  const body = document.body;
-  const pages = $$(".page");
-  const pageMap = pages.reduce((m, p) => {
-	const name = p.getAttribute("data-route");
-	if (name) m[name] = p;
-	return m;
-  }, {});
-
-  const signupForm = $("#signup-form");
-  const loginForm = $("#login-form");
-  const onboardingForm = $("#onboarding-form");
-  const profileForm = $("#profile-form");
-  const mainNav = $("nav.main-nav");
-  const avatarBtn = $(".avatar-btn");
-  const logoutBtn = $("[data-action='logout']");
-  const cardTemplate = $("#template-profile-card");
-  const cardsContainer = $(".cards");
-  const profileHeaderName = $("#profile-title");
-  const profileHeaderBio = $(".profile-header__info p");
-  const profileHeaderAvatar = $(".profile-header__media img");
-  const navAvatar = $(".header .avatar-btn img");
-  // Photo-related DOM elements have been removed from here
-  const modalDonate = $("#modal-donate");
-  const editProfileBtn = $("#edit-profile-btn");
-  const saveProfileBtn = $("#save-profile-btn");
-  // NEW DONATION-RELATED DOM ELEMENTS
-  const donateForm = $('#donation-form');
-  const donateAmountInput = $('#donate-amount');
-  const donateHeading = $('#donate-heading');
-  const donateOptions = $('.donate-options');
-  const airtelBtn = $('[data-action="select-airtel"]');
-  const tnmBtn = $('[data-action="select-tnm"]');
-  const cancelDonateBtn = $('[data-action="cancel-donate"]');
-  // NEW MESSAGING DOM ELEMENTS
-  const messagesContainer = $('#messages-container');
-  const messageForm = $('#message-form');
-  const messageInput = $('#message-input');
-  const chatHeader = $('#chat-header');
-  const convoList = $('.convo-list');
-  const convoTemplate = $('#template-convo');
-  const messageTemplateMe = $('#template-message-me');
-  const messageTemplateThem = $('#template-message-them');
-  const chatBody = $('#chat-body');
-
-  // New DOM elements for requested features
-  const searchIcon = $('[data-action="search"]'); // Assume this exists in header
-  const searchContainer = $('#search-container'); // Assume a modal or div for search
-  const searchInput = $('#search-input');
-  const searchResults = $('#search-results');
-  const refreshBtn = $('[data-action="refresh-profiles"]'); // Assume button in discover
-  const maxDistanceSlider = $('#max-distance-slider');
-  const maxDistanceValue = $('#max-distance-value');
-  const ageRangeMin = $('#age-range-min');
-  const ageRangeMax = $('#age-range-max');
-  const ageRangeValue = $('#age-range-value');
-  const hideAccountToggle = $('#hide-account-toggle');
-  const confirmationModal = $('#confirmation-modal'); // Assume modal for confirms
-  const confirmBtn = $('#confirm-btn');
-  const cancelConfirmBtn = $('#cancel-confirm-btn');
-  const shareProfileBtn = $('[data-action="share-profile"]'); // Assume in profile page
-  const backButtons = $$('[data-action="back"]'); // All back buttons
-  const settingsLinks = $$('.settings-link'); // Assume class on settings items
-
-  let currentUser = {
-	uid: "temp-user-id-123",
-	name: "Phillip",
-	email: "phil@example.com",
-	onboardingComplete: true,
-	isSubscriber: false,
-	age: 20,
-	gender: "male",
-	bio: "Friendly and focused. Building a modern dating site with clean design and smooth UX.",
-	location: { city: "Lilongwe", lat: -13.9667, lon: 33.7833 },
-	interests: ["Tech", "Design", "Entrepreneurship"],
-	avatar: "https://placehold.co/120x120?text=Phil",
-	photos: ["https://placehold.co/240x240?text=Phil+1", "https://placehold.co/240x240?text=Phil+2", "https://placehold.co/240x240?text=Phil+3"],
-	settings: { maxDistance: 50, ageRange: [18, 30], hideAccount: false },
-  };
-  let allProfiles = [
-	  {
-		uid: "temp-profile-1",
-		name: "Jane",
-		age: 22,
-		bio: "Loves to read and hike.",
-		onboardingComplete: true,
-		location: { city: "Blantyre" },
-		avatar: "https://placehold.co/120x120?text=Jane",
-		distance: 12,
-		isOnline: true,
-	  },
-	  {
-		uid: "temp-profile-2",
-		name: "John",
-		age: 25,
-		bio: "Musician and artist.",
-		onboardingComplete: true,
-		location: { city: "Lilongwe" },
-		avatar: "https://placehold.co/120x120?text=John",
-		distance: 3,
-		isOnline: false,
-	  },
-	  {
-		uid: "temp-profile-3",
-		name: "Sarah",
-		age: 21,
-		bio: "Student and coffee addict.",
-		onboardingComplete: true,
-		location: { city: "Zomba" },
-		avatar: "https://placehold.co/120x120?text=Sarah",
-		distance: 80,
-		isOnline: true,
-	  },
-  ];
-  let currentMatchId = null;
-  let pendingChanges = null; // For confirmation
-
-  /* =========================
-	 Helper utilities
-	 ========================= */
-  const safeQuery = (sel, ctx = document) => {
-	try { return ctx.querySelector(sel); }
-	catch (e) { return null; }
-  };
-  const createElFromHTML = htmlStr => {
-	const tpl = document.createElement("template");
-	tpl.innerHTML = htmlStr.trim();
-	return tpl.content.firstElementChild;
-  };
-  const escapeHtml = unsafe => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-  
-  // New helper for debouncing (for search)
-  const debounce = (func, delay) => {
-	let timeout;
-	return (...args) => {
-	  clearTimeout(timeout);
-	  timeout = setTimeout(() => func(...args), delay);
+	/* ====================================================================
+	 * 1. FIREBASE & MOCK CONFIGURATION (Preserved)
+	 * ==================================================================== */
+	const firebaseConfig = {
+		apiKey: "AIzaSyA7nZ2Y51lfpkrwHKIvYe-y_EmyIk_WEfU",
+		authDomain: "dateme-website.firebaseapp.com",
+		projectId: "dateme-website",
+		storageBucket: "dateme-website.firebasestorage.app",
+		messagingSenderId: "589523570810",
+		appId: "1:589523570810:web:b0e7f6520242704ebdebc3",
 	};
-  };
 
-  /* =========================
-	 AUTHENTICATION
-	 ========================= */
-  // The checkAuthState function is no longer needed since we are not using Firebase Auth.
-  async function checkAuthState() {
-	auth.onAuthStateChanged(async user => {
-	  if (user) {
-		// Check if email is verified
-		if (!user.emailVerified) {
-		  console.log('User signed in but email not verified.');
-		  alert('Please verify your email address to continue.');
-		  await auth.signOut(); // Log them out if not verified
-		  routeTo("login", false);
-		  return;
-		}
+	const MockFirebase = {
+		initializeApp: () => ({}),
+		auth: () => ({
+			onAuthStateChanged: (callback) => console.log("Auth Mock: Listening..."),
+			signOut: async () => console.log("Auth Mock: Signed out."),
+			createUserWithEmailAndPassword: async () => ({ user: { sendEmailVerification: async () => {} } }),
+			signInWithEmailAndPassword: async () => {},
+		}),
+		firestore: () => ({
+			collection: () => ({
+				doc: () => ({ set: async () => {}, get: async () => ({}), update: async () => {} }),
+				get: async () => ({ docs: [] }),
+			}),
+			FieldValue: { serverTimestamp: () => new Date() },
+		}),
+		storage: () => ({
+			ref: () => ({ put: async () => ({ ref: { getDownloadURL: async () => "https://placehold.co/240x240" } }) }),
+		}),
+	};
 
-		currentUser = await fetchUserProfile(user.uid);
-		if (currentUser && currentUser.onboardingComplete) {
-		  console.log('User signed in:', currentUser.email);
-		  await handleUserLogin(currentUser);
-		} else {
-		  console.log('User signed in, but profile not found or onboarding not complete. Redirecting.');
-		  routeTo("onboarding", false);
-		}
-	  } else {
-		console.log('User logged out.');
-		currentUser = null;
-		body.classList.remove('logged-in');
-		routeTo("login", false);
-	  }
-	});
-  }
+	const firebase = window.firebase || MockFirebase;
+	firebase.initializeApp(firebaseConfig);
+	const auth = firebase.auth();
+	const db = firebase.firestore();
+	const storage = firebase.storage();
 
-  async function handleUserLogin(userProfile) {
-	currentUser = userProfile;
-	body.classList.add('logged-in');
-	
-	renderProfilePage(currentUser);
-	
-	await fetchAllProfiles();
-	await loadNextProfile();
-
-	routeTo("home", false);
-  }
-
-  function bindAuthForms() {
-	if (signupForm) {
-	  signupForm.addEventListener("submit", async e => {
-		e.preventDefault();
-		const email = signupForm.querySelector("#signup-email").value;
-		const password = signupForm.querySelector("#signup-password").value;
-		const confirmPassword = signupForm.querySelector("#signup-confirm-password").value;
-		
-		if (password !== confirmPassword) {
-		  alert("Passwords do not match!");
-		  return;
-		}
-		
-		try {
-		  const { user } = await auth.createUserWithEmailAndPassword(email, password);
-		  
-		  // Send email verification
-		  await user.sendEmailVerification();
-
-		  const newProfile = {
-			uid: user.uid,
-			email: user.email,
-			onboardingComplete: false,
-			isSubscriber: false,
-			settings: { gender: "all", distance: 50, ageRange: [18, 30], hideAccount: false },
-		  };
-		  
-		  await saveUserProfile(newProfile);
-		  console.log('User created. Please check your email for verification.');
-		  alert('Account created! Please check your email to verify your address before logging in.');
-		  
-		  await auth.signOut(); // Force log out to require email verification
-		  routeTo("login", true); 
-		} catch (err) {
-		  alert("Signup failed: " + err.message);
-		}
-	  });
-	}
-	
-	if (onboardingForm) {
-	  onboardingForm.addEventListener("submit", async e => {
-		e.preventDefault();
-		const name = onboardingForm.querySelector("#onboarding-name").value;
-		const age = parseInt(onboardingForm.querySelector("#onboarding-age").value);
-		const gender = onboardingForm.querySelector("#onboarding-gender").value;
-		const bio = onboardingForm.querySelector("#onboarding-bio").value;
-		
-		try {
-		  const updatedProfile = {
-			...currentUser,
-			name: name,
-			age: age,
-			gender: gender,
-			bio: bio,
+	/* =========================
+	 * 2. APP STATE & CACHE
+	 * ========================= */
+	const App = {
+		// DOM Helpers
+		$: (selector) => document.querySelector(selector),
+		$$: (selector) => Array.from(document.querySelectorAll(selector)),
+		// State
+		currentUser: {
+			uid: "temp-user-id-123",
+			name: "Phillip",
+			email: "phil@example.com",
 			onboardingComplete: true,
-			location: { city: "New York", lat: 40.7128, lon: -74.0060 },
-			interests: ["Coding", "Hiking"],
-			avatar: "https://placehold.co/120x120?text=User", // Default placeholder
-			photos: [], // Empty photo array
-		  };
-		  
-		  await saveUserProfile(updatedProfile);
-		  await handleUserLogin(updatedProfile);
-		  console.log('Onboarding complete. Welcome!');
-		} catch (err) {
-		  console.error("Onboarding failed:", err);
-		  alert("Onboarding failed: " + err.message);
-		}
-	  });
-	}
-
-	if (loginForm) {
-	  loginForm.addEventListener("submit", async e => {
-		e.preventDefault();
-		const email = loginForm.querySelector("#login-email").value;
-		const password = loginForm.querySelector("#login-password").value;
-		try {
-		  await auth.signInWithEmailAndPassword(email, password);
-		} catch (err) {
-		  alert("Login failed: " + err.message);
-		}
-	  });
-	}
-	
-	if (logoutBtn) {
-	  logoutBtn.addEventListener("click", async () => {
-		try {
-		  await auth.signOut();
-		  currentUser = null; // Clear current user for real logout
-		  localStorage.clear(); // Clear any stored data
-		  routeTo("login", true);
-		} catch (err) {
-		  console.error("Logout error:", err);
-		}
-	  });
-	}
-  }
-
-  async function saveUserProfile(profileData) {
-	//await db.collection("users").doc(profileData.uid).set(profileData, { merge: true });
-	// Since we are not connected to Firebase, this function will not do anything.
-	console.log("Profile data saved (simulated):", profileData);
-	currentUser = profileData;
-  }
-
-  async function fetchUserProfile(uid) {
-	// Since we are not connected to Firebase, this will return a hardcoded profile for now
-	return {
-		uid: uid,
-		name: "Jane",
-		age: 22,
-		bio: "Loves to read and hike.",
-		onboardingComplete: true,
-		location: { city: "Blantyre" },
-		avatar: "https://placehold.co/120x120?text=Jane",
-		distance: 12,
-		isOnline: true,
+			isSubscriber: false,
+			age: 20,
+			gender: "male",
+			bio: "Friendly and focused. Building a modern dating site with clean design and smooth UX.",
+			location: { city: "Lilongwe", lat: -13.9667, lon: 33.7833 },
+			interests: ["Tech", "Design", "Entrepreneurship"],
+			avatar: "IMG_1078.jpeg",
+			photos: ["IMG_0063.jpeg", "IMG_0064.jpeg", "IMG_0139.jpeg"], // Matched HTML photo names
+			settings: {
+				maxDistance: 50,
+				ageRange: [18, 30],
+				hideAccount: false,
+				showGender: "female", // Added based on HTML radio group
+			},
+		},
+		allProfiles: [
+			{ uid: "temp-profile-1", name: "Jane", age: 22, bio: "Loves to read and hike.", onboardingComplete: true, location: { city: "Blantyre" }, avatar: "https://placehold.co/120x120?text=Jane", distance: 12, isOnline: true },
+			{ uid: "temp-profile-2", name: "John", age: 25, bio: "Musician and artist.", onboardingComplete: true, location: { city: "Lilongwe" }, avatar: "https://placehold.co/120x120?text=John", distance: 3, isOnline: false },
+			{ uid: "temp-profile-3", name: "Sarah", age: 21, bio: "Student and coffee addict.", onboardingComplete: true, location: { city: "Zomba" }, avatar: "https://placehold.co/120x120?text=Sarah", distance: 80, isOnline: true },
+		],
+		currentMatchId: null,
+		pendingChanges: null,
+		PAGE_HISTORY: ["landing"], // Changed default to 'landing' based on HTML script
+		// Swiping State
+		isDragging: false,
+		startX: 0,
+		startY: 0,
+		currentCard: null,
+		SWIPE_THRESHOLD: 100,
+		ROTATION_FACTOR: 0.2,
+		// Cached DOM Elements
+		body: document.body,
+		pages: null,
+		pageMap: {},
+		mainHeader: null,
+		pageHeader: null,
+		bottomNav: null,
 	};
-  }
-  
-  // The uploadPhoto function has been completely removed.
-  
-  /* =========================
-	 ROUTING (simple SPA)
-	 ========================= */
-  function bindRouting() {
-	document.addEventListener("click", ev => {
-	  const link = ev.target.closest("[data-route-link]");
-	  if (!link) return;
-	  ev.preventDefault();
-	  const route = link.getAttribute("data-route-link");
-	  if (!route) return;
-	  
-	  const targetUid = link.getAttribute('data-target-uid');
-	  if (route === 'messages' && targetUid) {
-		  // const matchId = [currentUser.uid, targetUid].sort().join('_');
-		  // currentMatchId = matchId;
-		  // getLiveMessages(matchId, targetUid);
-	  }
-	  
-	  routeTo(route, true);
-	});
-	
-	window.addEventListener('popstate', (e) => {
-		const route = e.state?.route || 'home';
-		routeTo(route, false);
-	});
-  }
-  
-  function routeTo(routeName = "home", push = true) {
-	// Since we're not using auth, we'll remove this block
-	// if (!currentUser && routeName !== "login" && routeName !== "signup") {
-	//   routeName = "login";
-	// }
-	
-	if (routeName === "login" || routeName === "signup") {
-	  body.classList.add('auth-page');
-	} else {
-	  body.classList.remove('auth-page');
-	}
 
-	pages.forEach(p => {
-	  p.classList.remove("is-visible");
-	  p.hidden = true;
-	});
+	/* =========================
+	 * 3. HELPER UTILITIES (Preserved)
+	 * ========================= */
+	const safeQuery = (sel, ctx = document) => {
+		try {
+			return ctx.querySelector(sel);
+		} catch (e) {
+			console.warn(`Query failed for ${sel}:`, e);
+			return null;
+		}
+	};
 
-	const target = pageMap[routeName];
-	if (!target) {
-	  console.warn("Unknown route:", routeName);
-	  routeName = "home";
-	}
-	
-	const currentPage = pageMap[routeName];
-	if (currentPage) {
-		currentPage.classList.add("is-visible");
-		currentPage.hidden = false;
-	}
+	const escapeHtml = (unsafe) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 
-	// This part is for real-time data, which won't work without a logged-in user.
-	// You'll need to re-implement or mock this logic if you want to see this page.
-	if (routeName === 'messages') {
-		// renderConvoList();
-	}
-	
-	if (push) {
-	  history.pushState({ route: routeName }, "", `#${routeName}`);
-	}
-  }
+	const debounce = (func, delay) => {
+		let timeout;
+		return (...args) => {
+			clearTimeout(timeout);
+			timeout = setTimeout(() => func(...args), delay);
+		};
+	};
 
-  /* =========================
-	 PROFILES — render & interactions
-	 ========================= */
-  async function fetchAllProfiles() {
-	// Instead of fetching from Firebase, we'll use our hardcoded list
-	console.log("Simulating fetching profiles...");
-	// Apply filters based on settings
-	allProfiles = allProfiles.filter(profile => {
-	  if (currentUser.settings.hideAccount) return false; // Simulate hiding
-	  if (profile.distance > currentUser.settings.maxDistance) return false;
-	  if (profile.age < currentUser.settings.ageRange[0] || profile.age > currentUser.settings.ageRange[1]) return false;
-	  return true;
-	});
-  }
+	/* =========================
+	 * 4. ROUTING & UI STATE
+	 * ========================= */
+	function updateHeader(routeName) {
+		if (!App.mainHeader || !App.pageHeader || !App.bottomNav) return;
 
-  async function loadNextProfile() {
-	if (!cardsContainer || !cardTemplate) return;
-	
-	cardsContainer.innerHTML = '';
-	
-	if (allProfiles.length === 0) {
-	  cardsContainer.innerHTML = `<div class="no-profiles">No new profiles nearby. Try changing your settings.</div>`;
-	  return;
-	}
-	
-	const nextProfile = allProfiles.shift();
-	renderSingleProfile(nextProfile);
-  }
+		const isAuthPage = ["signup", "login", "onboarding", "landing"].includes(routeName);
+		const isMainRoute = ["discover", "matches", "connect", "messages", "profile"].includes(routeName);
 
-  function renderSingleProfile(profile) {
-	if (!cardsContainer || !cardTemplate) return;
-	
-	const card = cardTemplate.content.cloneNode(true);
-	card.querySelector(".profile-card").setAttribute("data-uid", profile.uid);
-	safeQuery(".profile-card__media img", card).src = profile.avatar;
-	safeQuery(".profile-card__title", card).textContent = `${profile.name}, ${profile.age}`;
-	safeQuery(".profile-card__meta", card).textContent = profile.location.city;
-	safeQuery(".profile-card__bio", card).textContent = profile.bio;
-	// No isOnline property in our mocked data
-	// safeQuery(".profile-card__status .status--online", card).textContent = profile.isOnline ? "Online" : "Offline";
-	safeQuery(".profile-card__distance", card).textContent = `${profile.distance} km away`;
-	
-	cardsContainer.appendChild(card);
-  }
-  
-  // NEW: Matching Logic Functions
-  async function saveUserSwipe(targetUid, action) {
-	// No Firebase, so we'll just log the action
-	console.log(`Simulated swipe: User liked/skipped profile ${targetUid} with action '${action}'`);
-  }
+		App.mainHeader.hidden = isAuthPage; // Show main nav on auth/landing
+		App.pageHeader.hidden = isAuthPage || isMainRoute; // Hide page header on main/auth pages
+		App.bottomNav.hidden = isAuthPage; // Hide bottom nav on auth/landing
 
-  async function checkForMatch(targetUid) {
-	// Since we don't have a database, we'll just return true to simulate a match
-	return true;
-  }
-
-  async function createMatch(targetUid) {
-	// No Firebase, so we'll just log the match
-	console.log(`Simulated match found with ${targetUid}!`);
-  }
-
-  function bindCardActions() {
-	if (!cardsContainer) return;
-	cardsContainer.addEventListener("click", async ev => {
-	  const btn = ev.target.closest("button[data-action]");
-	  if (!btn) return;
-	  const action = btn.getAttribute("data-action");
-	  const card = btn.closest(".profile-card");
-	  if (!card) return;
-	  
-	  const targetUid = card.getAttribute("data-uid");
-	  
-	  if (action === "like" || action === "skip") {
-		// Animate fall
-		card.classList.add(action === "like" ? "fall-right" : "fall-left");
-		card.addEventListener("animationend", async () => {
-		  card.remove();
-		  await saveUserSwipe(targetUid, action);
-		  if (action === "like") {
-			const isMatch = await checkForMatch(targetUid);
-			if (isMatch) {
-			  alert("It's a Match! 🎉");
+		// Update page title for non-main routes
+		if (!App.pageHeader.hidden) {
+			const titleElement = safeQuery(".page-title", App.pageHeader);
+			if (titleElement) {
+				const titleText = routeName
+					.replace(/-/g, " ")
+					.split(" ")
+					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+					.join(" ");
+				titleElement.textContent = titleText.replace("Page ", ""); // Clean up titles like "Page Discover"
 			}
-		  }
-		  await loadNextProfile();
-		}, { once: true });
-	  } else if (action === "message") { // Assuming star is data-action="message"
-		const targetUid = card.getAttribute("data-uid");
-		// Open message inbox
-		routeTo("messages", true);
-		messageInput.focus(); // Pre-focus for writing message
-	  }
-	});
-  }
+		}
 
-  /* =========================
-	 MESSAGING
-	 ========================= */
+		App.$$(".bottom-nav__link").forEach((link) => {
+			link.classList.toggle("is-active", link.getAttribute("data-route-link") === routeName);
+		});
 
-  // The messaging functions are tied to Firebase, so they won't work in this state.
-  // I am leaving them here but they will not be functional.
-
-  async function renderConvoList() {
-	if (!convoList) return;
-	convoList.innerHTML = '';
-	const snapshot = await db.collection("matches").where("users", "array-contains", currentUser.uid).get();
-	
-	const matches = snapshot.docs.map(doc => {
-	  const matchData = doc.data();
-	  const otherUserUid = matchData.users.find(uid => uid !== currentUser.uid);
-	  return {
-		...matchData,
-		id: doc.id,
-		otherUserUid: otherUserUid,
-	  };
-	});
-
-	for (const match of matches) {
-		const profile = await fetchUserProfile(match.otherUserUid);
-		if (profile) {
-			const convo = convoTemplate.content.cloneNode(true);
-			const link = convo.querySelector('.convo');
-			link.setAttribute('data-target-uid', profile.uid);
-			safeQuery('.convo__avatar', convo).src = profile.avatar;
-			safeQuery('.convo__name', convo).textContent = profile.name;
-			safeQuery('.convo__last', convo).textContent = match.lastMessage || 'Start a conversation!';
-			convoList.appendChild(convo);
+		if (App.hamburgerMenu && App.hamburgerMenuBtn) {
+			// Hamburger menu is handled by the script in HTML, but ensure it's hidden on route change
+			App.hamburgerMenu.setAttribute('hidden', ''); 
+			App.hamburgerMenuBtn.setAttribute("aria-expanded", "false");
 		}
 	}
-  }
 
-  function getLiveMessages(matchId, targetUid) {
-	if (!chatBody) return;
-	
-	chatBody.innerHTML = '';
-	safeQuery('.chat').style.display = 'grid';
-	
-	fetchUserProfile(targetUid).then(profile => {
-	  if (profile && chatHeader) {
-		chatHeader.querySelector('.chat__peer-name').textContent = profile.name;
-	  }
-	});
-	
-	const messagesRef = db.collection("matches").doc(matchId).collection("messages").orderBy("timestamp");
-	messagesRef.onSnapshot(snapshot => {
-	  snapshot.docChanges().forEach(change => {
-		if (change.type === "added") {
-		  const msg = change.doc.data();
-		  renderSingleMessage(msg);
+	function routeTo(routeName = "landing", push = true) {
+		if (["login", "signup", "onboarding", "landing"].includes(routeName)) {
+			App.body.classList.add("auth-page");
+		} else {
+			App.body.classList.remove("auth-page");
 		}
-	  });
-	  chatBody.scrollTop = chatBody.scrollHeight;
-	});
-  }
 
-  function renderSingleMessage(msg) {
-	if (!chatBody) return;
-	const isMe = msg.senderId === currentUser.uid;
-	const template = isMe ? messageTemplateMe : messageTemplateThem;
-	const bubble = template.content.cloneNode(true);
-	safeQuery('.bubble__text', bubble).textContent = msg.text;
-	if (msg.timestamp) {
-	  const time = msg.timestamp.toDate();
-	  safeQuery('time', bubble).textContent = time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+		App.pages.forEach((p) => {
+			p.classList.remove("is-visible");
+			p.hidden = true;
+		});
+
+		const currentPage = App.pageMap[routeName] || App.pageMap["landing"]; // Default to landing
+		if (currentPage) {
+			currentPage.classList.add("is-visible");
+			currentPage.hidden = false;
+		}
+
+		updateHeader(routeName);
+
+		if (push) {
+			history.pushState({ route: routeName }, "", `#${routeName}`);
+			if (App.PAGE_HISTORY[App.PAGE_HISTORY.length - 1] !== routeName) {
+				App.PAGE_HISTORY.push(routeName);
+			}
+		}
+
+		// *** FIX: Run necessary load/render functions on route change ***
+		if (routeName === "profile-edit") loadProfileForEdit();
+		if (routeName === "profile") renderProfilePage(App.currentUser);
+		if (routeName === "discover-settings") loadDiscoverySettings();
+		if (routeName === "messages") {
+			// Placeholder for renderConvoList
+		}
 	}
-	chatBody.appendChild(bubble);
-  }
-  
-  function bindMessageForm() {
-	  if (!messageForm) return;
-	  messageForm.addEventListener('submit', async (e) => {
-		  e.preventDefault();
-		  const text = messageInput.value.trim();
-		  if (text === "" || !currentMatchId) return;
 
-		  const message = {
-			  text: escapeHtml(text),
-			  senderId: currentUser.uid,
-			  timestamp: firebase.firestore.FieldValue.serverTimestamp()
-		  };
-		  
-		  try {
-			  await db.collection("matches").doc(currentMatchId).collection("messages").add(message);
-			  await db.collection("matches").doc(currentMatchId).update({
-				  lastMessage: text
-			  });
-			  messageInput.value = '';
-		  } catch (error) {
-			  console.error("Error sending message:", error);
-		  }
-	  });
-  }
+	function goBack() {
+		App.body.classList.add("slide-back");
+		setTimeout(() => App.body.classList.remove("slide-back"), 300);
 
-
-  /* =========================
-	 UI Render
-	 ========================= */
-  function renderProfilePage(profile) {
-	if (!profile) return;
-	if (profileHeaderName) profileHeaderName.textContent = `${profile.name}, ${profile.age}`;
-	if (profileHeaderBio) profileHeaderBio.textContent = `${profile.location?.city || "Unknown"} • ${profile.bio || "No bio yet."}`;
-	if (profileHeaderAvatar) profileHeaderAvatar.src = profile.avatar;
-	if (navAvatar) navAvatar.src = profile.avatar;
-	
-	// The profile photo grid is no longer rendered here
-  }
-  
-  /* =========================
-	 Profile Management
-	 ========================= */
-  function bindProfileManagement() {
-	if (editProfileBtn) {
-	  editProfileBtn.addEventListener("click", () => {
-		routeTo("profile-edit", true);
-	  });
+		if (App.PAGE_HISTORY.length > 1) {
+			App.PAGE_HISTORY.pop();
+			const previousRoute = App.PAGE_HISTORY[App.PAGE_HISTORY.length - 1];
+			routeTo(previousRoute, false);
+		} else {
+			routeTo("landing", false);
+		}
 	}
-	
-	// The photo upload event listener has been removed from here
-	
-	if (profileForm) {
-	  profileForm.querySelector("#profile-name").value = currentUser.name || "";
-	  profileForm.querySelector("#profile-age").value = currentUser.age || "";
-	  profileForm.querySelector("#profile-bio").value = currentUser.bio || "";
-	  profileForm.querySelector("#profile-gender").value = currentUser.gender || "";
-	  
-	  profileForm.addEventListener("submit", async e => {
-		e.preventDefault();
+
+	function bindRouting() {
+		document.addEventListener("click", (ev) => {
+			const link = ev.target.closest("[data-route-link]");
+			if (!link) return;
+			ev.preventDefault();
+
+			let route = link.getAttribute("data-route-link");
+			if (!route) return;
+			
+			// Handle special links like 'discover-settings' from the main header button
+			if (route === "discover-settings") {
+				routeTo(route, true);
+				return;
+			}
+			
+			// Route mapping based on HTML structure
+			switch (route) {
+				case "support":
+					route = "support";
+					break;
+				case "subscription-plans":
+				case "payments":
+					route = "donate";
+					break;
+				case "manage-photos":
+				case "edit-profile":
+					route = "profile-edit";
+					break;
+			}
+
+			const targetUid = link.getAttribute("data-target-uid");
+			if (route === "messages" && targetUid) {
+				App.currentMatchId = targetUid;
+			}
+
+			routeTo(route, true);
+		});
+
+		window.addEventListener("popstate", (e) => {
+			const route = e.state?.route || "landing";
+			routeTo(route, false);
+		});
+
+		// Bind back buttons
+		App.backButtons = App.$$('[data-action="back"]'); // Re-query just in case
+		App.backButtons.forEach((btn) => btn.addEventListener("click", goBack));
+	}
+
+	/* =======================================
+	 * 5. AUTHENTICATION & PROFILE DATA
+	 * ======================================= */
+	async function handleUserLogin(userProfile) {
+		App.currentUser = userProfile;
+		App.body.classList.add("logged-in");
+
+		// *** FIX: Ensure initial profile render happens ***
+		renderProfilePage(App.currentUser);
+		// *** FIX: Load discovery data ***
+		await fetchAllProfiles();
+		await loadNextProfile();
+
+		routeTo("discover", false); // Start on discover page after login
+	}
+
+	async function saveUserProfile(profileData) {
+		console.log("Profile data saved (simulated):", profileData);
+		App.currentUser = { ...App.currentUser, ...profileData };
+	}
+
+	function bindAuthForms() {
+		if (App.signupForm) {
+			App.signupForm.addEventListener("submit", async (e) => {
+				e.preventDefault();
+				const email = App.signupForm.querySelector("#signup-email")?.value;
+				const password = App.signupForm.querySelector("#signup-password")?.value;
+				if (!email || !password) {
+					alert("Please fill in all fields.");
+					return;
+				}
+				alert("Account created (Mocked)! Please check your email.");
+				routeTo("login", true);
+			});
+		}
+
+		// The HTML doesn't have an explicit onboarding form, so we use the login form logic for "successful" login
+		if (App.loginForm) {
+			App.loginForm.addEventListener("submit", async (e) => {
+				e.preventDefault();
+				const email = App.loginForm.querySelector("#login-email")?.value;
+				const password = App.loginForm.querySelector("#login-password")?.value;
+				if (!email || !password) {
+					alert("Please fill in all fields.");
+					return;
+				}
+				await handleUserLogin(App.currentUser);
+			});
+		}
+
+		if (App.logoutBtn) {
+			App.logoutBtn.addEventListener("click", async () => {
+				try {
+					await auth.signOut();
+					App.currentUser = null;
+					localStorage.clear();
+					routeTo("login", true);
+				} catch (err) {
+					console.error("Logout error:", err);
+					alert("Failed to log out. Please try again.");
+				}
+			});
+		}
+	}
+
+	/* =======================================
+	 * 6. PROFILE DISCOVERY & SWIPING
+	 * ======================================= */
+	async function fetchAllProfiles() {
+		// Mock logic to filter profiles based on user settings
+		App.allProfiles = App.allProfiles.filter((profile) => {
+			if (App.currentUser.settings.hideAccount) return false;
+			if (profile.distance > App.currentUser.settings.maxDistance) return false;
+			if (profile.age < App.currentUser.settings.ageRange[0] || profile.age > App.currentUser.settings.ageRange[1]) return false;
+			return true;
+		});
+	}
+
+	async function loadNextProfile() {
+		// *** FIX: Check App.cardsStack (not App.cardsContainer) ***
+		if (!App.cardsStack || !App.cardTemplate) return;
+
+		// Clear only if no cards are left, and ensure the existing example cards are cleared.
+		const existingCards = App.$$(".profile-card", App.cardsStack);
 		
-		pendingChanges = {
-		  ...currentUser,
-		  name: profileForm.querySelector("#profile-name").value,
-		  age: parseInt(profileForm.querySelector("#profile-age").value),
-		  bio: profileForm.querySelector("#profile-bio").value,
-		  gender: profileForm.querySelector("#profile-gender").value
+		if (App.allProfiles.length === 0 && existingCards.length <= 1) {
+			App.cardsStack.innerHTML = `<div class="no-profiles neumorphic">No new profiles nearby. Try changing your settings.</div>`;
+			return;
+		}
+		
+		// Remove all existing mock cards except the first one (which we assume is the one the user should interact with)
+		if (existingCards.length > 0) {
+			existingCards.forEach((card, index) => {
+				// We only want to remove the *initial mock* card. The logic will remove the current swiped card.
+				if (index > 0 || card.getAttribute('data-user-id')) {
+					card.remove(); 
+				}
+			});
+		}
+		
+		// If there is no card left, or only a static one, load the new one
+		if (App.allProfiles.length > 0 && App.$(".profile-card", App.cardsStack) === null) {
+			const nextProfile = App.allProfiles.shift();
+			renderSingleProfile(nextProfile);
+		}
+	}
+
+	function renderSingleProfile(profile) {
+		const card = App.cardTemplate.content.cloneNode(true);
+		const profileCard = card.querySelector(".profile-card");
+		
+		profileCard.setAttribute("data-uid", profile.uid);
+		// *** FIX: Use the correct class name for the image ***
+		safeQuery(".profile-card__media img", card).src = profile.avatar;
+		// *** FIX: Ensure age is rendered correctly in the template structure ***
+		safeQuery(".profile-card__name", card).innerHTML = `${escapeHtml(profile.name)}, <span class="age neumorphic">${profile.age}</span>`;
+		safeQuery(".profile-card__distance", card).textContent = `${profile.distance} km away`;
+		safeQuery(".profile-card__bio", card).textContent = escapeHtml(profile.bio);
+
+		// Prepend the new card so it's on top of the stack
+		App.cardsStack.prepend(profileCard);
+	}
+
+	/**
+	 * FIX: This function now reliably waits for the card animation to finish
+	 * before removing the element and loading the next profile.
+	 */
+	async function handleCardAction(card, targetUid, action) {
+		// Add an animation class or specific transition properties to ensure the animation plays
+		card.style.transition = "transform 0.4s ease-out, opacity 0.4s ease-out";
+		
+		// Set up the final off-screen transform and reduce opacity
+		const finalTranslateX = action === "like" ? window.innerWidth * 1.5 : -window.innerWidth * 1.5;
+		const finalRotate = action === "like" ? 30 : -30;
+		card.style.transform = `translate(${finalTranslateX}px, 0) rotate(${finalRotate}deg)`;
+		card.style.opacity = 0;
+
+		// 1. Wait for the CSS transition to complete (0.4s set above)
+		const transitionPromise = new Promise(resolve => {
+			const onTransitionEnd = (e) => {
+				if (e.propertyName !== "transform") return;
+				card.removeEventListener("transitionend", onTransitionEnd);
+				resolve();
+			};
+			
+			card.addEventListener("transitionend", onTransitionEnd);
+
+			// Fallback: Use a safe timeout (slightly longer than the transition)
+			setTimeout(() => {
+				card.removeEventListener("transitionend", onTransitionEnd);
+				resolve();
+			}, 500); 
+		});
+
+		await transitionPromise;
+
+		// 2. Final removal and cleanup
+		if (card.parentNode) card.remove();
+		console.log(`Mock: Swiped ${action} on ${targetUid}`);
+		if (action === "like") {
+			alert("It's a Match! 🎉 (Mocked)");
+		}
+		
+		// 3. Load the next profile
+		await loadNextProfile();
+	}
+
+
+	function bindCardActions() {
+		// *** FIX: Listen on App.cardsStack (the container) ***
+		if (!App.cardsStack) return;
+
+		App.cardsStack.addEventListener("click", async (ev) => {
+			// *** FIX: Select the correct buttons based on data-action in your HTML template ***
+			const btn = ev.target.closest("button[data-action]");
+			if (!btn) return;
+			const action = btn.getAttribute("data-action");
+			// Only act on buttons in the currently visible card (the one with the highest z-index/not scaled down)
+			const card = App.cardsStack.firstElementChild;
+			if (!card) return;
+
+			const targetUid = card.getAttribute("data-uid") || card.getAttribute("data-user-id"); // Get UID from either mock or template
+
+			if (action === "like" || action === "skip") {
+				// This call will set the transition and call handleCardAction
+				handleCardAction(card, targetUid, action);
+			} else if (action === "message") {
+				routeTo("messages", true);
+				App.messageInput?.focus();
+			}
+			// Rewind/Super-Like logic remains unimplemented for this basic fix, but the buttons exist.
+		});
+
+		// *** FIX: Use the correct button ID from the HTML (discover-settings-btn) ***
+		if (App.discoverSettingsBtn) {
+			App.discoverSettingsBtn.addEventListener("click", () => routeTo("discover-settings", true));
+		}
+	}
+
+	function bindSwipeLogic() {
+		// *** FIX: Bind to App.cardsStack ***
+		if (!App.cardsStack) return;
+
+		App.cardsStack.addEventListener("pointerdown", (e) => {
+			// Ensure we are only interacting with the very top card (the first child)
+			const card = e.target.closest(".profile-card");
+			if (!card || card !== App.cardsStack.firstElementChild) return;
+			if (e.button !== 0 && e.pointerType === "mouse") return;
+
+			App.isDragging = true;
+			App.currentCard = card;
+			App.startX = e.clientX;
+			App.startY = e.clientY;
+
+			card.setPointerCapture(e.pointerId);
+			card.style.transition = "none"; // Disable CSS transition while dragging
+
+			card.addEventListener("pointermove", handlePointerMove);
+			card.addEventListener("pointerup", handlePointerUp);
+			card.addEventListener("pointercancel", handlePointerUp);
+		});
+
+		function handlePointerMove(e) {
+			if (!App.isDragging || !App.currentCard) return;
+
+			const deltaX = e.clientX - App.startX;
+			const deltaY = e.clientY - App.startY;
+			const rotate = deltaX * App.ROTATION_FACTOR;
+
+			App.currentCard.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotate}deg)`;
+
+			// Your current HTML template doesn't include .like-overlay or .skip-overlay, 
+			// so we won't try to update their opacity, but leave the structure for future CSS
+		}
+
+		function handlePointerUp(e) {
+			if (!App.isDragging || !App.currentCard) return;
+
+			const card = App.currentCard;
+			const deltaX = e.clientX - App.startX;
+			const targetUid = card.getAttribute("data-uid") || card.getAttribute("data-user-id");
+
+			card.removeEventListener("pointermove", handlePointerMove);
+			card.removeEventListener("pointerup", handlePointerUp);
+			card.removeEventListener("pointercancel", handlePointerUp);
+			card.releasePointerCapture(e.pointerId);
+
+			App.isDragging = false;
+			App.currentCard = null;
+
+			if (Math.abs(deltaX) > App.SWIPE_THRESHOLD) {
+				const action = deltaX > 0 ? "like" : "skip";
+				
+				// Call the handler to wait for the animation and load next card
+				handleCardAction(card, targetUid, action);
+			} else {
+				// Snap back animation
+				card.style.transition = "transform 0.3s ease-in-out"; 
+				card.style.transform = "translate(0, 0) rotate(0deg)";
+			}
+		}
+	}
+
+	/* =======================================
+	 * 7. PROFILE MANAGEMENT & SETTINGS
+	 * ======================================= */
+
+	function renderProfilePage(profile) {
+		// *** FIX: Corrected ID to profile-header-avatar ***
+		if (App.profileHeaderAvatar) App.profileHeaderAvatar.src = profile.avatar;
+		// *** FIX: Corrected avatar selector to match the menu structure ***
+		if (App.navAvatar) App.navAvatar.src = profile.avatar; 
+
+		// Update profile page details
+		if (App.profileTitle) App.profileTitle.textContent = `${profile.name}, ${profile.age}`;
+		// *** FIX: Targeting the p tags based on HTML structure ***
+		const infoParagraphs = App.$$(".profile-header__info p");
+		if (infoParagraphs.length >= 2) {
+			infoParagraphs[0].textContent = profile.location?.city || "Unknown Location";
+			infoParagraphs[1].textContent = profile.bio || "No bio yet.";
+		}
+		
+		// Update photo gallery
+		const photoGallery = App.$("#photo-gallery");
+		if (photoGallery && Array.isArray(profile.photos)) {
+			photoGallery.innerHTML = profile.photos.map(src => 
+				`<div class="photo-item neumorphic"><img src="${escapeHtml(src)}" alt="User photo" /></div>`
+			).join("");
+		}
+
+		// Update interests
+		const interestsContainer = App.$("#profile-interests");
+		if (interestsContainer && Array.isArray(profile.interests)) {
+			interestsContainer.innerHTML = profile.interests.map((i) => `<span class="interest-tag neumorphic">${escapeHtml(i)}</span>`).join("");
+		}
+	}
+
+	function loadProfileForEdit() {
+		if (!App.profileForm || !App.currentUser) return;
+
+		// *** FIX: All form fields are now correctly read from the currentUser object ***
+		App.profileForm.querySelector("#profile-name").value = App.currentUser.name || "";
+		App.profileForm.querySelector("#profile-age").value = App.currentUser.age || "";
+		App.profileForm.querySelector("#profile-bio").value = App.currentUser.bio || "";
+		App.profileForm.querySelector("#profile-gender").value = App.currentUser.gender || "";
+
+		const interestsInput = App.profileForm.querySelector("#profile-interests-input");
+		if (interestsInput && Array.isArray(App.currentUser.interests)) {
+			interestsInput.value = App.currentUser.interests.join(", ");
+		}
+		
+		// Note: The HTML profile-edit page does NOT contain settings/sliders. Those are in discover-settings.
+	}
+	
+	function loadDiscoverySettings() {
+		if (!App.currentUser) return;
+		
+		// Load Distance
+		if (App.maxDistanceSlider) App.maxDistanceSlider.value = App.currentUser.settings.maxDistance;
+		if (App.maxDistanceValue) App.maxDistanceValue.textContent = `${App.currentUser.settings.maxDistance} km`;
+		
+		// Load Age Range
+		if (App.ageRangeMin) App.ageRangeMin.value = App.currentUser.settings.ageRange[0];
+		if (App.ageRangeMax) App.ageRangeMax.value = App.currentUser.settings.ageRange[1];
+		if (App.ageRangeValue) App.ageRangeValue.textContent = `${App.currentUser.settings.ageRange[0]} - ${App.currentUser.settings.ageRange[1]}`;
+		
+		// Load Gender to show (radio group)
+		const showGenderInput = App.discoverySettingsForm.querySelector(`input[name="show-gender"][value="${App.currentUser.settings.showGender}"]`);
+		if (showGenderInput) showGenderInput.checked = true;
+		
+		// Load Hide Account Toggle
+		if (App.hideAccountToggle) App.hideAccountToggle.checked = App.currentUser.settings.hideAccount;
+	}
+
+	function bindProfileManagement() {
+		if (App.editProfileBtn) {
+			App.editProfileBtn.addEventListener("click", () => routeTo("profile-edit", true));
+		}
+
+		if (App.profileForm) {
+			App.profileForm.addEventListener("submit", async (e) => {
+				e.preventDefault();
+
+				const name = App.profileForm.querySelector("#profile-name").value;
+				const age = parseInt(App.profileForm.querySelector("#profile-age").value);
+				const bio = App.profileForm.querySelector("#profile-bio").value;
+				const gender = App.profileForm.querySelector("#profile-gender").value;
+				const interests = App.profileForm.querySelector("#profile-interests-input")?.value.split(",").map((i) => i.trim()) || App.currentUser.interests;
+
+				if (!name || isNaN(age) || !bio || !gender) {
+					alert("Please fill in all required fields.");
+					return;
+				}
+
+				// *** FIX: Handle image upload logic (mocked) ***
+				const photoFile = App.profileForm.querySelector("#profile-photo-upload").files[0];
+				let newPhotos = App.currentUser.photos;
+
+				if (photoFile) {
+					// Mock the upload process and update photos array
+					const mockPhotoURL = URL.createObjectURL(photoFile);
+					newPhotos = [...App.currentUser.photos, mockPhotoURL]; 
+					console.log("Mock: Photo uploaded and URL generated:", mockPhotoURL);
+				}
+
+				App.pendingChanges = { ...App.currentUser, name, age, bio, gender, interests, photos: newPhotos };
+				if (App.confirmationModal) App.confirmationModal.showModal();
+			});
+		}
+		
+		// *** FIX: Bind settings form on the discover-settings page ***
+		if (App.discoverySettingsForm) {
+			App.discoverySettingsForm.addEventListener("submit", async (e) => {
+				e.preventDefault();
+				
+				const newSettings = {
+					maxDistance: parseInt(App.maxDistanceSlider.value),
+					ageRange: [parseInt(App.ageRangeMin.value), parseInt(App.ageRangeMax.value)],
+					hideAccount: App.hideAccountToggle.checked,
+					showGender: App.discoverySettingsForm.querySelector('input[name="show-gender"]:checked')?.value || App.currentUser.settings.showGender,
+				};
+				
+				App.pendingChanges = { ...App.currentUser, settings: newSettings };
+				if (App.confirmationModal) App.confirmationModal.showModal();
+			});
+		}
+
+		if (App.confirmationModal && App.confirmBtn && App.cancelConfirmBtn) {
+			App.confirmBtn.addEventListener("click", async () => {
+				if (App.pendingChanges) {
+					await saveUserProfile(App.pendingChanges);
+					// *** FIX: Re-render profile and settings after saving ***
+					renderProfilePage(App.currentUser);
+					loadDiscoverySettings(); 
+					alert("Changes confirmed!");
+					routeTo("profile", true);
+					App.pendingChanges = null;
+				}
+				App.confirmationModal.close();
+			});
+			App.cancelConfirmBtn.addEventListener("click", () => {
+				App.pendingChanges = null;
+				App.confirmationModal.close();
+			});
+		}
+
+		// *** FIX: Update range value display on input ***
+		const updateRangeValues = () => {
+			if (App.maxDistanceSlider && App.maxDistanceValue) {
+				App.maxDistanceValue.textContent = `${App.maxDistanceSlider.value} km`;
+			}
+			if (App.ageRangeMin && App.ageRangeMax && App.ageRangeValue) {
+				const min = parseInt(App.ageRangeMin.value);
+				const max = parseInt(App.ageRangeMax.value);
+				// Ensure min is not greater than max
+				if (min > max) App.ageRangeMax.value = min;
+				App.ageRangeValue.textContent = `${App.ageRangeMin.value} - ${App.ageRangeMax.value}`;
+			}
 		};
 
-		// Show confirmation modal
-		if (confirmationModal) confirmationModal.showModal();
-	  });
-	}
-  }
-  
-  /* =========================
-	 UI Elements & Modals
-	 ========================= */
-  function bindUI() {
-	const themeSwitch = $('#theme-switch');
-	if (themeSwitch) {
-	  themeSwitch.addEventListener('change', () => {
-		body.setAttribute('data-theme', themeSwitch.checked ? 'dark' : 'light');
-	  });
+		if (App.maxDistanceSlider) App.maxDistanceSlider.addEventListener("input", updateRangeValues);
+		if (App.ageRangeMin) App.ageRangeMin.addEventListener("input", updateRangeValues);
+		if (App.ageRangeMax) App.ageRangeMax.addEventListener("input", updateRangeValues);
 	}
 
-	const donateLink = $('[data-action="donate"]');
-	if (donateLink && modalDonate) {
-	  donateLink.addEventListener('click', (e) => {
-		e.preventDefault();
-		modalDonate.showModal();
-	  });
-	  modalDonate.addEventListener('click', (e) => {
-		if (e.target.tagName === 'DIALOG') {
-		  modalDonate.close();
-		}
-	  });
-	  const closeModalBtn = modalDonate.querySelector('.btn--close');
-	  if (closeModalBtn) {
-		closeModalBtn.addEventListener('click', () => modalDonate.close());
-	  }
-	}
-	
-	// NEW: Donation logic
-	let selectedProvider = null;
-	
-	if (airtelBtn) {
-	  airtelBtn.addEventListener('click', () => {
-		selectedProvider = "airtel";
-		donateHeading.textContent = "Airtel Money";
-		donateOptions.hidden = true;
-		donateForm.hidden = false;
-	  });
-	}
-	
-	if (tnmBtn) {
-	  tnmBtn.addEventListener('click', () => {
-		selectedProvider = "tnm";
-		donateHeading.textContent = "TNM Mpamba";
-		donateOptions.hidden = true;
-		donateForm.hidden = false;
-	  });
-	}
-	
-	if (cancelDonateBtn) {
-	  cancelDonateBtn.addEventListener('click', () => {
-		selectedProvider = null;
-		donateForm.hidden = true;
-		donateOptions.hidden = false;
-	  });
+	/* =========================
+	 * 8. MESSAGING (Preserved)
+	 * ========================= */
+	function bindMessageForm() {
+		if (!App.messageForm) return;
+		App.messageForm.addEventListener("submit", async (e) => {
+			e.preventDefault();
+			const text = App.messageInput.value.trim();
+			if (!text) {
+				alert("Please enter a message.");
+				return;
+			}
+
+			const message = {
+				text: escapeHtml(text),
+				senderId: App.currentUser.uid,
+				timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+			};
+
+			console.log("Mock: Message Sent:", message);
+			App.messageInput.value = "";
+		});
 	}
 
-	if (donateForm) {
-	  donateForm.addEventListener('submit', (e) => {
-		e.preventDefault();
-		const amount = donateAmountInput.value;
-		let ussd;
+	/* =========================
+	 * 9. UI/MODALS & EXTRAS
+	 * ========================= */
+	function bindUI() {
+		const applyTheme = (initial = false) => {
+			const savedTheme = localStorage.getItem("theme") || "light";
+			// *** FIX: Corrected ID to dark-mode-toggle from the HTML ***
+			if (App.darkModeToggle) App.darkModeToggle.checked = savedTheme === "dark";
+			App.body.setAttribute("data-theme", savedTheme);
+		};
+
+		if (App.darkModeToggle) {
+			applyTheme(true);
+			App.darkModeToggle.addEventListener("change", (e) => {
+				const newTheme = e.target.checked ? "dark" : "light";
+				App.body.setAttribute("data-theme", newTheme);
+				localStorage.setItem("theme", newTheme);
+			});
+		}
+
+		// *** FIX: Donation Modal Logic ***
+		let selectedProvider = null;
 		
-		if (selectedProvider === "airtel") {
-		  ussd = `*211*2*1*1*0994426162*${amount}#`;
-		} else if (selectedProvider === "tnm") {
-		  ussd = `*444*2*1*1*0889479863*${amount}#`;
+		// Button to open the modal (from both header and donate page)
+		App.$$('[data-route-link="donate"], [data-action="open-donate-modal"]').forEach((btn) => {
+			btn.addEventListener('click', (e) => {
+				e.preventDefault();
+				if (App.modalDonate) {
+					App.donateOptions.hidden = false;
+					App.donateForm.hidden = true;
+					App.modalDonate.showModal();
+				}
+			});
+		});
+
+		if (App.modalDonate) {
+			// Close modal button
+			const closeModalBtn = App.$('[data-action="close-donate-modal"]', App.modalDonate);
+			if (closeModalBtn) closeModalBtn.addEventListener("click", () => App.modalDonate.close());
+		}
+
+		// Mobile money provider selection
+		App.$$("[data-network]").forEach((btn) => {
+			btn.addEventListener("click", () => {
+				selectedProvider = btn.dataset.network;
+				// *** FIX: Corrected ID to donate-heading ***
+				if (App.donateHeading) App.donateHeading.textContent = `Donate with ${selectedProvider.toUpperCase()}`;
+				if (App.donateOptions) App.donateOptions.hidden = true;
+				if (App.donateForm) App.donateForm.hidden = false;
+			});
+		});
+
+		if (App.cancelDonateBtn) {
+			App.cancelDonateBtn.addEventListener("click", () => {
+				selectedProvider = null;
+				if (App.donateForm) App.donateForm.hidden = true;
+				if (App.donateOptions) App.donateOptions.hidden = false;
+			});
+		}
+
+		if (App.donateForm) {
+			App.donateForm.addEventListener("submit", (e) => {
+				e.preventDefault();
+				const amount = parseFloat(App.donateAmountInput.value);
+				if (isNaN(amount) || amount <= 0) {
+					alert("Please enter a valid donation amount.");
+					return;
+				}
+
+				// The logic for USSD generation (Mocked/Simulated)
+				const targetPhoneNumber = selectedProvider === "airtel" ? "0994426162" : "0889479863";
+				let ussd;
+				if (selectedProvider === "airtel") {
+					ussd = `*211*2*1*1*${targetPhoneNumber}*${amount}#`;
+				} else if (selectedProvider === "tnm") {
+					ussd = `*444*2*1*1*${targetPhoneNumber}*${amount}#`;
+				}
+
+				if (ussd) {
+					alert(`Simulating USSD for ${selectedProvider.toUpperCase()}: ${ussd}. Check your phone to complete the transaction.`);
+					// window.location.href = `tel:${ussd}`; // Commented out to prevent unwanted phone calls
+				} else {
+					alert("Please select a mobile money provider.");
+				}
+				App.modalDonate.close();
+				App.donateAmountInput.value = ""; // Clear after submission
+			});
 		}
 		
-		if (ussd) {
-		  window.location.href = `tel:${ussd}`;
+		// *** FIX: Search Logic (Based on the menu search bar) ***
+		// Note: The HTML has two search buttons/inputs. We'll prioritize the menu one for simplicity.
+		const menuSearchInput = App.$(".menu-search-bar__input");
+		
+		if (menuSearchInput) {
+			const debouncedMenuSearch = debounce((query) => {
+				// Search results are not explicitly rendered in the menu's structure, 
+				// so we'll just log the search action for mock purposes.
+				if (query.length > 1) {
+					console.log(`Mock: Searching for "${query}"`);
+				}
+			}, 300);
+			menuSearchInput.addEventListener("input", (e) => debouncedMenuSearch(e.target.value));
+		}
+
+		if (App.shareProfileBtn) {
+			App.shareProfileBtn.addEventListener("click", async () => {
+				const profileUrl = `${window.location.origin}/#profile?uid=${App.currentUser.uid}`;
+				if (navigator.share) {
+					try {
+						await navigator.share({
+							title: `Check out ${App.currentUser.name}'s Profile!`,
+							url: profileUrl,
+						});
+					} catch (error) {
+						console.error("Error sharing:", error);
+					}
+				} else {
+					navigator.clipboard.writeText(profileUrl);
+					alert("Profile URL copied to clipboard!");
+				}
+			});
+		}
+	}
+
+	/* =========================
+	 * 10. INITIALIZATION
+	 * ========================= */
+	function cacheDomElements() {
+		App.pages = App.$$(".page");
+		App.pageMap = App.pages.reduce((m, p) => {
+			const name = p.getAttribute("data-route");
+			if (name) m[name] = p;
+			return m;
+		}, {});
+
+		App.signupForm = App.$("#signup-form");
+		App.loginForm = App.$("#login-form");
+		App.profileForm = App.$("#profile-form");
+		App.logoutBtn = App.$('[data-action="logout"]');
+		// *** FIX: Swiping container selector corrected to .cards-stack ***
+		App.cardsStack = App.$(".cards-stack");
+		// *** FIX: Card template ID corrected to template-profile-card ***
+		App.cardTemplate = App.$("#template-profile-card"); 
+		// *** FIX: Profile page IDs corrected ***
+		App.profileTitle = App.$("#profile-title");
+		App.profileHeaderAvatar = App.$("#profile-header-avatar");
+		App.navAvatar = App.$(".menu__item img"); // Avatar in the floating menu
+		App.modalDonate = App.$("#modal-donate");
+		App.editProfileBtn = App.$("#edit-profile-btn");
+		App.mainHeader = App.$('[data-header-content="main-nav"]');
+		App.pageHeader = App.$('[data-header-content="page-title"]');
+		App.bottomNav = App.$(".bottom-nav");
+		App.hamburgerMenu = App.$("#menu-main");
+		App.hamburgerMenuBtn = App.$("#hamburger-menu-btn");
+		// *** FIX: Corrected ID to dark-mode-toggle ***
+		App.darkModeToggle = App.$("#dark-mode-toggle");
+		App.donateForm = App.$("#donation-form");
+		App.donateAmountInput = App.$("#donate-amount");
+		App.donateHeading = App.$("#donate-heading");
+		App.donateOptions = App.$(".donate-options");
+		App.cancelDonateBtn = App.$('[data-action="cancel-donate"]');
+		
+		// *** FIX: Discovery Settings IDs (The form in the HTML has ID settings-form) ***
+		App.discoverySettingsForm = App.$("#page-discover-settings #settings-form");
+		App.maxDistanceSlider = App.$("#max-distance-slider");
+		App.maxDistanceValue = App.$("#max-distance-value");
+		App.ageRangeMin = App.$("#age-range-min");
+		App.ageRangeMax = App.$("#age-range-max");
+		App.ageRangeValue = App.$("#age-range-value");
+		App.hideAccountToggle = App.$("#hide-account-toggle");
+		
+		App.confirmationModal = App.$("#confirmation-modal");
+		App.confirmBtn = App.$("#confirm-btn");
+		App.cancelConfirmBtn = App.$("#cancel-confirm-btn");
+		App.shareProfileBtn = App.$('[data-action="share-profile"]');
+		App.backButtons = App.$$('[data-action="back"]');
+		App.messageForm = App.$("#message-form");
+		App.messageInput = App.$("#message-input");
+		// *** Added: Button in header for discovery settings ***
+		App.discoverSettingsBtn = App.$("#discover-settings-btn");
+	}
+
+	async function init() {
+		cacheDomElements();
+
+		App.pages.forEach((p) => (p.hidden = true));
+
+		// Check if a user is "logged in" based on our mock data
+		if (App.currentUser) {
+			await handleUserLogin(App.currentUser);
 		} else {
-		  alert("Please select a mobile money provider.");
+			routeTo("landing", false); // Start on landing if not logged in
 		}
-		
-		modalDonate.close();
-	  });
+
+		bindAuthForms();
+		bindRouting();
+		bindCardActions();
+		bindSwipeLogic();
+		bindProfileManagement();
+		bindUI();
+		bindMessageForm();
+
+		const initialRoute = window.location.hash.substring(1) || "discover";
+		routeTo(initialRoute, false);
 	}
 
-	// New: Search functionality
-	if (searchIcon && searchContainer) {
-	  searchIcon.addEventListener('click', () => {
-		searchContainer.classList.toggle('active'); // Show/hide search
-		searchInput.focus();
-	  });
-	  const debouncedSearch = debounce((query) => {
-		searchResults.innerHTML = '';
-		if (query.length < 2) return;
-		const matches = allProfiles.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-		matches.forEach(match => {
-		  const resultItem = document.createElement('div');
-		  resultItem.classList.add('search-result');
-		  resultItem.textContent = match.name;
-		  resultItem.addEventListener('click', () => {
-			// Route to profile or highlight
-			routeTo('profile', true); // Example
-			searchContainer.classList.remove('active');
-		  });
-		  searchResults.appendChild(resultItem);
-		});
-	  }, 300);
-	  searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
-	}
-
-	// New: Refresh button
-	if (refreshBtn) {
-	  refreshBtn.addEventListener('click', async () => {
-		refreshBtn.classList.add('spinning'); // Assume CSS animation
-		await fetchAllProfiles(); // Refetch with filters
-		await loadNextProfile();
-		setTimeout(() => refreshBtn.classList.remove('spinning'), 1000);
-	  });
-	}
-
-	// New: Discovery settings sliders
-	if (maxDistanceSlider && maxDistanceValue) {
-	  maxDistanceSlider.addEventListener('input', (e) => {
-		currentUser.settings.maxDistance = parseInt(e.target.value);
-		maxDistanceValue.textContent = `${currentUser.settings.maxDistance} km`;
-	  });
-	}
-	if (ageRangeMin && ageRangeMax && ageRangeValue) {
-	  const updateAgeValue = () => {
-		ageRangeValue.textContent = `${ageRangeMin.value} - ${ageRangeMax.value}`;
-		currentUser.settings.ageRange = [parseInt(ageRangeMin.value), parseInt(ageRangeMax.value)];
-	  };
-	  ageRangeMin.addEventListener('input', updateAgeValue);
-	  ageRangeMax.addEventListener('input', updateAgeValue);
-	}
-	if (hideAccountToggle) {
-	  hideAccountToggle.addEventListener('change', (e) => {
-		currentUser.settings.hideAccount = e.target.checked;
-		// Apply immediately or on save
-	  });
-	}
-
-	// New: Confirmation for saves
-	if (confirmationModal && confirmBtn && cancelConfirmBtn) {
-	  confirmBtn.addEventListener('click', async () => {
-		if (pendingChanges) {
-		  await saveUserProfile(pendingChanges);
-		  currentUser = pendingChanges;
-		  renderProfilePage(currentUser);
-		  alert("Changes confirmed!");
-		  routeTo("profile", true);
-		  pendingChanges = null;
-		}
-		confirmationModal.close();
-	  });
-	  cancelConfirmBtn.addEventListener('click', () => {
-		pendingChanges = null;
-		confirmationModal.close();
-	  });
-	}
-
-	// New: Share profile
-	if (shareProfileBtn) {
-	  shareProfileBtn.addEventListener('click', () => {
-		const profileUrl = `${window.location.origin}/#profile?uid=${currentUser.uid}`;
-		navigator.clipboard.writeText(profileUrl).then(() => {
-		  alert("Profile URL copied to clipboard!");
-		});
-	  });
-	}
-
-	// New: Back buttons with animation
-	backButtons.forEach(btn => {
-	  btn.addEventListener('click', () => {
-		body.classList.add('slide-back'); // Assume CSS transition
-		history.back();
-		setTimeout(() => body.classList.remove('slide-back'), 300);
-	  });
-	});
-
-	// New: Settings links
-	settingsLinks.forEach(link => {
-	  link.addEventListener('click', (e) => {
-		const target = link.getAttribute('data-target-section');
-		if (target === 'support') routeTo('contact', true);
-		if (target === 'transactions') routeTo('donate', true);
-		if (target === 'manage-photos') routeTo('profile-edit', true); // Assuming photos in edit
-		if (target === 'subscriptions') routeTo('donate', true);
-	  });
-	});
-  }
-
-  /* =========================
-	 Init everything
-	 ========================= */
-  async function init() {
-	pages.forEach(p => p.hidden = true);
-	
-	// await checkAuthState(); // Comment out to skip auth check
-	
-	// Add some temporary user data so the UI can be rendered
-	handleUserLogin(currentUser);
-
-	bindAuthForms();
-	bindRouting();
-	bindCardActions();
-	bindProfileManagement();
-	bindUI();
-	bindMessageForm();
-  }
-
-  document.addEventListener("DOMContentLoaded", () => init());
-
+	document.addEventListener("DOMContentLoaded", init);
 })();
