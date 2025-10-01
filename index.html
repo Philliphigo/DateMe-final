@@ -1,1497 +1,1035 @@
-<!DOCTYPE html>
 <html lang="en">
-  <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>DateWise</title>
-	<link
-	  rel="stylesheet"
-	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-	/>
-	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<link rel="stylesheet" href="style.css">
 	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-  </head>
-  <body data-theme="light">
+</head>
+<body data-theme="light">
 	<a href="#main" class="skip-link">Skip to main content</a>
 	<div class="app">
-
-	  <header class="header" role="banner">
-		<div class="container header__inner">
-		  <div class="header-nav-content" data-header-content="main-nav">
-
-			<a href="#" class="brand" data-route-link="home">
-			  <svg
-				class="brand__mark brand__mark--animated"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
-			  >
-				<path
-				  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-				></path>
-			  </svg>
-			  <span class="brand__name">DateWise</span>
-			</a>
-			
-			<nav class="nav" role="navigation" aria-label="Main" hidden></nav>
-
-			<div class="header__actions">
-			  
-			  <button
-				class="btn btn--icon btn--ghost"
-				data-route-link="discover-settings"
-				id="discover-settings-btn"
-				aria-label="Discovery settings"
-			  >
-				<i class="fa-solid fa-sliders"></i>
-			  </button>
-
-			  <div class="user-menu-wrapper">
-				<button
-				  class="btn btn--icon btn--ghost"
-				  id="hamburger-menu-btn"
-				  data-action="toggle-menu"
-				  aria-haspopup="true"
-				  aria-expanded="false"
-				  aria-controls="menu-main"
-				  aria-label="Open main menu"
-				>
-				  <i class="fa-solid fa-bars"></i>
-				</button>
-
-				<ul class="menu menu--floating" id="menu-main" role="menu" hidden>
-				  
-				  <li class="menu__item menu__item--no-hover" role="none">
-					<div class="menu-search-bar">
-						<input type="search" class="menu-search-bar__input" placeholder="Search profiles..." aria-label="Search profiles">
-						<button class="btn btn--icon" type="button" aria-label="Perform search">
-							<i class="fa-solid fa-magnifying-glass"></i>
+		<header class="header neumorphic" role="banner">
+			<div class="container header__inner">
+				<div class="header-nav-content" data-header-content="main-nav">
+					<a href="#" class="brand neumorphic" data-route-link="landing">
+						<svg class="brand__mark brand__mark--animated" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+						</svg>
+						<span class="brand__name">DateWise</span>
+					</a>
+					<nav class="nav" role="navigation" aria-label="Main" hidden></nav>
+					<div class="header__actions">
+						<button class="btn btn--icon btn--ghost" data-route-link="discover-settings" id="discover-settings-btn" aria-label="Discovery settings">
+							<i class="fa-solid fa-sliders"></i>
+						</button>
+						<div class="user-menu-wrapper">
+							<button class="btn btn--icon btn--ghost" id="hamburger-menu-btn" data-action="toggle-menu" aria-haspopup="true" aria-expanded="false" aria-controls="menu-main" aria-label="Open main menu">
+								<i class="fa-solid fa-bars"></i>
+							</button>
+							<ul class="menu menu--floating neumorphic" id="menu-main" role="menu" hidden>
+								<li class="menu__item menu__item--no-hover" role="none">
+									<div class="menu-search-bar">
+										<input type="search" class="menu-search-bar__input neumorphic" placeholder="Search profiles..." aria-label="Search profiles">
+										<button class="btn btn--icon" type="button" aria-label="Perform search">
+											<i class="fa-solid fa-magnifying-glass"></i>
+										</button>
+									</div>
+								</li>
+								<li role="none">
+									<a href="#" data-route-link="profile" role="menuitem">
+										<img src="IMG_1078.jpeg" alt="User avatar" class="avatar avatar--small neumorphic"> My Profile
+									</a>
+								</li>
+								<hr class="menu__divider">
+								<li role="none">
+									<a href="#" data-route-link="settings" role="menuitem">
+										<i class="fa-solid fa-cog"></i> Settings
+									</a>
+								</li>
+								<li role="none">
+									<a href="#" data-route-link="privacy" role="menuitem">
+										<i class="fa-solid fa-lock"></i> Privacy Policy
+									</a>
+								</li>
+								<li role="none">
+									<a href="#" data-route-link="about" role="menuitem">
+										<i class="fa-solid fa-info-circle"></i> About
+									</a>
+								</li>
+								<li role="none">
+									<a href="#" data-route-link="contact" role="menuitem">
+										<i class="fa-solid fa-headset"></i> Contact
+									</a>
+								</li>
+								<li role="none">
+									<a href="#" data-route-link="donate" class="glowing-pink" role="menuitem">
+										<i class="fa-solid fa-heart-circle-bolt"></i> Donate
+									</a>
+								</li>
+								<hr class="menu__divider">
+								<li role="none">
+									<a href="#" data-action="logout" role="menuitem">
+										<i class="fa-solid fa-sign-out-alt"></i> Logout
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="page-header-content" data-header-content="page-title" hidden>
+					<div class="page-header__left">
+						<button class="btn--icon btn--ghost" data-action="back" aria-label="Go back">
+							<i class="fa-solid fa-arrow-left"></i>
 						</button>
 					</div>
-				  </li>
-
-				  <li role="none">
-					<a href="#" data-route-link="profile" role="menuitem">
-					  <img src="IMG_1078.jpeg" alt="User avatar" class="avatar avatar--small"> My Profile
-					</a>
-				  </li>
-				  
-				  <hr class="menu__divider">
-
-				  <li role="none">
-					<a href="#" data-route-link="settings" role="menuitem">
-					  <i class="fa-solid fa-cog"></i> Settings
-					</a>
-				  </li>
-				  <li role="none">
-					<a href="#" data-route-link="privacy" role="menuitem">
-					  <i class="fa-solid fa-lock"></i> Privacy Policy
-					</a>
-				  </li>
-				  <li role="none">
-					<a href="#" data-route-link="about" role="menuitem">
-					  <i class="fa-solid fa-info-circle"></i> About
-					</a>
-				  </li>
-				  <li role="none">
-					<a href="#" data-route-link="contact" role="menuitem">
-					  <i class="fa-solid fa-headset"></i> Contact
-					</a>
-				  </li>
-				  <li role="none">
-					<a href="#" data-route-link="donate" class="glowing-pink" role="menuitem">
-						<i class="fa-solid fa-heart-circle-bolt"></i> Donate
-					</a>
-				  </li>
-
-				  <hr class="menu__divider">
-
-				  <li role="none">
-					<a href="#" data-action="logout" role="menuitem">
-					  <i class="fa-solid fa-sign-out-alt"></i> Logout
-					</a>
-				  </li>
-				</ul>
-			  </div>
-			  
+					<div class="page-header__center">
+						<h1 class="page-title"></h1>
+					</div>
+					<div class="page-header__right">
+						<button class="btn--icon btn--ghost" data-action="open-search" aria-label="Search">
+							<i class="fa-solid fa-magnifying-glass"></i>
+						</button>
+						<button class="btn--icon btn--ghost" data-action="share" aria-label="Share">
+							<i class="fa-solid fa-share-nodes"></i>
+						</button>
+						<button class="btn--icon btn--ghost" data-action="more-options" aria-label="More options">
+							<i class="fa-solid fa-ellipsis-vertical"></i>
+						</button>
+					</div>
+				</div>
 			</div>
-		  </div>
-		  
-		  <div
-			class="page-header-content"
-			data-header-content="page-title"
-			hidden
-		  >
-			<div class="page-header__left">
-			  <button
-				class="btn--icon btn--ghost"
-				data-action="back"
-				aria-label="Go back"
-			  >
-				<i class="fa-solid fa-arrow-left"></i>
-			  </button>
-			</div>
-			<div class="page-header__center">
-			  <h1 class="page-title"></h1>
-			</div>
-			<div class="page-header__right">
-			  <button
-				class="btn--icon btn--ghost"
-				data-action="open-search"
-				aria-label="Search"
-			  >
-				<i class="fa-solid fa-magnifying-glass"></i>
-			  </button>
-			  <button
-				class="btn--icon btn--ghost"
-				data-action="share"
-				aria-label="Share"
-			  >
-				<i class="fa-solid fa-share-nodes"></i>
-			  </button>
-			  <button
-				class="btn--icon btn--ghost"
-				data-action="more-options"
-				aria-label="More options"
-			  >
-				<i class="fa-solid fa-ellipsis-vertical"></i>
-			  </button>
-			</div>
-		  </div>
+		</header>
+		<div id="search-container" class="search-overlay neumorphic" hidden>
+			<input type="text" id="search-input" placeholder="Search names..." class="neumorphic">
+			<div id="search-results"></div>
 		</div>
-	  </header>
-	  <div id="search-container" class="search-overlay" hidden>
-		<input type="text" id="search-input" placeholder="Search names...">
-		<div id="search-results"></div>
-	  </div>
-	  <main id="main" role="main">
-		<section id="page-signup" class="page auth-form" data-route="signup">
-		  <div class="container auth-form__container">
-			<h2 class="page__title auth-form__title">
-			  Welcome to <span class="website-name">DateWise</span>
-			  <br />
-			  find your match here for free
-			</h2>
-			<form id="signup-form" class="auth-form__form">
-			  <div class="form-group">
-				<label for="signup-name" class="visually-hidden"
-				  >Full Name</label
-				>
-				<input
-				  type="text"
-				  id="signup-name"
-				  placeholder="Full Name"
-				  required
-				/>
-			  </div>
-			  <div class="form-group">
-				<label for="signup-email" class="visually-hidden">Email</label>
-				<input
-				  type="email"
-				  id="signup-email"
-				  placeholder="Email Address"
-				  required
-				/>
-			  </div>
-			  <div class="form-group">
-				<label for="signup-password" class="visually-hidden"
-				  >Password</label
-				>
-				<input
-				  type="password"
-				  id="signup-password"
-				  placeholder="Password"
-				  required
-				/>
-			  </div>
-			  <div class="form-group">
-				<label for="signup-age" class="visually-hidden">Age</label>
-				<input
-				  type="number"
-				  id="signup-age"
-				  placeholder="Age"
-				  min="18"
-				  max="99"
-				  required
-				/>
-			  </div>
-			  <div class="form-group">
-				<label for="signup-location" class="visually-hidden"
-				  >Location</label
-				>
-				<input
-				  type="text"
-				  id="signup-location"
-				  placeholder="City or Location"
-				  required
-				/>
-			  </div>
-			  <div class="form-group">
-				<label for="signup-gender" class="visually-hidden"
-				  >I am a...</label
-				>
-				<select id="signup-gender" required>
-				  <option value="" disabled selected>I am a...</option>
-				  <option value="male">Male</option>
-				  <option value="female">Female</option>
-				  <option value="other">Other</option>
-				</select>
-			  </div>
-			  <div class="form-group">
-				<label for="signup-looking-for" class="visually-hidden"
-				  >Looking for...</label
-				>
-				<select id="signup-looking-for" required>
-				  <option value="" disabled selected>Looking for...</option>
-				  <option value="men">Men</option>
-				  <option value="women">Women</option>
-				  <option value="both">Both</option>
-				</select>
-			  </div>
-			  <button type="submit" class="btn btn--primary auth-form__btn">
-				Sign Up
-			  </button>
-			</form>
-			<p class="auth-form__link-text">
-			  Already have an account? <a href="#" data-route-link="login"
-				>Login</a
-			  >
-			</p>
-		  </div>
-		</section>
-		<section id="page-login" class="page auth-form" data-route="login" hidden>
-		  <div class="container auth-form__container">
-			<h2 class="page__title auth-form__title">Welcome Back</h2>
-			<form id="login-form" class="auth-form__form">
-			  <div class="form-group">
-				<label for="login-email" class="visually-hidden">Email</label>
-				<input
-				  type="email"
-				  id="login-email"
-				  placeholder="Email Address"
-				  required
-				/>
-			  </div>
-			  <div class="form-group">
-				<label for="login-password" class="visually-hidden"
-				  >Password</label
-				>
-				<input
-				  type="password"
-				  id="login-password"
-				  placeholder="Password"
-				  required
-				/>
-			  </div>
-			  <button type="submit" class="btn btn--primary auth-form__btn">
-				Login
-			  </button>
-			</form>
-			<p class="auth-form__link-text">
-			  New here? <a href="#" data-route-link="signup">Sign Up</a>
-			</p>
-		  </div>
-		</section>
-		<section id="page-home" class="page" data-route="home" hidden>
-		  <button data-action="refresh-profiles" class="btn btn--icon" aria-label="Refresh profiles">
-			<i class="fa-solid fa-sync"></i>
-		  </button>
-		  <div class="cards">
-			<article class="card profile-card" tabindex="0">
-			  <div class="profile-card__media">
-				<img
-				  src="IMG_1069.jpeg"
-				  alt="Profile of Himothy"
-				/>
-			  </div>
-			  <div class="profile-card__content">
-				<div class="profile-card__info">
-				  <h2 class="profile-card__name">Himothy</h2>
-				  <span class="age">24</span>
-				  <div class="profile-card__metadata">
-					<span class="profile-card__last-online">30 min ago</span>
-					<span class="profile-card__distance">2 mi away</span>
-				  </div>
-				  <p class="profile-card__bio">
-					Loves books, coffee, and exploring the city.
-				  </p>
+		<main id="main" role="main">
+			<section id="page-signup" class="page auth-form neumorphic" data-route="signup">
+				<div class="container auth-form__container">
+					<h2 class="page__title auth-form__title">
+						Welcome to <span class="website-name">DateWise</span>
+						<br />
+						find your match here for free
+					</h2>
+					<form id="signup-form" class="auth-form__form">
+						<div class="form-group">
+							<label for="signup-name" class="visually-hidden">Full Name</label>
+							<input type="text" id="signup-name" placeholder="Full Name" required class="neumorphic" />
+						</div>
+						<div class="form-group">
+							<label for="signup-email" class="visually-hidden">Email</label>
+							<input type="email" id="signup-email" placeholder="Email Address" required class="neumorphic" />
+						</div>
+						<div class="form-group">
+							<label for="signup-password" class="visually-hidden">Password</label>
+							<input type="password" id="signup-password" placeholder="Password" required class="neumorphic" />
+						</div>
+						<div class="form-group">
+							<label for="signup-age" class="visually-hidden">Age</label>
+							<input type="number" id="signup-age" placeholder="Age" min="18" max="99" required class="neumorphic" />
+						</div>
+						<div class="form-group">
+							<label for="signup-location" class="visually-hidden">Location</label>
+							<input type="text" id="signup-location" placeholder="City or Location" required class="neumorphic" />
+						</div>
+						<div class="form-group">
+							<label for="signup-gender" class="visually-hidden">I am a...</label>
+							<select id="signup-gender" required class="neumorphic">
+								<option value="" disabled selected>I am a...</option>
+								<option value="male">Male</option>
+								<option value="female">Female</option>
+								<option value="other">Other</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="signup-looking-for" class="visually-hidden">Looking for...</label>
+							<select id="signup-looking-for" required class="neumorphic">
+								<option value="" disabled selected>Looking for...</option>
+								<option value="men">Men</option>
+								<option value="women">Women</option>
+								<option value="both">Both</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn--primary auth-form__btn">Sign Up</button>
+					</form>
+					<p class="auth-form__link-text">Already have an account? <a href="#" data-route-link="login">Login</a></p>
 				</div>
-				<div
-				  class="profile-card__actions"
-				  role="group"
-				  aria-label="Profile actions"
-				>
-				  <button class="btn btn--icon btn--dislike" aria-label="Dislike">
-					<i class="fa-solid fa-thumbs-down"></i>
-				  </button>
-				  <button class="btn btn--icon btn--like" aria-label="Like">
-					<i class="fa-solid fa-heart"></i>
-				  </button>
-				  <button class="btn btn--icon btn--rewind" aria-label="Rewind">
-					<i class="fa-solid fa-rotate-left"></i>
-				  </button>
-				  <button class="btn btn--icon btn--super-like" aria-label="Super-like">
-					<i class="fa-solid fa-star"></i>
-				  </button>
+			</section>
+			<section id="page-login" class="page auth-form neumorphic" data-route="login" hidden>
+				<div class="container auth-form__container">
+					<h2 class="page__title auth-form__title">Welcome Back</h2>
+					<form id="login-form" class="auth-form__form">
+						<div class="form-group">
+							<label for="login-email" class="visually-hidden">Email</label>
+							<input type="email" id="login-email" placeholder="Email Address" required class="neumorphic" />
+						</div>
+						<div class="form-group">
+							<label for="login-password" class="visually-hidden">Password</label>
+							<input type="password" id="login-password" placeholder="Password" required class="neumorphic" />
+						</div>
+						<button type="submit" class="btn btn--primary auth-form__btn">Login</button>
+					</form>
+					<p class="auth-form__link-text">New here? <a href="#" data-route-link="signup">Sign Up</a></p>
 				</div>
-			  </div>
-			</article>
-			<div class="loading">Simulating fetching profiles...</div>
-		  </div>
-		</section>
-		<section id="page-matches" class="page" data-route="matches" hidden>
-		  <div class="container">
-			<h2 class="page__title">Matches</h2>
-			<ul class="match-list" id="match-list"></ul>
-		  </div>
-		</section>
-		<section id="page-connect" class="page" data-route="connect" hidden>
-			<div class="container">
-				<h2 class="page__title">Connect</h2>
-				<p>Find your tribe by what you're looking for.</p>
-				<div class="category-grid">
-					<a href="#" class="category-card" data-category="long-term">
-						<img src="IMG_0147.jpeg" alt="A couple holding hands, representing a long-term relationship">
-						<span class="category-card__label">Long Term</span>
-					</a>
-					<a href="#" class="category-card" data-category="casual">
-						<img src="IMG_0146.jpeg" alt="Friends laughing together, representing a casual connection">
-						<span class="category-card__label">Casual</span>
-					</a>
-					<a href="#" class="category-card" data-category="online-now">
-						<img src="IMG_0145.jpeg" alt="A group of friends on their phones, representing people currently online">
-						<span class="category-card__label">Online Now</span>
-					</a>
-					<a href="#" class="category-card" data-category="friendship">
-						<img src="IMG_0144.jpeg" alt="Friends high-fiving, representing friendship">
-						<span class="category-card__label">Friendship</span>
-					</a>
-					<a href="#" class="category-card" data-category="food-dates">
-						<img src="IMG_0143.jpeg" alt="A person enjoying food at a restaurant, representing food dates">
-						<span class="category-card__label">Food Dates</span>
-					</a>
-					<a href="#" class="category-card" data-category="travel-buddy">
-						<img src="IMG_0142.jpeg" alt="A person with a backpack, looking at a scenic view, representing a travel buddy">
-						<span class="category-card__label">Travel Buddy</span>
-					</a>
-				</div>
-			</div>
-		</section>
-		<section id="page-messages" class="page" data-route="messages" hidden>
-		  <div class="messages-grid container container--split">
-			<div class="convos">
-			  <div class="page-header">
-				<h2 class="page__title">Messages</h2>
-			  </div>
-			  <ul class="convo-list" id="convo-list"></ul>
-			</div>
-			<div class="chat" id="chat-container">
-			  <div class="chat__header">
-				<div class="page-header">
-				  <button
-					class="btn btn--icon"
-					data-action="chat-back"
-					aria-label="Back to conversations"
-				  >
-					<i class="fa-solid fa-arrow-left"></i>
-				  </button>
-				  <div class="chat__peer">
-					<img
-					  src="IMG_1078.jpeg"
-					  alt=""
-					  class="convo__avatar"
-					  id="chat-peer-avatar"
-					/>
-					<div class="chat__info">
-					  <strong
-						class="chat__name"
-						id="chat-peer-name"
-					  ></strong>
-					  <div class="chat__status" id="chat-peer-status"></div>
+			</section>
+			<section id="page-landing" class="page neumorphic" data-route="landing" hidden>
+				<div class="neumorphic-home">
+					<div class="home-header">
+						<h1>Find your perfect match.</h1>
+						<p>Experience the future of connection with DateWise, where meaningful relationships begin.</p>
+						<button class="btn btn--primary" data-route-link="discover">Start Matching</button>
 					</div>
-				  </div>
-				</div>
-				<div class="user-menu-wrapper">
-				  <button
-					class="btn btn--icon btn--ghost"
-					id="chat-more-btn"
-					aria-label="More chat options"
-					aria-haspopup="true"
-					aria-expanded="false"
-					aria-controls="chat-more-menu"
-				  >
-					<i class="fa-solid fa-ellipsis-vertical"></i>
-				  </button>
-				  <ul
-					class="menu chat-menu"
-					id="chat-more-menu"
-					role="menu"
-					hidden
-				  >
-					<li>
-					  <a href="#" data-action="view-profile" role="menuitem"
-						>View Profile</a
-					  >
-					</li>
-					<li>
-					  <a href="#" data-action="block" role="menuitem"
-						>Block User</a
-					  >
-					</li>
-					<li>
-					  <a href="#" data-action="mute" role="menuitem"
-						>Mute Conversation</a
-					  >
-					</li>
-				  </ul>
-				</div>
-			  </div>
-			  <div class="chat__body">
-				<div class="messages" id="messages-container"></div>
-			  </div>
-			  <form class="chat__composer" id="message-form">
-				<input
-				  type="text"
-				  name="message"
-				  id="message-input"
-				  placeholder="Type a message..."
-				  autocomplete="off"
-				  required
-				/>
-				<button
-				  type="submit"
-				  class="btn btn--icon btn--primary"
-				  aria-label="Send message"
-				>
-				  <i class="fa-solid fa-paper-plane"></i>
-				</button>
-			  </form>
-			</div>
-		  </div>
-		</section>
-		<section class="page profile-page" data-route="profile" hidden>
-		  <div class="page-header profile-page-header">
-			<button
-			  class="btn btn--icon btn--back"
-			  data-action="back"
-			  aria-label="Go back"
-			>
-			  <i class="fa-solid fa-arrow-left"></i>
-			</button>
-			<h1 class="page-title">Profile</h1>
-			<button
-			  class="btn btn--icon btn--ghost"
-			  data-route-link="settings"
-			  aria-label="Settings"
-			>
-			  <i class="fa-solid fa-cog"></i>
-			</button>
-		  </div>
-		  <div class="profile-content">
-			<div class="profile-header__media">
-			  <img
-				id="profile-header-avatar"
-				src="IMG_1078.jpeg"
-				alt="Profile avatar"
-			  />
-			</div>
-			<div class="profile-header__info">
-			  <h2 id="profile-title">Phillip, 20</h2>
-			  <p>Lilongwe</p>
-			  <p>
-				Friendly and focused. Building a modern dating site with clean
-				design and smooth UX.
-			  </p>
-			</div>
-			<div class="profile-actions">
-			  <button
-				class="btn btn--primary"
-				id="edit-profile-btn"
-				data-route-link="profile-edit"
-			  >
-				Edit Profile
-			  </button>
-			  <button
-				class="btn btn--secondary"
-				id="share-profile-btn"
-				data-action="share-profile"
-			  >
-				Share Profile
-			  </button>
-			</div>
-			<div class="profile-section">
-			  <h3 class="section-title">My Photos</h3>
-			  <div class="photo-gallery" id="photo-gallery">
-				<div class="photo-item">
-				  <img
-					src="IMG_0063.jpeg"
-					alt="User photo 1"
-				  />
-				</div>
-				<div class="photo-item">
-				  <img
-					src="IMG_0064.jpeg"
-					alt="User photo 2"
-				  />
-				</div>
-				<div class="photo-item">
-				  <img
-					src="IMG_0139.jpeg"
-					alt="User photo 3"
-				  />
-				</div>
-				<div class="photo-item">
-				  <img
-					src="IMG_0141.jpeg"
-					alt="User photo 4"
-				  />
-				</div>
-			  </div>
-			</div>
-			<div class="profile-section">
-			  <h3 class="section-title">About Me</h3>
-			  <div class="about-me-text">
-				<p id="profile-bio">
-				  Creative developer passionate about building intuitive and
-				  visually appealing user experiences. Currently building a
-				  modern dating site with a clean
-				  design and smooth UX. Always
-				  eager to learn and collaborate!
-				</p>
-			  </div>
-			  <div class="interests-tags" id="profile-interests">
-				<span class="interest-tag">Tech</span>
-				<span class="interest-tag">Design</span>
-				<span class="interest-tag">Entrepreneurship</span>
-				<span class="interest-tag">Innovation</span>
-			  </div>
-			</div>
-		  </div>
-		</section>
-		<section class="page" data-route="profile-edit" hidden>
-		  <div class="onboarding-header">
-			<button
-			  class="btn btn--icon btn--back"
-			  data-route-link="profile"
-			>
-			  <svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			  >
-				<path d="M15 18l-6-6 6-6" />
-			  </svg>
-			</button>
-			<h2>Edit Profile</h2>
-		  </div>
-		  <form class="onboarding-form" id="profile-form">
-			<div class="form-group">
-			  <label for="profile-name">Name</label>
-			  <input type="text" id="profile-name" required />
-			</div>
-			<div class="form-group">
-			  <label for="profile-age">Age</label>
-			  <input type="number" id="profile-age" required />
-			</div>
-			<div class="form-group">
-			  <label for="profile-gender">Gender</label>
-			  <select id="profile-gender" required>
-				<option value="">Select...</option>
-				<option value="male">Male</option>
-				<option value="female">Female</option>
-				<option value="non-binary">Non-binary</option>
-				<option value="other">Other</option>
-			  </select>
-			</div>
-			<div class="form-group">
-			  <label for="profile-bio">Bio</label>
-			  <textarea id="profile-bio" rows="4" required></textarea>
-			</div>
-			<div class="form-group">
-			  <label for="profile-interests-input"
-				>Interests (comma-separated)</label
-			  >
-			  <input
-				type="text"
-				id="profile-interests-input"
-				placeholder="e.g., Hiking, Tech, Art"
-			  />
-			</div>
-			<div class="form-group photo-upload-group">
-			  <label>Photos</label>
-			  <input
-				type="file"
-				id="profile-photo-upload"
-				multiple
-				accept="image/*"
-				class="sr-only"
-			  />
-			  <label for="profile-photo-upload" class="photo-upload-label">
-				<svg
-				  xmlns="http://www.w3.org/2000/svg"
-				  width="24"
-				  height="24"
-				  viewBox="0 0 24 24"
-				  fill="none"
-				  stroke="currentColor"
-				  stroke-width="2"
-				  stroke-linecap="round"
-				  stroke-linejoin="round"
-				>
-				  <path d="M12 5v14M5 12h14"></path>
-				</svg>
-				Upload Photos
-			  </label>
-			  <div class="photo-preview-grid" id="photo-preview-grid"></div>
-			</div>
-			<button
-			  type="submit"
-			  class="btn btn--primary"
-			  id="save-profile-btn"
-			>
-			  Save Profile
-			</button>
-		  </form>
-		</section>
-		<section id="page-settings" class="page" data-route="settings" hidden>
-		  <div class="container settings-container">
-			<div class="page-header page-header--back">
-			  <button
-				class="btn--icon btn--ghost"
-				data-action="back"
-				aria-label="Go back"
-			  >
-				<i class="fa-solid fa-arrow-left"></i>
-			  </button>
-			  <h1 class="page-title">Settings</h1>
-			</div>
-
-			<div class="settings-menu-list">
-
-				<div class="settings-group">
-					<a href="#" class="settings-link-card" data-route-link="discover-settings">
-						<i class="fa-solid fa-compass"></i>
-						<div class="settings-link-card__body">
-							<strong>Discovery</strong>
-							<p>Control who you see and who can see you</p>
+					<div class="home-features">
+						<div class="feature-card">
+							<svg class="feature-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+								<circle cx="8.5" cy="7" r="4"></circle>
+								<polyline points="17 11 19 13 23 9"></polyline>
+							</svg>
+							<h3 class="feature-card__title">Smart Matching</h3>
+							<p class="feature-card__subtitle">Our algorithm connects you with people who truly fit your vibe.</p>
 						</div>
-						<i class="fa-solid fa-chevron-right"></i>
-					</a>
-				</div>
-				
-				<div class="settings-group">
-					<a href="#" class="settings-link-card" data-route-link="profile">
-						<i class="fa-solid fa-user-circle"></i>
-						<div class="settings-link-card__body">
-							<strong>Account</strong>
-							<p>View or edit your profile and account settings</p>
+						<div class="feature-card">
+							<svg class="feature-card__icon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 6c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12l4 4V6z"/></svg>
+							<h3 class="feature-card__title">Real-time Chat</h3>
+							<p class="feature-card__subtitle">Engage in seamless conversations with our intuitive chat.</p>
 						</div>
-						<i class="fa-solid fa-chevron-right"></i>
-					</a>
-				</div>
-
-				<div class="settings-group">
-					<a href="#" class="settings-link-card" data-route-link="appearance-settings">
-						<i class="fa-solid fa-palette"></i>
-						<div class="settings-link-card__body">
-							<strong>Appearance</strong>
-							<p>Customize your app theme and display</p>
+						<div class="feature-card">
+							<svg class="feature-card__icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 18.9c-4.51-1.12-7.8-5.32-7.8-9.94V6.3l7.8-3.5 7.8 3.5v3.66c0 4.62-3.29 8.82-7.8 9.94z"/></svg>
+							<h3 class="feature-card__title">Safe & Secure</h3>
+							<p class="feature-card__subtitle">Your privacy is our priority. Date with peace of mind.</p>
 						</div>
-						<i class="fa-solid fa-chevron-right"></i>
-					</a>
+					</div>
+					<div class="home-footer">
+						<a href="#" data-route-link="terms">Terms</a>
+						<a href="#" data-route-link="privacy">Privacy</a>
+						<a href="#" data-route-link="contact">Contact</a>
+						<button class="btn btn--link" data-action="open-donate-modal">Donate</button>
+					</div>
 				</div>
-
-				<div class="settings-group">
-					<a href="#" class="settings-link-card" data-route-link="privacy">
-						<i class="fa-solid fa-lock"></i>
-						<div class="settings-link-card__body">
-							<strong>Privacy</strong>
-							<p>Manage your privacy and data settings</p>
+			</section>
+			<section id="page-discover" class="page neumorphic" data-route="discover" hidden>
+				<div class="container">
+					<div class="cards-stack">
+						<div class="profile-card neumorphic" data-user-id="1">
+							<div class="profile-card__media">
+								<img src="IMG_0063" alt="Profile of User">
+							</div>
+							<div class="profile-card__content">
+								<div class="profile-card__info">
+									<h2 class="profile-card__name">Amelia, 24</h2>
+									<p class="profile-card__metadata">
+										<span><i class="fas fa-map-marker-alt"></i> 2 miles away</span>
+									</p>
+									<p class="profile-card__bio">Loves hiking and true crime podcasts.</p>
+								</div>
+							</div>
+							<div class="profile-card__actions">
+								<button class="btn btn--icon btn--rewind"><i class="fas fa-redo-alt"></i></button>
+								<button class="btn btn--icon btn--dislike"><i class="fas fa-times"></i></button>
+								<button class="btn btn--icon btn--like"><i class="fas fa-heart"></i></button>
+								<button class="btn btn--icon btn--super-like"><i class="fas fa-star"></i></button>
+							</div>
 						</div>
-						<i class="fa-solid fa-chevron-right"></i>
-					</a>
-				</div>
-
-				<div class="settings-group">
-					<a href="#" class="settings-link-card" data-route-link="notification-settings">
-						<i class="fa-solid fa-bell"></i>
-						<div class="settings-link-card__body">
-							<strong>Notifications</strong>
-							<p>Manage your notification preferences</p>
-						</div>
-						<i class="fa-solid fa-chevron-right"></i>
-					</a>
-				</div>
-
-				<hr>
-				
-				<div class="settings-group settings-group--toggles">
-					<h3 class="settings-group-title">Appearance</h3>
-					<div class="settings-item settings-item--toggle">
-						<span>Dark Mode</span>
-						<p class="settings-item__desc">Switch between light and dark modes.</p>
-						<div class="switch">
-							<input type="checkbox" id="dark-mode-toggle" class="sr-only" />
-							<label class="switch__label" for="dark-mode-toggle"></label>
+						<div class="profile-card neumorphic" data-user-id="2" style="transform: scale(0.95); opacity: 0.8; z-index: -1;">
 						</div>
 					</div>
 				</div>
-
-				<div class="settings-group settings-group--toggles">
-					<h3 class="settings-group-title">Notifications</h3>
-					<div class="settings-item settings-item--toggle">
-						<span>New Matches</span>
-						<p class="settings-item__desc">Get notified when you have a new match.</p>
-						<div class="switch">
-							<input type="checkbox" id="notify-matches" class="sr-only" checked />
-							<label class="switch__label" for="notify-matches"></label>
-						</div>
-					</div>
-					<div class="settings-item settings-item--toggle">
-						<span>Likes</span>
-						<p class="settings-item__desc">Be notified when someone likes your profile.</p>
-						<div class="switch">
-							<input type="checkbox" id="notify-likes" class="sr-only" checked />
-							<label class="switch__label" for="notify-likes"></label>
-						</div>
-					</div>
-					<div class="settings-item settings-item--toggle">
-						<span>Messages</span>
-						<p class="settings-item__desc">Receive alerts about new messages.</p>
-						<div class="switch">
-							<input type="checkbox" id="notify-messages" class="sr-only" checked />
-							<label class="switch__label" for="notify-messages"></label>
-						</div>
-					</div>
-					<div class="settings-item settings-item--toggle">
-						<span>Marketing</span>
-						<p class="settings-item__desc">Updates about new features and promotions.</p>
-						<div class="switch">
-							<input type="checkbox" id="notify-marketing" class="sr-only" />
-							<label class="switch__label" for="notify-marketing"></label>
-						</div>
-					</div>
+			</section>
+			<section id="page-matches" class="page neumorphic" data-route="matches" hidden>
+				<div class="container">
+					<h2 class="page__title">Matches</h2>
+					<ul class="match-list" id="match-list"></ul>
 				</div>
-				
-				<div class="settings-group settings-group--toggles">
-					<h3 class="settings-group-title">Privacy</h3>
-					<div class="settings-item settings-item--toggle">
-						<span>Show My Age</span>
-						<p class="settings-item__desc">Display your age on your profile.</p>
-						<div class="switch">
-							<input type="checkbox" id="privacy-show-age" class="sr-only" checked />
-							<label class="switch__label" for="privacy-show-age"></label>
-						</div>
-					</div>
-					<div class="settings-item settings-item--toggle">
-						<span>Show Location</span>
-						<p class="settings-item__desc">Display your location to other users.</p>
-						<div class="switch">
-							<input type="checkbox" id="privacy-show-location" class="sr-only" checked />
-							<label class="switch__label" for="privacy-show-location"></label>
-						</div>
-					</div>
-					<div class="settings-item settings-item--toggle">
-						<span>Show Online Status</span>
-						<p class="settings-item__desc">Let others know when you are online.</p>
-						<div class="switch">
-							<input type="checkbox" id="privacy-show-status" class="sr-only" checked />
-							<label class="switch__label" for="privacy-show-status"></label>
-						</div>
-					</div>
-				</div>
-
-				<div class="settings-group settings-group--links">
-					<h3 class="settings-group-title">Account</h3>
-					<ul class="settings-list">
-						<li>
-							<a href="#" class="settings-link" data-route-link="profile-edit">
-								<i class="fa-solid fa-pencil"></i> Edit Profile
-							</a>
-						</li>
-						<li>
-							<a href="#" class="settings-link" data-route-link="discovery-settings">
-								<i class="fa-solid fa-sliders"></i> Discovery Preferences
-							</a>
-						</li>
-						<li>
-							<a href="#" class="settings-link" data-route-link="blocked-users">
-								<i class="fa-solid fa-user-slash"></i> Blocked Users
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="settings-group settings-group--danger">
-					<h3 class="settings-group-title">Danger Zone</h3>
-					<ul class="settings-list">
-						<li>
-							<a href="#" class="settings-link settings-link--danger" data-route-link="delete-account">
-								<i class="fa-solid fa-user-xmark"></i> Delete Account
-							</a>
-						</li>
-						<li>
-							<a href="#" class="settings-link settings-link--danger" data-action="logout">
-								<i class="fa-solid fa-sign-out"></i> Sign Out
-							</a>
-						</li>
-					</ul>
-				</div>
-				
-				<div class="settings-group settings-group--legal">
-					<h3 class="settings-group-title">Legal & Support</h3>
-					<p class="settings-group__desc">Need help? Get in touch with our team.</p>
-					<div class="settings-item">
-						<a href="#" class="settings-link" data-route-link="support">
-							<i class="fa-solid fa-headset"></i> Get Support
+			</section>
+			<section id="page-connect" class="page neumorphic" data-route="connect" hidden>
+				<div class="container">
+					<h2 class="page__title">Connect</h2>
+					<p>Find your tribe by what you're looking for.</p>
+					<div class="category-grid">
+						<a href="#" class="category-card" data-category="long-term">
+							<img src="IMG_0147.jpeg" alt="A couple holding hands, representing a long-term relationship">
+							<span class="category-card__label">Long Term</span>
 						</a>
-					</div>
-					<div class="settings-item">
-						<a href="#" class="settings-link" data-route-link="terms">
-							<i class="fa-solid fa-file-contract"></i> Terms & Conditions
+						<a href="#" class="category-card" data-category="casual">
+							<img src="IMG_0146.jpeg" alt="Friends laughing together, representing a casual connection">
+							<span class="category-card__label">Casual</span>
 						</a>
-					</div>
-					<div class="settings-item">
-						<a href="#" class="settings-link" data-route-link="privacy">
-							<i class="fa-solid fa-shield"></i> Privacy Policy
+						<a href="#" class="category-card" data-category="online-now">
+							<img src="IMG_0145.jpeg" alt="A group of friends on their phones, representing people currently online">
+							<span class="category-card__label">Online Now</span>
+						</a>
+						<a href="#" class="category-card" data-category="friendship">
+							<img src="IMG_0144.jpeg" alt="Friends high-fiving, representing friendship">
+							<span class="category-card__label">Friendship</span>
+						</a>
+						<a href="#" class="category-card" data-category="food-dates">
+							<img src="IMG_0143.jpeg" alt="A person enjoying food at a restaurant, representing food dates">
+							<span class="category-card__label">Food Dates</span>
+						</a>
+						<a href="#" class="category-card" data-category="travel-buddy">
+							<img src="IMG_0142.jpeg" alt="A person with a backpack, looking at a scenic view, representing a travel buddy">
+							<span class="category-card__label">Travel Buddy</span>
 						</a>
 					</div>
 				</div>
-
-				<div class="logout-btn-container">
-					<button data-action="logout" class="btn btn--primary btn--logout">
-						Logout <i class="fa-solid fa-arrow-right"></i>
+			</section>
+			<section id="page-messages" class="page neumorphic" data-route="messages" hidden>
+				<div class="messages-grid container container--split">
+					<div class="convos">
+						<div class="page-header">
+							<h2 class="page__title">Messages</h2>
+						</div>
+						<ul class="convo-list" id="convo-list"></ul>
+					</div>
+					<div class="chat" id="chat-container">
+						<div class="chat__header">
+							<div class="page-header">
+								<button class="btn btn--icon" data-action="chat-back" aria-label="Back to conversations">
+									<i class="fa-solid fa-arrow-left"></i>
+								</button>
+								<div class="chat__peer">
+									<img src="IMG_1078.jpeg" alt="" class="convo__avatar" id="chat-peer-avatar" />
+									<div class="chat__info">
+										<strong class="chat__name" id="chat-peer-name"></strong>
+										<div class="chat__status" id="chat-peer-status"></div>
+									</div>
+								</div>
+							</div>
+							<div class="user-menu-wrapper">
+								<button class="btn btn--icon btn--ghost" id="chat-more-btn" aria-label="More chat options" aria-haspopup="true" aria-expanded="false" aria-controls="chat-more-menu">
+									<i class="fa-solid fa-ellipsis-vertical"></i>
+								</button>
+								<ul class="menu chat-menu neumorphic" id="chat-more-menu" role="menu" hidden>
+									<li>
+										<a href="#" data-action="view-profile" role="menuitem">View Profile</a>
+									</li>
+									<li>
+										<a href="#" data-action="block" role="menuitem">Block User</a>
+									</li>
+									<li>
+										<a href="#" data-action="mute" role="menuitem">Mute Conversation</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="chat__body">
+							<div class="messages" id="messages-container"></div>
+						</div>
+						<form class="chat__composer" id="message-form">
+							<input type="text" name="message" id="message-input" placeholder="Type a message..." autocomplete="off" required class="neumorphic" />
+							<button type="submit" class="btn btn--icon btn--primary" aria-label="Send message">
+								<i class="fa-solid fa-paper-plane"></i>
+							</button>
+						</form>
+					</div>
+				</div>
+			</section>
+			<section class="page profile-page neumorphic" data-route="profile" hidden>
+				<div class="page-header profile-page-header">
+					<button class="btn btn--icon btn--back" data-action="back" aria-label="Go back">
+						<i class="fa-solid fa-arrow-left"></i>
+					</button>
+					<h1 class="page-title">Profile</h1>
+					<button class="btn btn--icon btn--ghost" data-route-link="settings" aria-label="Settings">
+						<i class="fa-solid fa-cog"></i>
 					</button>
 				</div>
-				
-				<p class="app-version">DateWise v1.0.0 (Build 265)</p>
-
-			</div>
-		  </div>
-		</section>
-
-		<section id="page-blocked-users" class="page" data-route="blocked-users" hidden>
-			<div class="container">
-				<h2 class="page__title">Blocked Users</h2>
-				<p>List of users you have blocked.</p>
+				<div class="profile-content">
+					<div class="profile-header__media">
+						<img id="profile-header-avatar" src="IMG_1078.jpeg" alt="Profile avatar" />
+					</div>
+					<div class="profile-header__info">
+						<h2 id="profile-title">Phillip, 20</h2>
+						<p>Lilongwe</p>
+						<p>Friendly and focused. Building a modern dating site with clean design and smooth UX.</p>
+					</div>
+					<div class="profile-actions">
+						<button class="btn btn--primary" id="edit-profile-btn" data-route-link="profile-edit">Edit Profile</button>
+						<button class="btn btn--secondary" id="share-profile-btn" data-action="share-profile">Share Profile</button>
+					</div>
+					<div class="profile-section">
+						<h3 class="section-title">My Photos</h3>
+						<div class="photo-gallery" id="photo-gallery">
+							<div class="photo-item">
+								<img src="IMG_0063.jpeg" alt="User photo 1" />
+							</div>
+							<div class="photo-item">
+								<img src="IMG_0064.jpeg" alt="User photo 2" />
+							</div>
+							<div class="photo-item">
+								<img src="IMG_0139.jpeg" alt="User photo 3" />
+							</div>
+							<div class="photo-item">
+								<img src="IMG_0141.jpeg" alt="User photo 4" />
+							</div>
+						</div>
+					</div>
+					<div class="profile-section">
+						<h3 class="section-title">About Me</h3>
+						<div class="about-me-text">
+							<p id="profile-bio">Creative developer passionate about building intuitive and visually appealing user experiences. Currently building a modern dating site with a clean design and smooth UX. Always eager to learn and collaborate!</p>
+						</div>
+						<div class="interests-tags" id="profile-interests">
+							<span class="interest-tag">Tech</span>
+							<span class="interest-tag">Design</span>
+							<span class="interest-tag">Entrepreneurship</span>
+							<span class="interest-tag">Innovation</span>
+						</div>
+					</div>
 				</div>
-		</section>
-		<section id="page-delete-account" class="page" data-route="delete-account" hidden>
-			<div class="container">
-				<h2 class="page__title page__title--danger">Delete Account</h2>
-				<p>We're sad to see you go! Are you sure you want to permanently delete your account? This action cannot be undone.</p>
-				<button class="btn btn--danger">Permanently Delete Account</button>
-			</div>
-		</section>
-		<section id="page-support" class="page" data-route="support" hidden>
-			<div class="container">
-				<h2 class="page__title">Get Support</h2>
-				<p>Find answers to common questions or contact our support team.</p>
+			</section>
+			<section class="page neumorphic" data-route="profile-edit" hidden>
+				<div class="onboarding-header">
+					<button class="btn btn--icon btn--back" data-route-link="profile">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M15 18l-6-6 6-6" />
+						</svg>
+					</button>
+					<h2>Edit Profile</h2>
 				</div>
-		</section>
-		<section id="page-appearance-settings" class="page" data-route="appearance-settings" hidden>
-			<div class="container">
-				<h2 class="page__title">Appearance Settings</h2>
-				<p>Customise your app's visual style.</p>
-			</div>
-		</section>
-		<section id="page-notification-settings" class="page" data-route="notification-settings" hidden>
-			<div class="container">
-				<h2 class="page__title">Notification Settings</h2>
-				<p>Control all your alerts.</p>
-			</div>
-		</section>
-		<section
-		  id="page-discover-settings"
-		  class="page"
-		  data-route="discover-settings"
-		  hidden
-		>
-		  <div class="container">
-			<h2 class="page__title">Discovery Settings</h2>
-			<form id="settings-form">
-			  <div class="settings-group">
-				<h3>Show Me</h3>
-				<div class="gender-select" role="radiogroup" aria-label="Gender to show">
-				  <label class="gender-label">
-					<input type="radio" name="show-gender" value="male">
-					<span class="dot"></span>
-					Men
-				  </label>
-				  <label class="gender-label">
-					<input type="radio" name="show-gender" value="female">
-					<span class="dot"></span>
-					Women
-				  </label>
-				  <label class="gender-label">
-					<input type="radio" name="show-gender" value="both">
-					<span class="dot"></span>
-					Both
-				  </label>
+				<form class="onboarding-form" id="profile-form">
+					<div class="form-group">
+						<label for="profile-name">Name</label>
+						<input type="text" id="profile-name" required class="neumorphic" />
+					</div>
+					<div class="form-group">
+						<label for="profile-age">Age</label>
+						<input type="number" id="profile-age" required class="neumorphic" />
+					</div>
+					<div class="form-group">
+						<label for="profile-gender">Gender</label>
+						<select id="profile-gender" required class="neumorphic">
+							<option value="">Select...</option>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+							<option value="non-binary">Non-binary</option>
+							<option value="other">Other</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="profile-bio">Bio</label>
+						<textarea id="profile-bio" rows="4" required class="neumorphic"></textarea>
+					</div>
+					<div class="form-group">
+						<label for="profile-interests-input">Interests (comma-separated)</label>
+						<input type="text" id="profile-interests-input" placeholder="e.g., Hiking, Tech, Art" class="neumorphic" />
+					</div>
+					<div class="form-group photo-upload-group">
+						<label>Photos</label>
+						<input type="file" id="profile-photo-upload" multiple accept="image/*" class="sr-only" />
+						<label for="profile-photo-upload" class="photo-upload-label neumorphic">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M12 5v14M5 12h14"></path>
+							</svg>
+							Upload Photos
+						</label>
+						<div class="photo-preview-grid" id="photo-preview-grid"></div>
+					</div>
+					<button type="submit" class="btn btn--primary">Save Profile</button>
+				</form>
+			</section>
+			<section id="page-settings" class="page neumorphic" data-route="settings" hidden>
+				<div class="container settings-container">
+					<div class="page-header page-header--back">
+						<button class="btn--icon btn--ghost" data-action="back" aria-label="Go back">
+							<i class="fa-solid fa-arrow-left"></i>
+						</button>
+						<h1 class="page-title">Settings</h1>
+					</div>
+					<div class="settings-menu-list">
+						<div class="settings-group">
+							<a href="#" class="settings-link-card" data-route-link="discover-settings">
+								<i class="fa-solid fa-compass"></i>
+								<div class="settings-link-card__body">
+									<strong>Discovery</strong>
+									<p>Control who you see and who can see you</p>
+								</div>
+								<i class="fa-solid fa-chevron-right"></i>
+							</a>
+						</div>
+						<div class="settings-group">
+							<a href="#" class="settings-link-card" data-route-link="profile">
+								<i class="fa-solid fa-user-circle"></i>
+								<div class="settings-link-card__body">
+									<strong>Account</strong>
+									<p>View or edit your profile and account settings</p>
+								</div>
+								<i class="fa-solid fa-chevron-right"></i>
+							</a>
+						</div>
+						<div class="settings-group">
+							<a href="#" class="settings-link-card" data-route-link="appearance-settings">
+								<i class="fa-solid fa-palette"></i>
+								<div class="settings-link-card__body">
+									<strong>Appearance</strong>
+									<p>Customize your app theme and display</p>
+								</div>
+								<i class="fa-solid fa-chevron-right"></i>
+							</a>
+						</div>
+						<div class="settings-group">
+							<a href="#" class="settings-link-card" data-route-link="privacy">
+								<i class="fa-solid fa-lock"></i>
+								<div class="settings-link-card__body">
+									<strong>Privacy</strong>
+									<p>Manage your privacy and data settings</p>
+								</div>
+								<i class="fa-solid fa-chevron-right"></i>
+							</a>
+						</div>
+						<div class="settings-group">
+							<a href="#" class="settings-link-card" data-route-link="notification-settings">
+								<i class="fa-solid fa-bell"></i>
+								<div class="settings-link-card__body">
+									<strong>Notifications</strong>
+									<p>Manage your notification preferences</p>
+								</div>
+								<i class="fa-solid fa-chevron-right"></i>
+							</a>
+						</div>
+						<hr>
+						<div class="settings-group settings-group--toggles">
+							<h3 class="settings-group-title">Appearance</h3>
+							<div class="settings-item settings-item--toggle">
+								<span>Dark Mode</span>
+								<p class="settings-item__desc">Switch between light and dark modes.</p>
+								<div class="switch">
+									<input type="checkbox" id="dark-mode-toggle" class="sr-only" />
+									<label class="switch__label" for="dark-mode-toggle"></label>
+								</div>
+							</div>
+						</div>
+						<div class="settings-group settings-group--toggles">
+							<h3 class="settings-group-title">Notifications</h3>
+							<div class="settings-item settings-item--toggle">
+								<span>New Matches</span>
+								<p class="settings-item__desc">Get notified when you have a new match.</p>
+								<div class="switch">
+									<input type="checkbox" id="notify-matches" class="sr-only" checked />
+									<label class="switch__label" for="notify-matches"></label>
+								</div>
+							</div>
+							<div class="settings-item settings-item--toggle">
+								<span>Likes</span>
+								<p class="settings-item__desc">Be notified when someone likes your profile.</p>
+								<div class="switch">
+									<input type="checkbox" id="notify-likes" class="sr-only" checked />
+									<label class="switch__label" for="notify-likes"></label>
+								</div>
+							</div>
+							<div class="settings-item settings-item--toggle">
+								<span>Messages</span>
+								<p class="settings-item__desc">Receive alerts about new messages.</p>
+								<div class="switch">
+									<input type="checkbox" id="notify-messages" class="sr-only" checked />
+									<label class="switch__label" for="notify-messages"></label>
+								</div>
+							</div>
+							<div class="settings-item settings-item--toggle">
+								<span>Marketing</span>
+								<p class="settings-item__desc">Updates about new features and promotions.</p>
+								<div class="switch">
+									<input type="checkbox" id="notify-marketing" class="sr-only" />
+									<label class="switch__label" for="notify-marketing"></label>
+								</div>
+							</div>
+						</div>
+						<div class="settings-group settings-group--toggles">
+							<h3 class="settings-group-title">Privacy</h3>
+							<div class="settings-item settings-item--toggle">
+								<span>Show My Age</span>
+								<p class="settings-item__desc">Display your age on your profile.</p>
+								<div class="switch">
+									<input type="checkbox" id="privacy-show-age" class="sr-only" checked />
+									<label class="switch__label" for="privacy-show-age"></label>
+								</div>
+							</div>
+							<div class="settings-item settings-item--toggle">
+								<span>Show Location</span>
+								<p class="settings-item__desc">Display your location to other users.</p>
+								<div class="switch">
+									<input type="checkbox" id="privacy-show-location" class="sr-only" checked />
+									<label class="switch__label" for="privacy-show-location"></label>
+								</div>
+							</div>
+							<div class="settings-item settings-item--toggle">
+								<span>Show Online Status</span>
+								<p class="settings-item__desc">Let others know when you are online.</p>
+								<div class="switch">
+									<input type="checkbox" id="privacy-show-status" class="sr-only" checked />
+									<label class="switch__label" for="privacy-show-status"></label>
+								</div>
+							</div>
+						</div>
+						<div class="settings-group settings-group--links">
+							<h3 class="settings-group-title">Account</h3>
+							<ul class="settings-list">
+								<li>
+									<a href="#" class="settings-link" data-route-link="profile-edit">
+										<i class="fa-solid fa-pencil"></i> Edit Profile
+									</a>
+								</li>
+								<li>
+									<a href="#" class="settings-link" data-route-link="discovery-settings">
+										<i class="fa-solid fa-sliders"></i> Discovery Preferences
+									</a>
+								</li>
+								<li>
+									<a href="#" class="settings-link" data-route-link="blocked-users">
+										<i class="fa-solid fa-user-slash"></i> Blocked Users
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="settings-group settings-group--danger">
+							<h3 class="settings-group-title">Danger Zone</h3>
+							<ul class="settings-list">
+								<li>
+									<a href="#" class="settings-link settings-link--danger" data-route-link="delete-account">
+										<i class="fa-solid fa-user-xmark"></i> Delete Account
+									</a>
+								</li>
+								<li>
+									<a href="#" class="settings-link settings-link--danger" data-action="logout">
+										<i class="fa-solid fa-sign-out"></i> Sign Out
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="settings-group settings-group--legal">
+							<h3 class="settings-group-title">Legal & Support</h3>
+							<p class="settings-group__desc">Need help? Get in touch with our team.</p>
+							<div class="settings-item">
+								<a href="#" class="settings-link" data-route-link="support">
+									<i class="fa-solid fa-headset"></i> Get Support
+								</a>
+							</div>
+							<div class="settings-item">
+								<a href="#" class="settings-link" data-route-link="terms">
+									<i class="fa-solid fa-file-contract"></i> Terms & Conditions
+								</a>
+							</div>
+							<div class="settings-item">
+								<a href="#" class="settings-link" data-route-link="privacy">
+									<i class="fa-solid fa-shield"></i> Privacy Policy
+								</a>
+							</div>
+						</div>
+						<div class="logout-btn-container">
+							<button data-action="logout" class="btn btn--primary btn--logout">
+								Logout <i class="fa-solid fa-arrow-right"></i>
+							</button>
+						</div>
+						<p class="app-version">DateWise v1.0.0 (Build 265)</p>
+					</div>
 				</div>
-			  </div>
-			  <div class="settings-group">
-				<h3>Distance</h3>
-				<div class="settings-item">
-				  <span>Max Distance</span>
-				  <div class="age-range">
-					<input
-					  type="range"
-					  id="max-distance-slider"
-					  min="1"
-					  max="100"
-					  value="50"
-					/>
-					<span class="range-value" id="max-distance-value">50 km</span>
-				  </div>
+			</section>
+			<section id="page-blocked-users" class="page neumorphic" data-route="blocked-users" hidden>
+				<div class="container">
+					<h2 class="page__title">Blocked Users</h2>
+					<p>List of users you have blocked.</p>
 				</div>
-			  </div>
-			  <div class="settings-group">
-				<h3>Age</h3>
-				<div class="settings-item">
-				  <span>Age Range</span>
-				  <div class="age-range">
-					<input
-					  type="range"
-					  id="age-range-min"
-					  min="18"
-					  max="60"
-					  value="18"
-					/>
-					<input
-					  type="range"
-					  id="age-range-max"
-					  min="18"
-					  max="60"
-					  value="30"
-					/>
-					<span class="range-value" id="age-range-value">18 - 30</span>
-				  </div>
+			</section>
+			<section id="page-delete-account" class="page neumorphic" data-route="delete-account" hidden>
+				<div class="container">
+					<h2 class="page__title page__title--danger">Delete Account</h2>
+					<p>We're sad to see you go! Are you sure you want to permanently delete your account? This action cannot be undone.</p>
+					<button class="btn btn--danger">Permanently Delete Account</button>
 				</div>
-			  </div>
-			  <div class="settings-group">
-				<h3>Account</h3>
-				<div class="settings-item">
-				  <span>Hide My Account</span>
-				  <div class="switch">
-					<input type="checkbox" id="hide-account-toggle" />
-					<label class="switch__label" for="hide-account-toggle"
-					  >Hide me from discovery</label
-					>
-				  </div>
+			</section>
+			<section id="page-support" class="page neumorphic" data-route="support" hidden>
+				<div class="container">
+					<h2 class="page__title">Get Support</h2>
+					<p>Find answers to common questions or contact our support team.</p>
 				</div>
-			  </div>
-			  <button type="submit" class="btn btn--primary">
-				Save Settings
-			  </button>
-			</form>
-		  </div>
-		</section>
-		<section id="page-terms" class="page" data-route="terms" hidden>
-		  <div class="container">
-			<h2 class="page__title">Terms and Conditions</h2>
-			<div class="legal-text">
-			  <p>
-				Welcome to DateWise. By accessing or using our website, you agree
-				to be bound by these Terms and Conditions ("Terms"). If you
-				disagree with any part of the terms, you may not access the
-				service. These terms apply to all visitors, users, and others
-				who access or use the Service.
-			  </p>
-			  <h4>1. Accounts</h4>
-			  <p>
-				When you create an account with us, you must provide us with
-				information that is accurate, complete, and current at all
-				times. Failure to do so constitutes a breach of the Terms, which
-				may result in immediate termination of your account on our
-				Service. You are responsible for safeguarding the password that
-				you use to access the Service and for any activities or actions
-				under your password.
-			  </p>
-			  <h4>2. Intellectual Property</h4>
-			  <p>
-				The Service and its original content, features, and
-				functionality are and will remain the exclusive property of
-				DateWise and its licensors. Our trademarks and trade dress may not
-				be used in connection with any product or service without the
-				prior written consent of DateMe.
-			  </p>
-			  <h4>3. Links To Other Websites</h4>
-			  <p>
-				Our Service may contain links to third-party web sites or
-				services that are not owned or controlled by DateWise. We have no
-				control over, and assume no responsibility for, the content,
-				privacy policies, or practices of any third-party web sites or
-				services. You further acknowledge and agree that DateMe shall
-				not be responsible or liable, directly or indirectly, for any
-				damage or loss caused or alleged to be caused by or in
-				connection with use of or reliance on any such content, goods or
-				services available on or through any such web sites or services.
-			  </p>
-			  <h4>4. Termination</h4>
-			  <p>
-				We may terminate or suspend your account immediately, without
-				prior notice or liability, for any reason whatsoever, including
-				without limitation if you breach the Terms.
-			  </p>
-			  <h4>5. Governing Law</h4>
-			  <p>
-				These Terms shall be governed and construed in accordance with
-				the laws of Malawi, without regard to its conflict of law
-				provisions.
-			  </p>
-			</div>
-		  </div>
-		</section>
-		<section id="page-privacy" class="page" data-route="privacy" hidden>
-		  <div class="container">
-			<h2 class="page__title">Privacy Policy</h2>
-			<div class="legal-text">
-			  <p>
-				This Privacy Policy describes how we collect, use, and disclose
-				your personal information when you use our Service and the
-				choices you have associated with that data.
-			  </p>
-			  <h4>2. Use of Data</h4>
-			  <p>DateWise uses the collected data for various purposes:</p>
-			  <ul>
-				<li>To provide and maintain the Service.</li>
-				<li>To notify you about changes to our Service.</li>
-				<li>
-				  To allow you to participate in interactive features of our
-				  Service when you choose to do so.
-				</li>
-				<li>To provide customer care and support.</li>
-				<li>
-				  To provide analysis or valuable information so that we can
-				  improve the Service.
-				</li>
-			  </ul>
-			  <h4>3. Transfer Of Data</h4>
-			  <p>
-				Your information, including Personal Data, may be transferred to
-				— and maintained on — computers located outside of your state,
-				province, country or other governmental jurisdiction where the
-				data protection laws may differ from those of your jurisdiction.
-			  </p>
-			  <h4>4. Disclosure Of Data</h4>
-			  <p>
-				We may disclose your Personal Data in the good faith belief that
-				such action is necessary to: comply with a legal obligation,
-				protect and defend the rights or property of DateWise, prevent or
-				investigate possible wrongdoing in connection with the Service,
-				protect the personal safety of users of the Service or the
-				public, or protect against legal liability.
-			  </p>
-			  <h4>5. Security Of Data</h4>
-			  <p>
-				The security of your data is important to us, but remember that
-				no method of transmission over the Internet, or method of
-				electronic storage is 100% secure. While we strive to use
-				commercially acceptable means to protect your Personal Data, we
-				cannot guarantee its absolute security.
-			  </p>
-			</div>
-		  </div>
-		</section>
-		<section id="page-contact" class="page" data-route="contact" hidden>
-		  <div class="container">
-			<h2 class="page__title">Contact Us</h2>
-			<p>
-			  For inquiries, click the button below to see our social media
-			  channels.
-			</p>
-			<div id="social-links-container" class="social-links">
-			  <a
-				href="https://x.com/stillponx?s=21"
-				target="_blank"
-				class="btn btn--icon"
-			  >
-				<i class="fa-brands fa-x-twitter"></i>
-			  </a>
-			  <a
-				href="https://www.instagram.com/696p69?igsh=MTM0eDYzc2ZzejVxNw%3D%3D&utm_source=qr"
-				target="_blank"
-				class="btn btn--icon"
-			  >
-				<i class="fa-brands fa-instagram"></i>
-			  </a>
-			  <a
-				href="https://www.facebook.com/share/15eFJiV8Sq/?mibextid=wwXIfr"
-				target="_blank"
-				class="btn btn--icon"
-			  >
-				<i class="fa-brands fa-facebook"></i>
-			  </a>
-			</div>
-		  </div>
-		</section>
-		<section id="page-donate" class="page" data-route="donate" hidden>
-		  <div class="container">
-			<h2 class="page__title">Support Our Website</h2>
-			<p>
-			  Your generous donation helps us keep the website running and free
-			  for everyone!
-			</p>
-			<button class="btn btn--primary" data-action="open-donate-modal">
-			  Donate Now
-			</button>
-		  </div>
-		</section>
-	  </main>
-	  <nav class="bottom-nav" role="navigation" aria-label="Main">
-		<a
-		  href="#"
-		  class="bottom-nav__link is-active"
-		  data-route-link="home"
-		  aria-label="Discover"
-		>
-		  <div class="bottom-nav__content">
-			<i class="fa-solid fa-fire-flame-curved bottom-nav__icon"></i>
-			<span class="bottom-nav__label">Discover</span>
-		  </div>
-		</a>
-		<a
-		  href="#"
-		  class="bottom-nav__link"
-		  data-route-link="matches"
-		  aria-label="Matches"
-		>
-		  <div class="bottom-nav__content">
-			<i class="fa-solid fa-star bottom-nav__icon"></i>
-			<span class="bottom-nav__label">Matches</span>
-		  </div>
-		</a>
-		<a
-		  href="#"
-		  class="bottom-nav__link"
-		  data-route-link="connect"
-		  aria-label="Connect"
-		>
-		  <div class="bottom-nav__content">
-			<i class="fa-solid fa-handshake bottom-nav__icon"></i>
-			<span class="bottom-nav__label">Connect</span>
-		  </div>
-		</a>
-		<a
-		  href="#"
-		  class="bottom-nav__link"
-		  data-route-link="messages"
-		  aria-label="Messages"
-		>
-		  <div class="bottom-nav__content">
-			<i class="fa-solid fa-comment-dots bottom-nav__icon"></i>
-			<span class="bottom-nav__label">Messages</span>
-		  </div>
-		</a>
+			</section>
+			<section id="page-appearance-settings" class="page neumorphic" data-route="appearance-settings" hidden>
+				<div class="container">
+					<h2 class="page__title">Appearance Settings</h2>
+					<p>Customise your app's visual style.</p>
+				</div>
+			</section>
+			<section id="page-notification-settings" class="page neumorphic" data-route="notification-settings" hidden>
+				<div class="container">
+					<h2 class="page__title">Notification Settings</h2>
+					<p>Control all your alerts.</p>
+				</div>
+			</section>
+			<section id="page-discover-settings" class="page neumorphic" data-route="discover-settings" hidden>
+				<div class="container">
+					<h2 class="page__title">Discovery Settings</h2>
+					<form id="settings-form">
+						<div class="settings-group">
+							<h3>Show Me</h3>
+							<div class="gender-select" role="radiogroup" aria-label="Gender to show">
+								<label class="gender-label">
+									<input type="radio" name="show-gender" value="male">
+									<span class="dot neumorphic"></span>
+									Men
+								</label>
+								<label class="gender-label">
+									<input type="radio" name="show-gender" value="female">
+									<span class="dot neumorphic"></span>
+									Women
+								</label>
+								<label class="gender-label">
+									<input type="radio" name="show-gender" value="both">
+									<span class="dot neumorphic"></span>
+									Both
+								</label>
+							</div>
+						</div>
+						<div class="settings-group">
+							<h3>Distance</h3>
+							<div class="settings-item">
+								<span>Max Distance</span>
+								<div class="age-range">
+									<input type="range" id="max-distance-slider" min="1" max="100" value="50" class="neumorphic" />
+									<span class="range-value" id="max-distance-value">50 km</span>
+								</div>
+							</div>
+						</div>
+						<div class="settings-group">
+							<h3>Age</h3>
+							<div class="settings-item">
+								<span>Age Range</span>
+								<div class="age-range">
+									<input type="range" id="age-range-min" min="18" max="60" value="18" class="neumorphic" />
+									<input type="range" id="age-range-max" min="18" max="60" value="30" class="neumorphic" />
+									<span class="range-value" id="age-range-value">18 - 30</span>
+								</div>
+							</div>
+						</div>
+						<div class="settings-group">
+							<h3>Account</h3>
+							<div class="settings-item">
+								<span>Hide My Account</span>
+								<div class="switch">
+									<input type="checkbox" id="hide-account-toggle" />
+									<label class="switch__label neumorphic" for="hide-account-toggle">Hide me from discovery</label>
+								</div>
+							</div>
+						</div>
+						<button type="submit" class="btn btn--primary">Save Settings</button>
+					</form>
+				</div>
+			</section>
+			<section id="page-terms" class="page neumorphic" data-route="terms" hidden>
+				<div class="container">
+					<h2 class="page__title">Terms and Conditions</h2>
+					<div class="legal-text">
+						<p>Welcome to DateWise. By accessing or using our website, you agree to be bound by these Terms and Conditions ("Terms"). If you disagree with any part of the terms, you may not access the service. These terms apply to all visitors, users, and others who access or use the Service.</p>
+						<h4>1. Accounts</h4>
+						<p>When you create an account with us, you must provide us with information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service. You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password.</p>
+						<h4>2. Intellectual Property</h4>
+						<p>The Service and its original content, features, and functionality are and will remain the exclusive property of DateWise and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of DateWise.</p>
+						<h4>3. Links To Other Websites</h4>
+						<p>Our Service may contain links to third-party web sites or services that are not owned or controlled by DateWise. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party web sites or services. You further acknowledge and agree that DateWise shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services.</p>
+						<h4>4. Termination</h4>
+						<p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+						<h4>5. Governing Law</h4>
+						<p>These Terms shall be governed and construed in accordance with the laws of Malawi, without regard to its conflict of law provisions.</p>
+					</div>
+				</div>
+			</section>
+			<section id="page-privacy" class="page neumorphic" data-route="privacy" hidden>
+				<div class="container">
+					<h2 class="page__title">Privacy Policy</h2>
+					<div class="legal-text">
+						<p>This Privacy Policy describes how we collect, use, and disclose your personal information when you use our Service and the choices you have associated with that data.</p>
+						<h4>2. Use of Data</h4>
+						<p>DateWise uses the collected data for various purposes:</p>
+						<ul>
+							<li>To provide and maintain the Service.</li>
+							<li>To notify you about changes to our Service.</li>
+							<li>To allow you to participate in interactive features of our Service when you choose to do so.</li>
+							<li>To provide customer care and support.</li>
+							<li>To provide analysis or valuable information so that we can improve the Service.</li>
+						</ul>
+						<h4>3. Transfer Of Data</h4>
+						<p>Your information, including Personal Data, may be transferred to and maintained on computers located outside of your state, province, country or other governmental jurisdiction where the data protection laws may differ from those of your jurisdiction.</p>
+						<h4>4. Disclosure Of Data</h4>
+						<p>We may disclose your Personal Data in the good faith belief that such action is necessary to: comply with a legal obligation, protect and defend the rights or property of DateWise, prevent or investigate possible wrongdoing in connection with the Service, protect the personal safety of users of the Service or the public, or protect against legal liability.</p>
+						<h4>5. Security Of Data</h4>
+						<p>The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.</p>
+					</div>
+				</div>
+			</section>
+			<section id="page-contact" class="page neumorphic" data-route="contact" hidden>
+				<div class="container">
+					<h2 class="page__title">Contact Us</h2>
+					<p>For inquiries, click the button below to see our social media channels.</p>
+					<div id="social-links-container" class="social-links">
+						<a href="https://x.com/stillponx?s=21" target="_blank" class="btn btn--icon">
+							<i class="fa-brands fa-x-twitter"></i>
+						</a>
+						<a href="https://www.instagram.com/696p69?igsh=MTM0eDYzc2ZzejVxNw%3D%3D&utm_source=qr" target="_blank" class="btn btn--icon">
+							<i class="fa-brands fa-instagram"></i>
+						</a>
+						<a href="https://www.facebook.com/share/15eFJiV8Sq/?mibextid=wwXIfr" target="_blank" class="btn btn--icon">
+							<i class="fa-brands fa-facebook"></i>
+						</a>
+					</div>
+				</div>
+			</section>
+			<section id="page-donate" class="page neumorphic" data-route="donate" hidden>
+				<div class="container">
+					<h2 class="page__title">Support Our Website</h2>
+					<p>Your generous donation helps us keep the website running and free for everyone!</p>
+					<button class="btn btn--primary" data-action="open-donate-modal">Donate Now</button>
+				</div>
+			</section>
+		</main>
+		<nav class="bottom-nav neumorphic" role="navigation" aria-label="Main">
+			<a href="#" class="bottom-nav__link is-active" data-route-link="discover" aria-label="Discover">
+				<div class="bottom-nav__content">
+					<i class="fa-solid fa-fire-flame-curved bottom-nav__icon"></i>
+					<span class="bottom-nav__label">Discover</span>
+				</div>
+			</a>
+			<a href="#" class="bottom-nav__link" data-route-link="matches" aria-label="Matches">
+				<div class="bottom-nav__content">
+					<i class="fa-solid fa-star bottom-nav__icon"></i>
+					<span class="bottom-nav__label">Matches</span>
+				</div>
+			</a>
+			<a href="#" class="bottom-nav__link" data-route-link="connect" aria-label="Connect">
+				<div class="bottom-nav__content">
+					<i class="fa-solid fa-handshake bottom-nav__icon"></i>
+					<span class="bottom-nav__label">Connect</span>
+				</div>
+			</a>
+			<a href="#" class="bottom-nav__link" data-route-link="messages" aria-label="Messages">
+				<div class="bottom-nav__content">
+					<i class="fa-solid fa-comment-dots bottom-nav__icon"></i>
+					<span class="bottom-nav__label">Messages</span>
+				</div>
+			</a>
 		</nav>
-	  <footer class="footer" role="contentinfo">
-		<div class="container footer__inner">
-		  <p class="watermark">by Phil</p>
-		  <nav aria-label="Legal">
-			<a href="#" data-route-link="terms">Terms</a>
-			<a href="#" data-route-link="privacy">Privacy</a>
-			<a href="#" data-route-link="contact">Contact</a>
-			<a href="#" data-route-link="donate" class="glowing-pink">Donate</a>
-		  </nav>
-		  <p class="copyright">© <span data-year>2025</span> DateWise</p>
-		</div>
-	  </footer>
+		<footer class="footer neumorphic" role="contentinfo">
+			<div class="container footer__inner">
+				<p class="watermark">by Phil</p>
+				<nav aria-label="Legal">
+					<a href="#" data-route-link="terms">Terms</a>
+					<a href="#" data-route-link="privacy">Privacy</a>
+					<a href="#" data-route-link="contact">Contact</a>
+					<a href="#" data-route-link="donate" class="glowing-pink">Donate</a>
+				</nav>
+				<p class="copyright">© <span data-year>2026</span> DateWise</p>
+			</div>
+		</footer>
 	</div>
-	<dialog
-	  id="modal-edit-profile"
-	  class="modal"
-	  aria-labelledby="modal-edit-title"
-	>
-	  <div class="modal-content">
-		<button
-		  class="btn btn--close"
-		  value="close"
-		  data-action="close-modal"
-		  aria-label="Close dialog"
-		>
-		  <i class="fa-solid fa-times"></i>
-		</button>
-		<h3 id="modal-edit-title">Edit Profile</h3>
-		<form method="dialog">
-		  <label for="profile-name">Display name</label>
-		  <input type="text" id="profile-name" />
-		  <label for="profile-bio">Bio</label>
-		  <textarea id="profile-bio" rows="3"></textarea>
-		  <div class="modal-actions">
-			<button value="cancel" class="btn btn--ghost">Cancel</button>
-			<button value="save" class="btn btn--primary">Save</button>
-		  </div>
-		</form>
-	  </div>
-	</dialog>
-	<dialog id="modal-gift" hidden>
-	  <div class="modal-content">
-		<h3>Send a gift to <span data-recipient-name></span></h3>
-		<p>This will be a real payment to send a gift that they can cash out.</p>
-		<div class="modal-actions">
-		  <button class="btn btn--ghost" data-action="close-modal">
-			Cancel
-		  </button>
-		  <button class="btn btn--primary" data-action="send-gift">
-			Send Gift
-		  </button>
-		</div>
-	  </div>
-	</dialog>
-	<dialog
-	  id="modal-donate"
-	  class="modal"
-	  aria-labelledby="modal-donate-title"
-	  hidden
-	>
-	  <div class="modal-content">
-		<button
-		  class="btn btn--close"
-		  data-action="close-donate-modal"
-		  aria-label="Close donation form"
-		>
-		  <i class="fa-solid fa-times"></i>
-		</button>
-		<h3 id="modal-donate-title">Support Our Website</h3>
-		<p>Your generosity helps us keep DateMe free!</p>
-		<div class="donate-options" data-donation-step="1">
-		  <p>Choose a mobile money service:</p>
-		  <button
-			class="btn btn--primary glowing-red"
-			data-action="select-airtel"
-			data-network="airtel"
-		  >
-			Donate with Airtel Money
-		  </button>
-		  <button
-			class="btn btn--primary glowing-green"
-			data-action="select-tnm"
-			data-network="tnm"
-		  >
-			Donate with TNM Mpamba
-		  </button>
-		</div>
-		<form
-		  class="donate-form"
-		  id="donation-form"
-		  data-donation-step="2"
-		  hidden
-		>
-		  <h4 id="donate-heading"></h4>
-		  <label for="donate-amount">Enter Amount (MWK)</label>
-		  <input
-			id="donate-amount"
-			type="number"
-			name="amount"
-			min="100"
-			required
-		  />
-		  <div class="modal-actions">
-			<button
-			  type="button"
-			  class="btn btn--ghost"
-			  data-action="cancel-donate"
-			>
-			  Cancel
+	<dialog id="modal-edit-profile" class="modal neumorphic" aria-labelledby="modal-edit-title">
+		<div class="modal-content">
+			<button class="btn btn--close" value="close" data-action="close-modal" aria-label="Close dialog">
+				<i class="fa-solid fa-times"></i>
 			</button>
-			<button type="submit" class="btn btn--primary">Send</button>
-		  </div>
-		</form>
-	  </div>
-	</dialog>
-	<dialog id="confirmation-modal" class="modal" aria-labelledby="confirmation-title" hidden>
-	  <div class="modal-content">
-		<h3 id="confirmation-title">Confirm Changes</h3>
-		<p>Are you sure you want to save these changes?</p>
-		<div class="modal-actions">
-		  <button id="cancel-confirm-btn" class="btn btn--ghost">Cancel</button>
-		  <button id="confirm-btn" class="btn btn--primary">Confirm</button>
+			<h3 id="modal-edit-title">Edit Profile</h3>
+			<form method="dialog">
+				<label for="profile-name">Display name</label>
+				<input type="text" id="profile-name" class="neumorphic" />
+				<label for="profile-bio">Bio</label>
+				<textarea id="profile-bio" rows="3" class="neumorphic"></textarea>
+				<div class="modal-actions">
+					<button value="cancel" class="btn btn--ghost">Cancel</button>
+					<button value="save" class="btn btn--primary">Save</button>
+				</div>
+			</form>
 		</div>
-	  </div>
+	</dialog>
+	<dialog id="modal-gift" hidden class="neumorphic">
+		<div class="modal-content">
+			<h3>Send a gift to <span data-recipient-name></span></h3>
+			<p>This will be a real payment to send a gift that they can cash out.</p>
+			<div class="modal-actions">
+				<button class="btn btn--ghost" data-action="close-modal">Cancel</button>
+				<button class="btn btn--primary" data-action="send-gift">Send Gift</button>
+			</div>
+		</div>
+	</dialog>
+	<dialog id="modal-donate" class="modal neumorphic" aria-labelledby="modal-donate-title" hidden>
+		<div class="modal-content">
+			<button class="btn btn--close" data-action="close-donate-modal" aria-label="Close donation form">
+				<i class="fa-solid fa-times"></i>
+			</button>
+			<h3 id="modal-donate-title">Support Our Website</h3>
+			<p>Your generosity helps us keep DateWise free!</p>
+			<div class="donate-options" data-donation-step="1">
+				<p>Choose a mobile money service:</p>
+				<button class="btn btn--primary glowing-red" data-action="select-airtel" data-network="airtel">Donate with Airtel Money</button>
+				<button class="btn btn--primary glowing-green" data-action="select-tnm" data-network="tnm">Donate with TNM Mpamba</button>
+			</div>
+			<form class="donate-form" id="donation-form" data-donation-step="2" hidden>
+				<h4 id="donate-heading"></h4>
+				<label for="donate-amount">Enter Amount (MWK)</label>
+				<input id="donate-amount" type="number" name="amount" min="100" required class="neumorphic" />
+				<div class="modal-actions">
+					<button type="button" class="btn btn--ghost" data-action="cancel-donate">Cancel</button>
+					<button type="submit" class="btn btn--primary">Send</button>
+				</div>
+			</form>
+		</div>
+	</dialog>
+	<dialog id="confirmation-modal" class="modal neumorphic" aria-labelledby="confirmation-title" hidden>
+		<div class="modal-content">
+			<h3 id="confirmation-title">Confirm Changes</h3>
+			<p>Are you sure you want to save these changes?</p>
+			<div class="modal-actions">
+				<button id="cancel-confirm-btn" class="btn btn--ghost">Cancel</button>
+				<button id="confirm-btn" class="btn btn--primary">Confirm</button>
+			</div>
+		</div>
 	</dialog>
 	<template id="template-profile-card">
-	  <article
-		class="card profile-card"
-		data-profile-id=""
-		data-floating
-		tabindex="0"
-	  >
-		<div class="profile-card__media">
-		  <img src="" alt="" />
-		</div>
-		<div class="profile-card__content">
-		  <div class="profile-card__info">
-			<h2 class="profile-card__name">Name <span class="age">00</span></h2>
-			<div class="profile-card__metadata">
-			  <span class="profile-card__last-online">Last Online</span>
-			  <span class="profile-card__distance">Distance</span>
+		<article class="card profile-card neumorphic" data-profile-id="" data-floating tabindex="0">
+			<div class="profile-card__media">
+				<img src="" alt="" />
 			</div>
-			<p class="profile-card__bio">Short bio goes here.</p>
-		  </div>
-		  <div
-			class="profile-card__actions"
-			role="group"
-			aria-label="Profile actions"
-		  >
-		  <button class="btn btn--icon btn--rewind" data-action="rewind" aria-label="Rewind">
-			<i class="fa-solid fa-rotate-left"></i>
-		  </button>
-		  <button class="btn btn--icon btn--dislike" data-action="skip" aria-label="Dislike">
-			<i class="fa-solid fa-thumbs-down"></i>
-		  </button>
-		  <button class="btn btn--icon btn--like" data-action="like" aria-label="Like">
-			<i class="fa-solid fa-heart"></i>
-		  </button>
-		  <button class="btn btn--icon btn--super-like" data-action="message" aria-label="Message">
-			<i class="fa-solid fa-star"></i>
-		  </button>
-		  </div>
-		</div>
-	  </article>
+			<div class="profile-card__content">
+				<div class="profile-card__info">
+					<h2 class="profile-card__name">Name <span class="age">00</span></h2>
+					<div class="profile-card__metadata">
+						<span class="profile-card__last-online">Last Online</span>
+						<span class="profile-card__distance">Distance</span>
+					</div>
+					<p class="profile-card__bio">Short bio goes here.</p>
+				</div>
+				<div class="profile-card__actions" role="group" aria-label="Profile actions">
+					<button class="btn btn--icon btn--rewind" data-action="rewind" aria-label="Rewind">
+						<i class="fa-solid fa-rotate-left"></i>
+					</button>
+					<button class="btn btn--icon btn--dislike" data-action="skip" aria-label="Dislike">
+						<i class="fa-solid fa-thumbs-down"></i>
+					</button>
+					<button class="btn btn--icon btn--like" data-action="like" aria-label="Like">
+						<i class="fa-solid fa-heart"></i>
+					</button>
+					<button class="btn btn--icon btn--super-like" data-action="message" aria-label="Message">
+						<i class="fa-solid fa-comment-dots"></i>
+					</button>
+				</div>
+			</div>
+		</article>
 	</template>
 	<template id="template-match">
-	  <li class="match" tabindex="0">
-		<img src="" alt="" class="match__avatar" data-match-avatar />
-		<div class="match__body">
-		  <strong data-match-name></strong>
-		  <span class="match__meta" data-match-meta></span>
-		</div>
-		<div class="match__actions">
-		  <button
-			class="btn btn--ghost"
-			data-action="view-profile"
-			data-route-link="profile"
-		  >
-			View
-		  </button>
-		  <button
-			class="btn btn--primary"
-			data-route-link="messages"
-			data-action="message"
-		  >
-			Message
-		  </button>
-		</div>
-	  </li>
+		<li class="match" tabindex="0">
+			<img src="" alt="" class="match__avatar" data-match-avatar />
+			<div class="match__body">
+				<strong data-match-name></strong>
+				<span class="match__meta" data-match-meta></span>
+			</div>
+			<div class="match__actions">
+				<button class="btn btn--ghost" data-action="view-profile" data-route-link="profile">View</button>
+				<button class="btn btn--primary" data-route-link="messages" data-action="message">Message</button>
+			</div>
+		</li>
 	</template>
 	<template id="template-convo">
-	  <li class="convo" data-target-uid="">
-		<img src="" alt="user avatar" class="convo__avatar" />
-		<div class="convo__info">
-		  <strong class="convo__name"></strong>
-		  <p class="convo__last"></p>
-		</div>
-		<span class="convo__meta"></span>
-	  </li>
+		<li class="convo" data-target-uid="">
+			<img src="" alt="user avatar" class="convo__avatar" />
+			<div class="convo__info">
+				<strong class="convo__name"></strong>
+				<p class="convo__last"></p>
+			</div>
+			<span class="convo__meta"></span>
+		</li>
 	</template>
 	<template id="template-message-me">
-	  <div class="bubble bubble--me">
-		<p class="bubble__text"></p>
-		<time></time>
-	  </div>
+		<div class="bubble bubble--me">
+			<p class="bubble__text"></p>
+			<time></time>
+		</div>
 	</template>
 	<template id="template-message-them">
-	  <div class="bubble bubble--them">
-		<p class="bubble__text"></p>
-		<time></time>
-	  </div>
+		<div class="bubble bubble--them">
+			<p class="bubble__text"></p>
+			<time></time>
+		</div>
 	</template>
+	<div id="toast-container"></div>
 	<script src="app.js"></script>
 	<script>
-	  document.addEventListener('DOMContentLoaded', () => {
-		const routeLinks = document.querySelectorAll('[data-route-link]');
-		const pages = document.querySelectorAll('.page');
-		const bottomNavLinks = document.querySelectorAll('.bottom-nav__link');
+		document.addEventListener('DOMContentLoaded', () => {
+			const routeLinks = document.querySelectorAll('[data-route-link]');
+			const pages = document.querySelectorAll('.page');
+			const bottomNavLinks = document.querySelectorAll('.bottom-nav__link');
 
-		// New: Hamburger Menu Toggling Logic
-		const menuButton = document.getElementById('hamburger-menu-btn');
-		const menu = document.getElementById('menu-main');
-		const menuWrapper = menuButton ? menuButton.closest('.user-menu-wrapper') : null;
+			// Hamburger Menu Toggling Logic
+			const menuButton = document.getElementById('hamburger-menu-btn');
+			const menu = document.getElementById('menu-main');
+			const menuWrapper = menuButton ? menuButton.closest('.user-menu-wrapper') : null;
 
-		if (menuButton && menu) {
-			menuButton.addEventListener('click', (event) => {
-				event.stopPropagation(); // Prevent the click from immediately closing the menu
-				const isHidden = menu.hasAttribute('hidden');
-				if (isHidden) {
-					menu.removeAttribute('hidden');
-					menuButton.setAttribute('aria-expanded', 'true');
-				} else {
+			if (menuButton && menu) {
+				menuButton.addEventListener('click', (event) => {
+					event.stopPropagation();
+					const isHidden = menu.hasAttribute('hidden');
+					if (isHidden) {
+						menu.removeAttribute('hidden');
+						menuButton.setAttribute('aria-expanded', 'true');
+					} else {
+						menu.setAttribute('hidden', '');
+						menuButton.setAttribute('aria-expanded', 'false');
+					}
+				});
+
+				document.addEventListener('click', (event) => {
+					const isClickInside = menuWrapper.contains(event.target);
+					if (!isClickInside && !menu.hasAttribute('hidden')) {
+						menu.setAttribute('hidden', '');
+						menuButton.setAttribute('aria-expanded', 'false');
+					}
+				});
+			}
+
+			function navigateTo(routeName) {
+				pages.forEach(page => {
+					page.classList.remove('is-visible');
+					page.setAttribute('hidden', '');
+				});
+				const targetPage = document.querySelector(`[data-route="${routeName}"]`);
+				if (targetPage) {
+					targetPage.classList.add('is-visible');
+					targetPage.removeAttribute('hidden');
+					document.title = `${routeName.charAt(0).toUpperCase() + routeName.slice(1)} - DateWise`;
+				}
+				updateActiveNav(routeName);
+
+				// Close menu after navigation
+				if (menuButton && menu) {
 					menu.setAttribute('hidden', '');
 					menuButton.setAttribute('aria-expanded', 'false');
 				}
+			}
+
+			function updateActiveNav(routeName) {
+				bottomNavLinks.forEach(link => {
+					if (link.dataset.routeLink === routeName) {
+						link.classList.add('is-active');
+						link.setAttribute('aria-current', 'page');
+					} else {
+						link.classList.remove('is-active');
+						link.removeAttribute('aria-current');
+					}
+				});
+			}
+
+			routeLinks.forEach(link => {
+				link.addEventListener('click', (event) => {
+					event.preventDefault();
+					const routeName = link.dataset.routeLink;
+					navigateTo(routeName);
+				});
 			});
 
-			// Close the menu if the user clicks outside of it
-			document.addEventListener('click', (event) => {
-				const isClickInside = menuWrapper.contains(event.target);
-				if (!isClickInside && !menu.hasAttribute('hidden')) {
-					menu.setAttribute('hidden', '');
-					menuButton.setAttribute('aria-expanded', 'false');
-				}
-			});
-		}
-		
-		function navigateTo(routeName) {
-		  pages.forEach(page => {
-			page.classList.remove('is-visible');
-			page.setAttribute('hidden', '');
-		  });
-		  const targetPage = document.querySelector(`[data-route="${routeName}"]`);
-		  if (targetPage) {
-			targetPage.classList.add('is-visible');
-			targetPage.removeAttribute('hidden');
-			document.title = `${routeName.charAt(0).toUpperCase() + routeName.slice(1)} - DateWise`;
-		  }
-		  updateActiveNav(routeName);
-		  
-		  // New: Close menu after navigation for smooth transition
-		  if (menuButton && menu) {
-			  menu.setAttribute('hidden', '');
-			  menuButton.setAttribute('aria-expanded', 'false');
-		  }
-		}
-		function updateActiveNav(routeName) {
-		  // Old Main Nav links are now hidden, but keeping the logic for consistency if you reintroduce it
-		  const mainNavLinks = document.querySelectorAll('.nav__link');
-		  mainNavLinks.forEach(link => {
-			if (link.dataset.routeLink === routeName) {
-			  link.classList.add('is-active');
-			  link.setAttribute('aria-current', 'page');
-			} else {
-			  link.classList.remove('is-active');
-			  link.removeAttribute('aria-current');
-			}
-		  });
-		  bottomNavLinks.forEach(link => {
-			if (link.dataset.routeLink === routeName) {
-			  link.classList.add('is-active');
-			  link.setAttribute('aria-current', 'page');
-			} else {
-			  link.classList.remove('is-active');
-			  link.removeAttribute('aria-current');
-			}
-		  });
-		}
-		routeLinks.forEach(link => {
-		  link.addEventListener('click', (event) => {
-			event.preventDefault();
-			const routeName = link.dataset.routeLink;
-			
-			// Custom logic for preventing menu toggle action from also routing (already handled in new JS)
-			// However, clicking an item *inside* the menu should still route.
-			
-			navigateTo(routeName);
-		  });
+			// UPDATED: Start on the new 'landing' page
+			navigateTo('landing');
 		});
-		navigateTo('home');
-	  });
 	</script>
-  </body>
+</body>
 </html>
