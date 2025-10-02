@@ -2,12 +2,12 @@
 
 /*
  * =================================================================
- * ✨ 1. NEUMORPHIC THEME TOKENS (Modern Polish)
+ * ✨ 1. NEUMORPHIC THEME TOKENS (Cleaned Up)
  * =================================================================
  */
 :root {
-  /* LIGHT MODE - Softer White Neumorphism */
-  --bg: #e0e5ec; /* Updated to match new light theme */
+  /* LIGHT MODE */
+  --bg: #e0e5ec;
   --surface: #f5f7fa;
   --surface-2: #e9ecf1;
   --surface-3: #dfe4ea;
@@ -17,7 +17,7 @@
   --border: transparent;
   --light-shadow: #ffffff;
   --dark-shadow: #a3b1c6;
-  --brand: hsl(330, 80%, 55%); /* Pink */
+  --brand: hsl(330, 80%, 55%);
   --brand-600: hsl(330, 80%, 50%);
   --brand-700: hsl(330, 80%, 45%);
   --muted: #f5e8ea;
@@ -41,14 +41,13 @@
   
   --nav-bg: var(--surface);
   --inactive-color: var(--text-2);
-  --inactive-icon-fill: #55aaff;
   --active-color: var(--brand);
   --heading-gradient: linear-gradient(110deg, #f795d2 0%, #a18cd1 50%, #84fab0 100%);
   --font-family: 'Poppins', 'Inter', sans-serif;
 }
 
 body[data-theme="dark"] {
-  /* DARK MODE - Deeper, Richer Neumorphism */
+  /* DARK MODE */
   --bg: #2c3038;
   --surface: #252830;
   --surface-2: #2e313a;
@@ -70,68 +69,85 @@ body[data-theme="dark"] {
 }
 
 /* ------------------------------------------- */
-/* GLOBAL NEUMORPHIC REFINEMENTS	 */
-/* ------------------------------------------- */
+/* GLOBAL NEUMORPHIC STYLES (Simplified for Landing Page)
+ * ------------------------------------------- */
 
-/* All elements that should "float" */
-[data-floating], .match, .convos, .settings-group, .plan, .profile-section, .avatar-btn, .feature-card {
-  box-shadow: var(--soft-shadow); 
-  transition: all var(--slow);
-  background: var(--surface); /* Ensure they use the lighter surface */
+/* Floating Elements (Applied to Homepage and Existing Elements) */
+[data-floating], .match, .convos, .settings-group, .plan, .profile-section, .avatar-btn, .feature-card, .home-header, .home-footer {
+  box-shadow: var(--soft-shadow);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  transition: box-shadow var(--fast), transform var(--fast);
 }
 
-/* Common hover effect for floating elements */
-[data-floating]:hover, .match:hover, .settings-group:hover, .plan:hover, .profile-section:hover {
-  transform: translateY(-2px);
+[data-floating]:hover, .match:hover, .settings-group:hover, .plan:hover, .profile-section:hover, .avatar-btn:hover, .feature-card:hover, .home-header:hover, .home-footer:hover {
   box-shadow: var(--deep-shadow);
+  transform: translateY(-2px);
 }
 
-/* Common inset style for inputs/toggles */
-.form-group input, .form-group select, .form-group textarea,
-.search-bar__input, .category-btn, .tab, .chat__composer input,
-.gender-label input[type="radio"], .toggle-switch, .chip,
-.btn--upload-photo, .photo-upload-label {
+/* Inset for Inputs/Selects */
+.form-group input, .form-group select, .form-group textarea, .search-bar__input, .category-btn, .tab, .chat__composer input, .gender-label input[type="radio"], .toggle-switch, .chip, .btn--upload-photo, .photo-upload-label {
   box-shadow: var(--inset-shadow);
 }
 
-/* Common button styles - base is soft outdent */
+/* Button Styles */
 .btn {
   box-shadow: var(--soft-shadow);
   font-weight: 500;
-  border: none; 
+  border: none;
   transition: all var(--fast);
   background: var(--surface);
   color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 12px 24px;
+  cursor: pointer;
 }
+
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--deep-shadow);
 }
+
 .btn:active {
   box-shadow: var(--inset-shadow-deep);
   transform: translateY(0);
 }
 
-/* Primary Button Refinement */
 .btn--primary {
   background: var(--brand);
   color: #fff;
-  /* Custom primary shadow for a vibrant pop */
-  box-shadow: 4px 4px 10px rgba(233, 30, 99, .5), 0 0 0 1px var(--brand-700); 
+  box-shadow: 4px 4px 10px rgba(233, 30, 99, .5);
 }
+
 .btn--primary:hover {
   background: var(--brand-600);
-  box-shadow: 6px 6px 16px rgba(233, 30, 99, .6), 0 0 0 1px var(--brand-600); 
+  box-shadow: 6px 6px 16px rgba(233, 30, 99, .6);
 }
+
 .btn--primary:active {
   box-shadow: var(--inset-shadow-deep);
   background: var(--brand-700);
 }
 
+/* SVG Styling for Icons */
+svg {
+  fill: var(--text-2);
+  transition: fill var(--fast);
+}
+
+svg:hover {
+  fill: var(--brand);
+}
 
 /* ---------- RESET + BASICS ---------- */
-*, *::before, *::after { box-sizing: border-box; }
-html, body { height: 100%; }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 60px 0 80px 0;
@@ -144,44 +160,48 @@ body {
   overflow-x: hidden;
 }
 
-/* ... (rest of the basic/layout styles remain similar) ... */
-
 /* ---------- LAYOUT ---------- */
 .app {
   min-height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
 }
+
 .container {
   width: min(100% - 32px, var(--container-w));
   margin-inline: auto;
 }
+
 .page {
   display: none;
-  padding: 1rem 0; /* Adjusted for better content centering */
+  padding: 1rem 0;
 }
+
 .page.is-visible {
   display: block;
   animation: slideInFromRight 0.3s forwards;
 }
+
 .website-name {
   font-family: 'Dancing Script', cursive;
   font-size: 3rem;
   color: var(--brand);
 }
+
 .page-body {
   padding: 0 16px;
 }
+
 .page__title {
   margin: 0 0 8px;
   font-size: clamp(1.5rem, 1.3rem + .8vw, 2.2rem);
   font-weight: 800;
-  color: var(--text); /* Use text color for main titles unless gradient is necessary */
+  color: var(--text);
 }
 
 /*
  * =================================================================
- * ✨ 2. HEADER / NAV - SOFT NEUMORPHIC
+ * ✨ 2. HEADER / NAV
  * =================================================================
  */
 .header {
@@ -189,10 +209,9 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--bg); /* Use main background for a seamless top */
+  background: var(--bg);
   z-index: 100;
-  /* Pure Neumorphic Shadow - no strong border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05), var(--soft-shadow); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05), var(--soft-shadow);
   border: none;
 }
 
@@ -212,14 +231,13 @@ body {
   font-size: 2rem;
 }
 
-/* Header Action Buttons (Settings/Menu) */
 .btn--grouped-options {
   width: 40px;
   height: 40px;
   padding: 0;
   border-radius: 50%;
   background: var(--surface);
-  color: var(--text-2); /* Changed to secondary text for a softer icon */
+  color: var(--text-2);
   box-shadow: 3px 3px 6px var(--dark-shadow), -3px -3px 6px var(--light-shadow);
   transition: all var(--fast);
   display: inline-flex;
@@ -233,27 +251,88 @@ body {
   box-shadow: inset 2px 2px 5px var(--dark-shadow), inset -2px -2px 5px var(--light-shadow);
 }
 
-
 /*
  * =================================================================
- * ✨ 3. HOMEPAGE FEATURE CARDS (Matching the Image)
+ * ✨ 3. HOMEPAGE / LANDING PAGE (Enhanced Spacing and Neumorphism)
  * =================================================================
  */
+#page-landing {
+  text-align: center;
+}
 
 .home-content {
   display: grid;
-  gap: 24px;
-  padding: 16px;
+  gap: 32px;
+  padding: 24px 16px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-/* NEW: Style for the large feature cards in the image */
-.feature-card {
-  padding: 24px;
+.home-header {
+  padding: 32px 24px;
   border-radius: var(--radius-lg);
-  background: var(--surface);
-  /* Stronger, softer shadow for the main floating content */
-  box-shadow: 10px 10px 30px var(--dark-shadow), -10px -10px 30px var(--light-shadow);
-  text-align: center;
+  box-shadow: var(--soft-shadow); /* Applied Neumorphism */
+  transition: box-shadow var(--fast), transform var(--fast);
+}
+
+.home-header:hover {
+  box-shadow: var(--deep-shadow);
+  transform: translateY(-2px);
+}
+
+.home-header h1 {
+  font-size: clamp(2rem, 1.8rem + 1.2vw, 3rem);
+  margin: 0 0 16px;
+  background: var(--heading-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.home-header p {
+  font-size: 1.2rem;
+  color: var(--text-2);
+  margin: 0 0 24px;
+}
+
+.home-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px; /* Increased for better spacing */
+  padding: 16px 0;
+}
+
+.feature-card {
+  padding: 32px 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--soft-shadow);
+  transition: box-shadow var(--fast), transform var(--fast);
+}
+
+.feature-card:hover {
+  box-shadow: var(--deep-shadow);
+  transform: translateY(-2px);
+}
+
+.feature-card__icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  color: var(--brand);
+}
+
+.feature-card__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0 0 8px;
+}
+
+.feature-card__subtitle {
+  color: var(--text-2);
+  margin: 0;
+  font-size: 1rem;
 }
 
 .feature-card__text {
@@ -263,29 +342,24 @@ body {
   margin: 0;
 }
 
-.feature-card__icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 16px;
-  color: var(--brand); /* Brand color for the icon */
+.home-footer {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--soft-shadow); /* Applied Neumorphism */
+  transition: box-shadow var(--fast), transform var(--fast);
 }
 
-.feature-card__title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--brand); /* Brand color for the title */
-  margin: 0 0 8px;
+.home-footer:hover {
+  box-shadow: var(--deep-shadow);
+  transform: translateY(-2px);
 }
-
-.feature-card__subtitle {
-  color: var(--text-2);
-  margin: 0;
-}
-
 
 /*
  * =================================================================
- * ✨ 4. DISCOVER PAGE - SWIPING CARDS (Ready for Action)
+ * ✨ 4. DISCOVER PAGE - SWIPING CARDS (Unchanged)
  * =================================================================
  */
 .cards-stack {
@@ -293,8 +367,8 @@ body {
   justify-content: center;
   align-items: center;
   padding: 16px;
-  min-height: calc(100dvh - var(--header-h) - var(--bottom-nav-h) - 32px); 
-  padding-bottom: calc(var(--bottom-nav-h) + 16px); 
+  min-height: calc(100dvh - var(--header-h) - var(--bottom-nav-h) - 32px);
+  padding-bottom: calc(var(--bottom-nav-h) + 16px);
   position: relative;
   overflow: hidden;
 }
@@ -307,15 +381,13 @@ body {
   max-height: 600px;
 }
 
-/* Card for a more floating/soft look */
 .profile-card {
   position: absolute;
   width: 100%;
   height: 100%;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  /* Used the deep shadow for a strong floating effect */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), var(--deep-shadow); 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), var(--deep-shadow);
   background: var(--surface);
   min-height: 450px;
   display: flex;
@@ -323,7 +395,6 @@ body {
   transition: transform 0.3s ease;
   will-change: transform;
 }
-/* ... (profile-card__media, profile-card__content remain similar) ... */
 
 .profile-card__actions {
   display: flex;
@@ -334,20 +405,18 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: transparent; 
-  /* Added a backdrop to make buttons stand out over the card content */
-  backdrop-filter: blur(3px); 
+  background: transparent;
+  backdrop-filter: blur(3px);
 }
 
-/* Swiping action buttons (Dislike, Like, etc.) */
 .btn--dislike,
 .btn--like,
 .btn--rewind,
 .btn--super-like {
-  width: 60px; /* Slightly bigger for better touch target */
+  width: 60px;
   height: 60px;
   font-size: 1.8rem;
-  background: var(--surface); 
+  background: var(--surface);
   box-shadow: var(--soft-shadow);
   color: var(--text-2);
 }
@@ -356,26 +425,25 @@ body {
 .btn--like {
   background: var(--brand);
   color: #fff;
-  /* Strong shadow for the most important action */
   box-shadow: 0 6px 20px rgba(233, 30, 99, 0.6), 0 0 0 1px var(--brand-700);
 }
 
-/* Apply base button hover/active to swiping buttons */
 .btn--dislike:hover, .btn--rewind:hover, .btn--super-like:hover,
 .btn--like:hover {
   transform: translateY(-2px);
   box-shadow: var(--deep-shadow);
 }
+
 .btn--dislike:active, .btn--rewind:active, .btn--super-like:active {
   box-shadow: var(--inset-shadow-deep);
   transform: translateY(0);
 }
+
 .btn--like:active {
   box-shadow: var(--inset-shadow-deep);
   background: var(--brand-700);
   transform: translateY(0);
 }
-
 
 /*
  * =================================================================
