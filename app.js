@@ -717,74 +717,134 @@
 			});
 		}
 
-		// *** FIX: Donation Modal Logic ***
-		let selectedProvider = null;
-		
-		// Button to open the modal (from both header and donate page)
-		App.$$('[data-route-link="donate"], [data-action="open-donate-modal"]').forEach((btn) => {
-			btn.addEventListener('click', (e) => {
-				e.preventDefault();
-				if (App.modalDonate) {
-					App.donateOptions.hidden = false;
-					App.donateForm.hidden = true;
-					App.modalDonate.showModal();
-				}
-			});
-		});
+  /* =========================
+   * 9. UI BINDINGS (With Donate Fix)
+   * ========================= */
+  function bindUI() {
+    // Donate Modal Logic (Fixed with strict null checks)
+    const donateLink = App.$('[data-route-link="donate"]');
+    App.modalDonate = App.$("#modal-donate");
+    if (donateLink && App.modalDonate) {
+      donateLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        App.modalDonate.showModal();
+      });
+    } else {
+      console.warn("Donate link or modal not found. Donate functionality disabled.");
+    }
 
-		if (App.modalDonate) {
-			// Close modal button
-			const closeModalBtn = App.$('[data-action="close-donate-modal"]', App.modalDonate);
-			if (closeModalBtn) closeModalBtn.addEventListener("click", () => App.modalDonate.close());
-		}
+    App.donateOptions = App.$(".donate-options");
+    App.donateForm = App.$("#donation-form");
+    App.donateAmountInput = App.$("#donate-amount");
+    App.donateHeading = App.$("#donate-heading");
+    App.cancelDonateBtn = App.$('[data-action="cancel-donate"]');
+    let selectedProvider = null;
 
-		// Mobile money provider selection
-		App.$$("[data-network]").forEach((btn) => {
-			btn.addEventListener("click", () => {
-				selectedProvider = btn.dataset.network;
-				// *** FIX: Corrected ID to donate-heading ***
-				if (App.donateHeading) App.donateHeading.textContent = `Donate with ${selectedProvider.toUpperCase()}`;
-				if (App.donateOptions) App.donateOptions.hidden = true;
-				if (App.donateForm) App.donateForm.hidden = false;
-			});
-		});
+    const providerBtns = App.$$(".donate-options .btn");
+    providerBtns.forEach((btn) => {
+      if (btn) {
+        btn.addEventListener("click", () => {
+          selectedProvider = btn.dataset.network || null;
+          if (App.donateHeading) {
+            App.donateHeading.textContent = selectedProvider ? `Donate with ${selectedProvider.toUpperCase()}` : "Donate to Support";
+          } else {
+            console.warn("Donate heading not found.");
+          }
+          if (App.donateOptions) App.donateOptions.hidden = true;
+          if (App.donateForm) App.donateForm.hidden = false;
+        });
+      }
+    });
 
-		if (App.cancelDonateBtn) {
-			App.cancelDonateBtn.addEventListener("click", () => {
-				selectedProvider = null;
-				if (App.donateForm) App.donateForm.hidden = true;
-				if (App.donateOptions) App.donateOptions.hidden = false;
-			});
-		}
+    if (App.cancelDonateBtn) {
+      App.cancelDonateBtn.addEventListener("click", () => {
+        selectedProvider = null;
+        if (App.donateForm) {
+          App.donateForm.hidden = true;
+        } else {
+          console.warn("Donate form not found - cannot hide.");
+        }
+        if (App.donateOptions) {
+          App.donateOptions.hidden = false;
+        } else {
+          console.warn("Donate options not found - cannot show.");
+        }
+      });
+    } else {
+      console.warn("Cancel donate button not found.");
+    }
 
-		if (App.donateForm) {
-			App.donateForm.addEventListener("submit", (e) => {
-				e.preventDefault();
-				const amount = parseFloat(App.donateAmountInput.value);
-				if (isNaN(amount) || amount <= 0) {
-					alert("Please enter a valid donation amount.");
-					return;
-				}
+    if (App.donateForm) {
+      App.donateForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!App.donateAmountInput) {
+          console.warn("Donate amount input not found.");
+          return;
+        }
+        const amount = parseFloat(App.donateAmountInput.value);
+        if (isNaN(amount) || amount <= 0) {
+          alert("Please enter a valid donation amount.");
+          return;
+        }
 
-				// The logic for USSD generation (Mocked/Simulated)
-				const targetPhoneNumber = selectedProvider === "airtel" ? "0994426162" : "0889479863";
-				let ussd;
-				if (selectedProvider === "airtel") {
-					ussd = `*211*2*1*1*${targetPhoneNumber}*${amount}#`;
-				} else if (selectedProvider === "tnm") {
-					ussd = `*444*2*1*1*${targetPhoneNumber}*${amount}#`;
-				}
+        if (!selectedProvider) {
+          alert("Please select a mobile money provider.");
+          return;
+        }
 
-				if (ussd) {
-					alert(`Simulating USSD for ${selectedProvider.toUpperCase()}: ${ussd}. Check your phone to complete the transaction.`);
-					// window.location.href = `tel:${ussd}`; // Commented out to prevent unwanted phone calls
-				} else {
-					alert("Please select a mobile money provider.");
-				}
-				App.modalDonate.close();
-				App.donateAmountInput.value = ""; // Clear after submission
-			});
-		}
+        const targetPhoneNumber = selectedProvider === "airtel" ? "0994426162" : "0889479863";
+        let ussd = "";
+        if (selectedProvider === "airtel") {
+          ussd = `*211*2*1*1*${targetPhoneNumber}*${amount}#`;
+        } else if (selectedProvider === "tnm") {
+          ussd = `*444*2*1*1*${targetPhoneNumber}*${amount}#`;
+        }
+
+        if (ussd) {
+          alert(`Simulating USSD for ${selectedProvider.toUpperCase()}: ${ussd}. Check your phone to complete the transaction.`);
+          // window.location.href = `tel:${ussd}`; // Uncomment if needed, but commented to prevent real calls
+        }
+
+        if (App.modalDonate) {
+          App.modalDonate.close();
+        } else {
+          console.warn("Donate modal not found - cannot close.");
+        }
+        App.donateAmountInput.value = "";
+      });
+    } else {
+      console.warn("Donate form not found. Submission disabled.");
+    }
+
+    // Other UI bindings (e.g., search, share) preserved with null checks
+    const menuSearchInput = App.$(".menu-search-bar__input");
+    if (menuSearchInput) {
+      const debouncedSearch = debounce((query) => {
+        if (query.length > 1) console.log(`Mock search: "${query}"`);
+      }, 300);
+      menuSearchInput.addEventListener("input", (e) => debouncedSearch(e.target.value));
+    }
+
+    const shareProfileBtn = App.$('[data-action="share-profile"]');
+    if (shareProfileBtn) {
+      shareProfileBtn.addEventListener("click", async () => {
+        const profileUrl = `${window.location.origin}/#profile?uid=${App.currentUser.uid}`;
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: `Check out ${App.currentUser.name}'s Profile!`,
+              url: profileUrl,
+            });
+          } catch (error) {
+            console.error("Error sharing:", error);
+          }
+        } else if (navigator.clipboard) {
+          navigator.clipboard.writeText(profileUrl);
+          alert("Profile URL copied to clipboard!");
+        }
+      });
+    }
+  }
 		
 		// *** FIX: Search Logic (Based on the menu search bar) ***
 		// Note: The HTML has two search buttons/inputs. We'll prioritize the menu one for simplicity.
