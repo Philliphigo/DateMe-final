@@ -69,9 +69,9 @@
 			},
 		},
 		allProfiles: [
-			{ uid: "temp-profile-1", name: "Jane", age: 22, bio: "Loves to read and hike.", onboardingComplete: true, location: { city: "Blantyre" }, avatar: "https://placehold.co/120x120?text=Jane", distance: 12, isOnline: true },
-			{ uid: "temp-profile-2", name: "John", age: 25, bio: "Musician and artist.", onboardingComplete: true, location: { city: "Lilongwe" }, avatar: "https://placehold.co/120x120?text=John", distance: 3, isOnline: false },
-			{ uid: "temp-profile-3", name: "Sarah", age: 21, bio: "Student and coffee addict.", onboardingComplete: true, location: { city: "Zomba" }, avatar: "https://placehold.co/120x120?text=Sarah", distance: 80, isOnline: true },
+			{ uid: "temp-profile-1", name: "Jane", age: 22, bio: "Loves to read and hike.", onboardingComplete: true, location: { city: "Blantyre" }, avatar: "IMG_0139.jpeg", distance: 12, isOnline: true },
+			{ uid: "temp-profile-2", name: "John", age: 25, bio: "Musician and artist.", onboardingComplete: true, location: { city: "Lilongwe" }, avatar: "IMG_0141.jpeg", distance: 3, isOnline: false },
+			{ uid: "temp-profile-3", name: "Sarah", age: 21, bio: "Student and coffee addict.", onboardingComplete: true, location: { city: "Zomba" }, avatar: "IMG_0142.jpeg", distance: 80, isOnline: true },
 		],
 		currentMatchId: null,
 		pendingChanges: null,
